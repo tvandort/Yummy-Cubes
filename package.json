@@ -14,7 +14,7 @@
   "scripts": {
     "dev": "tsc-watch --onSuccess \"yarn start\"",
     "start": "node out/index.js",
-    "test": "yarn jest"
+    "test": "yarn jest --watch"
   },
   "dependencies": {
     "jest": "^25.3.0"
