@@ -6,11 +6,17 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "ts-jest": "^25.4.0",
     "tsc-watch": "^4.2.3",
     "typescript": "^3.8.3"
   },
   "scripts": {
     "dev": "tsc-watch --onSuccess \"yarn start\"",
-    "start": "node out/index.js"
+    "start": "node out/index.js",
+    "test": "yarn jest"
+  },
+  "dependencies": {
+    "jest": "^25.3.0"
   }
 }
