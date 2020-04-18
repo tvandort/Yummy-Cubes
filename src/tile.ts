@@ -1,6 +1,5 @@
 export const JOKER = "JOKER";
-type JOKER = "JOKER";
-
+export type JOKER = "JOKER";
 type Face =
   | "1"
   | "2"
@@ -15,11 +14,8 @@ type Face =
   | "11"
   | "12"
   | "13";
-
 type TileFace = Face | JOKER;
-
 type Color = "RED" | "BLACK" | "BLUE" | "ORANGE";
-
 type TileColor = Color | JOKER;
 
 export class Tile {
@@ -40,8 +36,8 @@ export class Tile {
   }
 }
 
-export const buildBag: () => Tile[] = () => {
-  const bag = [
+export const generateTiles: () => Tile[] = () => {
+  const tiles = [
     new Tile({ color: JOKER, face: JOKER }),
     new Tile({ color: JOKER, face: JOKER })
   ];
@@ -49,12 +45,12 @@ export const buildBag: () => Tile[] = () => {
   for (let color of colors) {
     for (let face of faces) {
       // Two of each tile.
-      bag.push(new Tile({ color, face }));
-      bag.push(new Tile({ color, face }));
+      tiles.push(new Tile({ color, face }));
+      tiles.push(new Tile({ color, face }));
     }
   }
 
-  return bag;
+  return tiles;
 };
 
 export const colors: Color[] = ["RED", "BLACK", "BLUE", "ORANGE"];
