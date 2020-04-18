@@ -1,3 +1,4 @@
+export const JOKER = "JOKER";
 type JOKER = "JOKER";
 
 type Face =
@@ -13,29 +14,62 @@ type Face =
   | "10"
   | "11"
   | "12"
-  | "13"
-  | JOKER;
+  | "13";
 
-type Color = "RED" | "BLACK" | "BLUE" | "ORANGE" | JOKER;
+type TileFace = Face | JOKER;
 
-export default class Tile {
-  private _face: Face;
-  private _color: Color;
+type Color = "RED" | "BLACK" | "BLUE" | "ORANGE";
 
-  constructor({ face, color }: { face: Face; color: Color }) {
+type TileColor = Color | JOKER;
+
+export class Tile {
+  private _face: TileFace;
+  private _color: TileColor;
+
+  constructor({ face, color }: { face: TileFace; color: TileColor }) {
     this._face = face;
     this._color = color;
   }
 
-  get face(): Face {
+  get face(): TileFace {
     return this._face;
   }
 
-  get color(): Color {
+  get color(): TileColor {
     return this._color;
   }
 }
 
-const buildDeck = () => {};
+export const buildBag: () => Tile[] = () => {
+  const bag = [
+    new Tile({ color: JOKER, face: JOKER }),
+    new Tile({ color: JOKER, face: JOKER })
+  ];
 
-export { buildDeck };
+  for (let color of colors) {
+    for (let face of faces) {
+      // Two of each tile.
+      bag.push(new Tile({ color, face }));
+      bag.push(new Tile({ color, face }));
+    }
+  }
+
+  return bag;
+};
+
+export const colors: Color[] = ["RED", "BLACK", "BLUE", "ORANGE"];
+export const faces: Face[] = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+  "13"
+];
