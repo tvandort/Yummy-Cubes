@@ -17,27 +17,27 @@ describe(generateTiles, () => {
     it("contains 2 jokers", () => {
       const tiles = generateTiles();
       const jokers = tiles.filter(
-        (tile) => tile.face == JOKER && tile.color == JOKER
+        (tile) => tile.Face == JOKER && tile.Color == JOKER
       );
       expect(jokers.length).toBe(2);
     });
 
     it.each(colors)("contains 26 tiles that are %p", (color) => {
       const tiles = generateTiles();
-      const coloredTiles = tiles.filter((tile) => tile.color == color);
+      const coloredTiles = tiles.filter((tile) => tile.Color == color);
       expect(coloredTiles.length).toBe(26);
     });
 
     it.each(faces)("contains 8 tiles that are %p", (face) => {
       const tiles = generateTiles();
-      const facedTiles = tiles.filter((tile) => tile.face == face);
+      const facedTiles = tiles.filter((tile) => tile.Face == face);
       expect(facedTiles.length).toBe(8);
     });
 
     it("contains two of each tile by identity", () => {
       const tiles = generateTiles();
       const tilesCount: { [key: string]: number } = {};
-      for (let { color, face } of tiles) {
+      for (let { Color: color, Face: face } of tiles) {
         const count = tilesCount[face + color];
         tilesCount[face + color] = (count ?? 0) + 1;
       }

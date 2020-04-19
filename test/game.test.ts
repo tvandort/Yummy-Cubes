@@ -1,5 +1,7 @@
 import { Game } from "../src/game";
 import { Player, IPlayerContructor } from "../src/player";
+import { generateSequence } from "../src/tile";
+import { Bag } from "../src/bag";
 
 describe(Game, () => {
   it("deals hands to players", () => {
@@ -13,11 +15,15 @@ describe(Game, () => {
 
   describe("turns", () => {
     it("drawing", () => {
+      const bag = new Bag();
       const {
         players,
         tom: { Id: tomsId },
         eileen: { Id: elieensId }
-      } = setupPlayers();
+      } = setupPlayers({
+        tom: { initialHand: generateSequence("r10,b10,o10") },
+        eileen: { initialHand: generateSequence("r10,b10,o10") }
+      });
       const game = new Game({ players });
 
       expect(game.CurrentPlayer.Id).toBe(tomsId);

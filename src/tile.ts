@@ -16,6 +16,8 @@ type Face =
   | "13";
 type TileFace = Face | JOKER;
 type Color = "RED" | "BLACK" | "BLUE" | "ORANGE";
+type ShortColor = "r" | "b" | "u" | "o";
+type TileColor = Color | JOKER;
 
 const SHORT_COLOR_TO_COLOR: { [key: string]: Color } = {
   r: "RED",
@@ -23,23 +25,39 @@ const SHORT_COLOR_TO_COLOR: { [key: string]: Color } = {
   u: "BLUE",
   o: "ORANGE"
 };
-type TileColor = Color | JOKER;
+
+const COLOR_TO_SHORT_COLOR: { [key: string]: ShortColor } = {
+  RED: "r",
+  BLACK: "b",
+  BLUE: "u",
+  ORANGE: "o"
+};
 
 export class Tile {
-  private _face: TileFace;
-  private _color: TileColor;
+  private face: TileFace;
+  private color: TileColor;
+  private id: string;
 
   constructor({ face, color }: { face: TileFace; color: TileColor }) {
-    this._face = face;
-    this._color = color;
+    this.face = face;
+    this.color = color;
+    if (face === JOKER) {
+      this.id = JOKER;
+    } else {
+      this.id = `${COLOR_TO_SHORT_COLOR[color]}${face}`;
+    }
   }
 
-  get face(): TileFace {
-    return this._face;
+  get Face(): TileFace {
+    return this.face;
   }
 
-  get color(): TileColor {
-    return this._color;
+  get Color(): TileColor {
+    return this.color;
+  }
+
+  get Id(): string {
+    return this.id;
   }
 
   static JOKER = () => new Tile({ color: JOKER, face: JOKER });
