@@ -1,5 +1,5 @@
 import { Tile } from "./tile";
-import { Bag } from "./Bag";
+import { Bag } from "./bag";
 import { IPlayer, Player } from "./player";
 
 interface IGamePlayer extends IPlayer {
@@ -12,23 +12,10 @@ class GamePlayer implements IGamePlayer {
   private hand: Tile[];
   private game: Game;
 
-  constructor({
-    player,
-    hand,
-    game
-  }: {
-    player: Player;
-    hand?: Tile[];
-    game: Game;
-  }) {
+  constructor({ player, game }: { player: Player; game: Game }) {
     this.player = player;
     this.game = game;
-
-    if (hand) {
-      this.hand = hand;
-    } else {
-      this.hand = this.game.drawHand();
-    }
+    this.hand = player.InitialHand ?? this.game.drawHand();
   }
 
   get Name() {

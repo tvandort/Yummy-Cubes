@@ -1,5 +1,5 @@
 import { Game } from "../src/game";
-import { Player } from "../src/player";
+import { Player, IPlayerContructor } from "../src/player";
 
 describe(Game, () => {
   it("deals hands to players", () => {
@@ -39,10 +39,27 @@ describe(Game, () => {
     });
   });
 
-  const setupPlayers = () => {
-    const tom = new Player({ name: "Tom" });
-    const eileen = new Player({ name: "Eileen" });
-    const hannah = new Player({ name: "Hannah" });
+  interface SetupPlayersArgs {
+    tom: Partial<IPlayerContructor>;
+    eileen: Partial<IPlayerContructor>;
+    hannah: Partial<IPlayerContructor>;
+  }
+
+  interface SetupPlayers {
+    tom: Player;
+    eileen: Player;
+    hannah: Player;
+    players: Player[];
+  }
+
+  const setupPlayers = ({
+    tom: partialTom,
+    eileen: partialEileen,
+    hannah: partialHannah
+  }: Partial<SetupPlayersArgs> = {}): SetupPlayers => {
+    const tom = new Player({ name: "Tom", ...partialTom });
+    const eileen = new Player({ name: "Eileen", ...partialEileen });
+    const hannah = new Player({ name: "Hannah", ...partialHannah });
     const players = [tom, eileen, hannah];
 
     return {
