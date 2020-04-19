@@ -7,6 +7,7 @@
   "private": true,
   "devDependencies": {
     "@types/jest": "^25.2.1",
+    "@types/uuid": "^7.0.2",
     "ts-jest": "^25.4.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.8.3"
@@ -17,6 +18,7 @@
     "test": "yarn jest --watch"
   },
   "dependencies": {
-    "jest": "^25.3.0"
+    "jest": "^25.3.0",
+    "uuid": "^7.0.3"
   }
 }

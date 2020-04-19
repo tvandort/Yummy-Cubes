@@ -9,16 +9,23 @@ export class Bag {
   } = {}) {
     this.tiles = tiles ?? shuffle(generateTiles());
   }
-  pick() {
-    return this.tiles.shift();
+
+  draw(): Tile {
+    if (this.tiles.length > 0) {
+      return this.tiles.shift()!;
+    }
+
+    throw new Error("Out of tiles.");
   }
+
   drawHand() {
     const hand: Tile[] = [];
     for (let index = 0; index < 14; index++) {
-      hand.push(this.pick());
+      hand.push(this.draw());
     }
     return hand;
   }
+
   get Count() {
     return this.tiles.length;
   }
