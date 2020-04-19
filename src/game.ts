@@ -2,8 +2,8 @@ import { Tile, generateTiles } from "./tile";
 
 class Bag {
   private tiles: Tile[];
-  constructor() {
-    this.tiles = shuffle(generateTiles());
+  constructor({ tiles }: { tiles?: Tile[] } = {}) {
+    this.tiles = tiles ?? shuffle(generateTiles());
   }
 
   pick() {
@@ -68,7 +68,7 @@ function getRandomInt(max: number) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-function shuffle<T>(items: T[]) {
+export function shuffle<T>(items: T[]) {
   for (let index = 0; index < items.length; index++) {
     const swap = getRandomInt(items.length);
     const indexItem = items[index];
@@ -81,7 +81,6 @@ function shuffle<T>(items: T[]) {
 }
 
 export class Game {
-  private players: Player[];
   private playerIndex: number;
   private gamePlayers: GamePlayer[];
   private bag: Bag;
@@ -89,14 +88,13 @@ export class Game {
   constructor({ players, bag }: { players: Player[]; bag?: Bag }) {
     this.bag = bag ?? new Bag();
     this.playerIndex = 0;
-    this.players = shuffle(players);
-    this.gamePlayers = this.players.map(
+    this.gamePlayers = players.map(
       (player) => new GamePlayer({ player, bag: this.Bag })
     );
   }
 
   get PlayerOrder() {
-    return Array.from(this.players);
+    return Array.from(this.gamePlayers);
   }
 
   get CurrentPlayer() {

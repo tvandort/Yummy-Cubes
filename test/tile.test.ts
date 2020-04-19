@@ -1,4 +1,11 @@
-import { generateTiles, JOKER, colors, faces } from "../src/tile";
+import {
+  generateTiles,
+  JOKER,
+  colors,
+  faces,
+  generateSequence,
+  Tile
+} from "../src/tile";
 
 describe(generateTiles, () => {
   describe("generated bag", () => {
@@ -39,6 +46,26 @@ describe(generateTiles, () => {
         const value = tilesCount[key];
         expect(value).toBe(2);
       }
+    });
+  });
+
+  describe("generate manual sequence", () => {
+    describe("failure", () => {
+      it("throws on invalid sequences", () => {
+        try {
+          generateSequence("o22");
+        } catch (e) {
+          expect(e.message).toEqual("Sequence has invalid identifiers.");
+        }
+      });
+    });
+
+    describe("success", () => {
+      it("generates tiles", () => {
+        const tiles = generateSequence("r1,joker");
+        expect(tiles[0]).toEqual(new Tile({ face: "1", color: "RED" }));
+        expect(tiles[1]).toEqual(Tile.JOKER());
+      });
     });
   });
 });
