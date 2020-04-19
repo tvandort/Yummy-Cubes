@@ -1,44 +1,6 @@
-import { Tile, generateTiles } from "./tile";
-
-class Bag {
-  private tiles: Tile[];
-  constructor({ tiles }: { tiles?: Tile[] } = {}) {
-    this.tiles = tiles ?? shuffle(generateTiles());
-  }
-
-  pick() {
-    return this.tiles.shift();
-  }
-
-  drawHand() {
-    const hand: Tile[] = [];
-    for (let index = 0; index < 14; index++) {
-      hand.push(this.pick());
-    }
-
-    return hand;
-  }
-
-  get Count() {
-    return this.tiles.length;
-  }
-}
-
-interface IPlayer {
-  Name: string;
-}
-
-export class Player implements IPlayer {
-  private name: string;
-
-  constructor({ name }: { name: string }) {
-    this.name = name;
-  }
-
-  get Name() {
-    return this.name;
-  }
-}
+import { Tile } from "./tile";
+import { Bag } from "./Bag";
+import { IPlayer, Player } from "./player";
 
 interface IGamePlayer extends IPlayer {
   Hand: Tile[];
@@ -62,22 +24,6 @@ class GamePlayer implements IGamePlayer {
   get Hand() {
     return this.hand;
   }
-}
-
-function getRandomInt(max: number) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
-export function shuffle<T>(items: T[]) {
-  for (let index = 0; index < items.length; index++) {
-    const swap = getRandomInt(items.length);
-    const indexItem = items[index];
-    const swapItem = items[swap];
-    items[index] = swapItem;
-    items[swap] = indexItem;
-  }
-
-  return items;
 }
 
 export class Game {

@@ -1,4 +1,5 @@
-import { Game, Player } from "../src/game";
+import { Game } from "../src/game";
+import { Player } from "../src/player";
 
 describe(Game, () => {
   it("deals hands to players", () => {
