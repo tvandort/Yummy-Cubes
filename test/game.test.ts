@@ -10,12 +10,12 @@ describe(Game, () => {
 
     const player = game.CurrentPlayer;
 
-    expect(player.Hand.length).toBe(14);
+    expect(player.Hand.Count).toBe(14);
   });
 
   describe("turns", () => {
     it("drawing", () => {
-      const { tom, eileen, game } = setupBasicGame();
+      const { tom, eileen, game } = setupGame();
 
       tom.draw();
 
@@ -23,13 +23,57 @@ describe(Game, () => {
     });
 
     it("disallows drawing when it is not players turn", () => {
-      const { eileen } = setupBasicGame();
+      const { eileen } = setupGame();
 
       expect(() => eileen.draw()).toThrowError("Not Eileen's turn!");
     });
   });
 
-  const setupBasicGame = (args: Partial<SetupPlayersArgs> = {}) => {
+  describe("playing tiles", () => {
+    it("plays tiles from hand to a set", () => {
+      const { tom, game } = setupGame({
+        tom: { initialHand: generateSequence("r10,o10,u10,r1") }
+      });
+      const hand = tom.Hand;
+
+      expect(game.Sets.length).toBe(0);
+
+      tom.place([hand.at(0), hand.at(1), hand.at(2)]);
+
+      expect(game.Sets.length).toBe(1);
+    });
+
+    it("disallows playing tiles that are not in hand", () => {
+      const { tom, game } = setupGame({
+        tom: { initialHand: generateSequence("r10,o10,u10,r1") }
+      });
+
+      expect(game.Sets.length).toBe(0);
+
+      expect(() => tom.place(generateSequence("r1,r1"))).toThrowError(
+        "Tom tried to play tiles that they don't have in their hand."
+      );
+
+      expect(game.Sets.length).toBe(0);
+    });
+
+    it("disallows placing when it is not players turn", () => {
+      const { eileen, game } = setupGame({
+        eileen: { initialHand: generateSequence("r10,o10,u10,r1") }
+      });
+      const hand = eileen.Hand;
+
+      expect(game.Sets.length).toBe(0);
+
+      expect(() =>
+        eileen.place([hand.at(0), hand.at(1), hand.at(2)])
+      ).toThrowError("Not Eileen's turn!");
+
+      expect(game.Sets.length).toBe(0);
+    });
+  });
+
+  const setupGame = (args: Partial<SetupPlayersArgs> = {}) => {
     const {
       players,
       tom: { Id: tomsId },

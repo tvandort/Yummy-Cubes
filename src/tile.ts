@@ -63,6 +63,57 @@ export class Tile {
   static JOKER = () => new Tile({ color: JOKER, face: JOKER });
 }
 
+export class Tiles {
+  private tiles: Tile[];
+
+  constructor(tiles: Tile[]) {
+    this.tiles = tiles;
+  }
+
+  push(tile: Tile) {
+    this.tiles.push(tile);
+  }
+
+  at(identifier: number | string) {
+    if (typeof identifier === "number") {
+      return this.tiles[identifier];
+    } else {
+      return this.tiles.filter((tile) => tile.Id === identifier)[0];
+    }
+  }
+
+  contains(checkTiles: Tile[]) {
+    const checkTilesHash = Tiles.toHash(checkTiles);
+    const tilesHash = Tiles.toHash(this.tiles);
+
+    for (let key of Object.keys(checkTilesHash)) {
+      const count = tilesHash[key];
+      if (count && count >= checkTilesHash[key]) {
+        tilesHash[key] = count - 1;
+      } else {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  get Count() {
+    return this.tiles.length;
+  }
+
+  private static toHash(tiles: Tile[]) {
+    const hash: { [key: string]: number } = {};
+    for (let tile of tiles) {
+      let count = hash[tile.Id];
+
+      hash[tile.Id] = (count ?? 0) + 1;
+    }
+
+    return hash;
+  }
+}
+
 export const generateTiles: () => Tile[] = () => {
   const tiles = [
     new Tile({ color: JOKER, face: JOKER }),
