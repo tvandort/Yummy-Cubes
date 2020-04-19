@@ -29,31 +29,37 @@ describe(Game, () => {
     });
   });
 
-  const setupBasicGame = () => {
+  const setupBasicGame = (args: Partial<SetupPlayersArgs> = {}) => {
     const {
       players,
       tom: { Id: tomsId },
-      eileen: { Id: eileensId }
-    } = setupPlayers();
+      eileen: { Id: eileensId },
+      hannah: { Id: hannahsId }
+    } = setupPlayers(args);
     const game = new Game({ players });
 
     expect(game.CurrentPlayer.Id).toBe(tomsId);
 
     let tom = game.getPlayer(tomsId);
     let eileen = game.getPlayer(eileensId);
+    let hannah = game.getPlayer(hannahsId);
 
     expect(tom).toBeTruthy();
     expect(eileen).toBeTruthy();
+    expect(hannah).toBeTruthy();
 
     tom = tom!;
     eileen = eileen!;
+    hannah = hannah!;
 
     expect(tom.Id).toBe(tomsId);
     expect(eileen.Id).toBe(eileensId);
+    expect(hannah.Id).toBe(hannahsId);
 
     return {
       tom,
       eileen,
+      hannah,
       game
     };
   };
