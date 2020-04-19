@@ -15,35 +15,48 @@ describe(Game, () => {
 
   describe("turns", () => {
     it("drawing", () => {
-      const bag = new Bag();
-      const {
-        players,
-        tom: { Id: tomsId },
-        eileen: { Id: elieensId }
-      } = setupPlayers({
-        tom: { initialHand: generateSequence("r10,b10,o10") },
-        eileen: { initialHand: generateSequence("r10,b10,o10") }
-      });
-      const game = new Game({ players });
-
-      expect(game.CurrentPlayer.Id).toBe(tomsId);
-
-      let tom = game.getPlayer(tomsId);
-      let elieen = game.getPlayer(elieensId);
-
-      expect(tom).toBeTruthy();
-      expect(elieen).toBeTruthy();
-
-      tom = tom!;
-      elieen = elieen!;
-
-      expect(tom.Id).toBe(tomsId);
+      const { tom, eileen, game } = setupBasicGame();
 
       tom.draw();
 
-      expect(game.CurrentPlayer.Id).toBe(elieensId);
+      expect(game.CurrentPlayer.Id).toBe(eileen.Id);
+    });
+
+    it("disallows drawing when it is not players turn", () => {
+      const { eileen } = setupBasicGame();
+
+      expect(() => eileen.draw()).toThrowError("Not Eileen's turn!");
     });
   });
+
+  const setupBasicGame = () => {
+    const {
+      players,
+      tom: { Id: tomsId },
+      eileen: { Id: eileensId }
+    } = setupPlayers();
+    const game = new Game({ players });
+
+    expect(game.CurrentPlayer.Id).toBe(tomsId);
+
+    let tom = game.getPlayer(tomsId);
+    let eileen = game.getPlayer(eileensId);
+
+    expect(tom).toBeTruthy();
+    expect(eileen).toBeTruthy();
+
+    tom = tom!;
+    eileen = eileen!;
+
+    expect(tom.Id).toBe(tomsId);
+    expect(eileen.Id).toBe(eileensId);
+
+    return {
+      tom,
+      eileen,
+      game
+    };
+  };
 
   interface SetupPlayersArgs {
     tom: Partial<IPlayerContructor>;

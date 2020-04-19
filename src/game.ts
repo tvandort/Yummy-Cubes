@@ -31,7 +31,7 @@ class GamePlayer implements IGamePlayer {
   }
 
   draw() {
-    this.hand.push(this.game.draw());
+    this.hand.push(this.game.draw(this));
   }
 }
 
@@ -64,10 +64,6 @@ export class Game {
     return this.players[this.playerIndex];
   }
 
-  private get Bag() {
-    return this.bag;
-  }
-
   drawHand() {
     return this.bag.drawHand();
   }
@@ -76,7 +72,11 @@ export class Game {
     return this.playersById[id];
   }
 
-  draw() {
+  draw(player: GamePlayer) {
+    if (player != this.CurrentPlayer) {
+      throw Error(`Not ${player.Name}'s turn!`);
+    }
+
     const tile = this.bag.draw();
 
     this.playerIndex = (this.playerIndex + 1) % this.players.length;
