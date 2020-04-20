@@ -59,7 +59,9 @@ interface PlayerMessage {
 type MeldMessage = PlayerMessage & AddFromHand;
 
 export class Set extends Tiles {
-  valid() {}
+  valid() {
+    return false;
+  }
 }
 
 class Board {
@@ -92,11 +94,13 @@ export class Game {
   private playersById: { [key: string]: GamePlayer | undefined };
   private bag: Bag;
   private board: Board;
+  private currentPlayerActions: PlayerMessage[];
 
   constructor({ players, bag }: { players: Player[]; bag?: Bag }) {
     this.bag = bag ?? new Bag();
     this.playerIndex = 0;
     this.board = new Board();
+    this.currentPlayerActions = [];
 
     this.players = players.map((player) => {
       const gamePlayer = new GamePlayer({ player, game: this });
@@ -133,9 +137,9 @@ export class Game {
     this.turnCheck(player);
 
     // Check that board is valid? Check all sets.
-    if (this.board.valid() === false) {
+    if (this.currentPlayerActions.length > 0) {
       throw new Error(
-        "Tom cannot draw because the board is not in a valid state!"
+        "Tom cannot draw because they have placed tiles on the board!"
       );
     }
 
@@ -146,10 +150,12 @@ export class Game {
     return tile;
   }
 
-  meld({ player, ...message }: MeldMessage) {
+  meld(message: MeldMessage) {
+    const { player, type } = message;
     this.turnCheck(player);
+    this.currentPlayerActions.push(message);
 
-    if (message.type === "ADD") {
+    if (type === "ADD") {
       const { tiles } = message;
       if (player.Hand.contains(tiles) === false) {
         throw new Error(

@@ -27,22 +27,19 @@ describe(Game, () => {
       expect(() => eileen.draw()).toThrowError("Not Eileen's turn!");
     });
 
-    it("disallows drawing if board is not in valid state", () => {
+    it("disallows drawing if tiles have been placed this turn", () => {
       const { tom, game } = setupGame({
         tom: { initialHand: generateSequence("r10,o10,b10,u10,r1") }
       });
 
-      const [r10, o10, b10, , r1] = tom.Hand;
+      const [r10, o10, b10] = tom.Hand;
 
-      // console.log(tom.Hand);
-      // console.log(r10, o10, b10);
+      tom.playFromHand([r10, o10, b10]);
 
-      tom.playFromHand([r10, o10, b10, r1]);
-
-      expect(game.Sets.at(0)).toEqual(new Set([r10, o10, b10, r1]));
+      expect(game.Sets.at(0)).toEqual(new Set([r10, o10, b10]));
 
       expect(() => tom.draw()).toThrowError(
-        "Tom cannot draw because the board is not in a valid state!"
+        "Tom cannot draw because they have placed tiles on the board!"
       );
     });
   });
