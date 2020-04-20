@@ -3,6 +3,7 @@ import { Tile } from "./tile";
 
 export interface IPlayer {
   Name: string;
+  Id: string;
 }
 
 interface IInitializedPlayer {

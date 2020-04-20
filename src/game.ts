@@ -4,7 +4,6 @@ import { IPlayer, Player } from "./player";
 
 interface IGamePlayer extends IPlayer {
   Hand: Tiles;
-  Id: string;
 }
 
 class GamePlayer implements IGamePlayer {
@@ -40,9 +39,24 @@ class GamePlayer implements IGamePlayer {
   }
 
   place(tiles: Tile[]) {
-    this.game.place({ tiles, player: this });
+    this.game.meld({
+      type: "ADD",
+      tiles,
+      player: this
+    });
   }
 }
+
+interface AddFromHand {
+  type: "ADD";
+  tiles: Tile[];
+}
+
+interface PlayerMessage {
+  player: GamePlayer;
+}
+
+type MeldMessage = PlayerMessage & AddFromHand;
 
 export class Game {
   private playerIndex: number;
@@ -92,21 +106,29 @@ export class Game {
 
     const tile = this.bag.draw();
 
-    this.playerIndex = (this.playerIndex + 1) % this.players.length;
+    this.endTurn(player);
 
     return tile;
   }
 
-  place({ tiles, player }: { tiles: Tile[]; player: GamePlayer }) {
+  meld({ player, ...message }: MeldMessage) {
     this.turnCheck(player);
 
-    if (player.Hand.contains(tiles) === false) {
-      throw new Error(
-        `${player.Name} tried to play tiles that they don't have in their hand.`
-      );
-    }
+    if (message.type === "ADD") {
+      const { tiles } = message;
+      if (player.Hand.contains(tiles) === false) {
+        throw new Error(
+          `${player.Name} tried to play tiles that they don't have in their hand.`
+        );
+      }
 
-    this.sets.push(new Tiles(tiles));
+      this.sets.push(new Tiles(tiles));
+    }
+  }
+
+  endTurn(player: GamePlayer) {
+    this.turnCheck(player);
+    this.playerIndex = (this.playerIndex + 1) % this.players.length;
   }
 
   private turnCheck(player: GamePlayer) {

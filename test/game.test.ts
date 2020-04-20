@@ -73,6 +73,14 @@ describe(Game, () => {
     });
   });
 
+  describe("melding", () => {
+    it("disallows tile playing unless they would cause a meld if player isn't melded", () => {});
+
+    it("playing 30 > points makes a melt happen", () => {});
+
+    it("more tiles can be played after a meld", () => {});
+  });
+
   const setupGame = (args: Partial<SetupPlayersArgs> = {}) => {
     const {
       players,
