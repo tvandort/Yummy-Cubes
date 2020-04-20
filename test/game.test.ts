@@ -89,9 +89,30 @@ describe(Game, () => {
   });
 
   describe("ending turn", () => {
-    it("not allowed if board is in an invalid state", () => {});
+    it("is not allowed if board is in an invalid state", () => {
+      const { tom } = setupGame({
+        tom: { initialHand: generateSequence("r10,o10,u10,r1,u1") }
+      });
+      const [r10, o10, u10, r1] = tom.Hand;
 
-    it("not allowed if board is in valid state and tile drawn", () => {});
+      tom.playFromHand([r10, o10, u10, r1]);
+
+      expect(() => tom.endTurn()).toThrowError(
+        "Board is not in a valid state!"
+      );
+    });
+
+    it("cannot be ended by a player if it is not their turn", () => {
+      const { eileen } = setupGame();
+
+      expect(() => eileen.endTurn()).toThrowError("Not Eileen's turn!");
+    });
+
+    it("is not allowed if player has not played tiles", () => {
+      const { tom } = setupGame();
+
+      expect(() => tom.endTurn()).toThrowError("Tom has not melded this turn!");
+    });
   });
 
   describe("melding", () => {

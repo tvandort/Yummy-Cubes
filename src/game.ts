@@ -45,6 +45,10 @@ class GamePlayer implements IGamePlayer {
       player: this
     });
   }
+
+  endTurn() {
+    this.game.endTurn(this);
+  }
 }
 
 interface AddFromHand {
@@ -52,11 +56,15 @@ interface AddFromHand {
   tiles: Tile[];
 }
 
+interface DrewCard {
+  type: "DREW";
+}
+
 interface PlayerMessage {
   player: GamePlayer;
 }
 
-type MeldMessage = PlayerMessage & AddFromHand;
+type MeldMessage = PlayerMessage & (AddFromHand | DrewCard);
 
 export class Set extends Tiles {
   valid() {
@@ -135,14 +143,15 @@ export class Game {
 
   draw(player: GamePlayer) {
     this.turnCheck(player);
+    const drawMessage = { player, type: "DREW" };
 
-    // Check that board is valid? Check all sets.
     if (this.currentPlayerActions.length > 0) {
       throw new Error(
-        "Tom cannot draw because they have placed tiles on the board!"
+        `${player.Name} cannot draw because they have placed tiles on the board!`
       );
     }
 
+    this.currentPlayerActions.push(drawMessage);
     const tile = this.bag.draw();
 
     this.endTurn(player);
@@ -151,24 +160,34 @@ export class Game {
   }
 
   meld(message: MeldMessage) {
-    const { player, type } = message;
+    const { player } = message;
     this.turnCheck(player);
     this.currentPlayerActions.push(message);
 
-    if (type === "ADD") {
-      const { tiles } = message;
-      if (player.Hand.contains(tiles) === false) {
-        throw new Error(
-          `${player.Name} tried to play tiles that they don't have in their hand.`
-        );
+    switch (message.type) {
+      case "ADD": {
+        const { tiles } = message;
+        if (player.Hand.contains(tiles) === false) {
+          throw new Error(
+            `${player.Name} tried to play tiles that they don't have in their hand.`
+          );
+        }
+        this.board.push(new Set(tiles));
       }
-
-      this.board.push(new Set(tiles));
     }
   }
 
   endTurn(player: GamePlayer) {
     this.turnCheck(player);
+
+    if (this.board.valid() === false) {
+      throw new Error("Board is not in a valid state!");
+    }
+
+    if (this.currentPlayerActions.length < 1) {
+      throw new Error(`${player.Name} has not melded this turn!`);
+    }
+
     this.playerIndex = (this.playerIndex + 1) % this.players.length;
   }
 
