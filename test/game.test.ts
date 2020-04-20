@@ -1,7 +1,6 @@
-import { Game } from "../src/game";
+import { Game, Set } from "../src/game";
 import { Player, IPlayerContructor } from "../src/player";
 import { generateSequence } from "../src/tile";
-import { Bag } from "../src/bag";
 
 describe(Game, () => {
   it("deals hands to players", () => {
@@ -27,6 +26,25 @@ describe(Game, () => {
 
       expect(() => eileen.draw()).toThrowError("Not Eileen's turn!");
     });
+
+    it("disallows drawing if board is not in valid state", () => {
+      const { tom, game } = setupGame({
+        tom: { initialHand: generateSequence("r10,o10,b10,u10,r1") }
+      });
+
+      const [r10, o10, b10, , r1] = tom.Hand;
+
+      // console.log(tom.Hand);
+      // console.log(r10, o10, b10);
+
+      tom.playFromHand([r10, o10, b10, r1]);
+
+      expect(game.Sets.at(0)).toEqual(new Set([r10, o10, b10, r1]));
+
+      expect(() => tom.draw()).toThrowError(
+        "Tom cannot draw because the board is not in a valid state!"
+      );
+    });
   });
 
   describe("playing tiles", () => {
@@ -36,11 +54,11 @@ describe(Game, () => {
       });
       const hand = tom.Hand;
 
-      expect(game.Sets.length).toBe(0);
+      expect(game.Sets.Count).toBe(0);
 
-      tom.place([hand.at(0), hand.at(1), hand.at(2)]);
+      tom.playFromHand([hand.at(0), hand.at(1), hand.at(2)]);
 
-      expect(game.Sets.length).toBe(1);
+      expect(game.Sets.Count).toBe(1);
     });
 
     it("disallows playing tiles that are not in hand", () => {
@@ -48,13 +66,13 @@ describe(Game, () => {
         tom: { initialHand: generateSequence("r10,o10,u10,r1") }
       });
 
-      expect(game.Sets.length).toBe(0);
+      expect(game.Sets.Count).toBe(0);
 
-      expect(() => tom.place(generateSequence("r1,r1"))).toThrowError(
+      expect(() => tom.playFromHand(generateSequence("r1,r1"))).toThrowError(
         "Tom tried to play tiles that they don't have in their hand."
       );
 
-      expect(game.Sets.length).toBe(0);
+      expect(game.Sets.Count).toBe(0);
     });
 
     it("disallows placing when it is not players turn", () => {
@@ -63,14 +81,20 @@ describe(Game, () => {
       });
       const hand = eileen.Hand;
 
-      expect(game.Sets.length).toBe(0);
+      expect(game.Sets.Count).toBe(0);
 
       expect(() =>
-        eileen.place([hand.at(0), hand.at(1), hand.at(2)])
+        eileen.playFromHand([hand.at(0), hand.at(1), hand.at(2)])
       ).toThrowError("Not Eileen's turn!");
 
-      expect(game.Sets.length).toBe(0);
+      expect(game.Sets.Count).toBe(0);
     });
+  });
+
+  describe("ending turn", () => {
+    it("not allowed if board is in an invalid state", () => {});
+
+    it("not allowed if board is in valid state and tile drawn", () => {});
   });
 
   describe("melding", () => {

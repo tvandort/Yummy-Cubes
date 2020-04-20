@@ -112,6 +112,10 @@ export class Tiles {
 
     return hash;
   }
+
+  public [Symbol.iterator]() {
+    return this.tiles[Symbol.iterator]();
+  }
 }
 
 export const generateTiles: () => Tile[] = () => {

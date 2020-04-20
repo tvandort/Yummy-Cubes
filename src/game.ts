@@ -38,7 +38,7 @@ class GamePlayer implements IGamePlayer {
     this.hand.push(this.game.draw(this));
   }
 
-  place(tiles: Tile[]) {
+  playFromHand(tiles: Tile[]) {
     this.game.meld({
       type: "ADD",
       tiles,
@@ -58,17 +58,45 @@ interface PlayerMessage {
 
 type MeldMessage = PlayerMessage & AddFromHand;
 
+export class Set extends Tiles {
+  valid() {}
+}
+
+class Board {
+  private sets: Set[];
+
+  constructor() {
+    this.sets = [];
+  }
+
+  get Count() {
+    return this.sets.length;
+  }
+
+  valid() {
+    return this.sets.every((set) => set.valid());
+  }
+
+  push(set: Set) {
+    this.sets.push(set);
+  }
+
+  at(index: number) {
+    return this.sets[index];
+  }
+}
+
 export class Game {
   private playerIndex: number;
   private players: GamePlayer[];
   private playersById: { [key: string]: GamePlayer | undefined };
   private bag: Bag;
-  private sets: Tiles[];
+  private board: Board;
 
   constructor({ players, bag }: { players: Player[]; bag?: Bag }) {
     this.bag = bag ?? new Bag();
     this.playerIndex = 0;
-    this.sets = [];
+    this.board = new Board();
 
     this.players = players.map((player) => {
       const gamePlayer = new GamePlayer({ player, game: this });
@@ -90,7 +118,7 @@ export class Game {
   }
 
   get Sets() {
-    return this.sets;
+    return this.board;
   }
 
   drawHand() {
@@ -103,6 +131,13 @@ export class Game {
 
   draw(player: GamePlayer) {
     this.turnCheck(player);
+
+    // Check that board is valid? Check all sets.
+    if (this.board.valid() === false) {
+      throw new Error(
+        "Tom cannot draw because the board is not in a valid state!"
+      );
+    }
 
     const tile = this.bag.draw();
 
@@ -122,7 +157,7 @@ export class Game {
         );
       }
 
-      this.sets.push(new Tiles(tiles));
+      this.board.push(new Set(tiles));
     }
   }
 
