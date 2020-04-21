@@ -1,47 +1,39 @@
-import {
-  generateTiles,
-  colors,
-  faces,
-  TileFactory,
-  RegularTile,
-  JokerTile,
-  unplayedSet
-} from "../src/tile";
+import * as stuff from "../src/tile";
 
-describe(generateTiles, () => {
+describe(stuff.generateTiles, () => {
   describe("generated bag", () => {
     it("generates 106 tiles", () => {
-      const tiles = generateTiles();
+      const tiles = stuff.generateTiles();
       expect(tiles.length).toBe(106);
     });
 
     it("contains 2 jokers", () => {
-      const tiles = generateTiles();
-      const jokers = tiles.filter(JokerTile.Match);
+      const tiles = stuff.generateTiles();
+      const jokers = tiles.filter(stuff.JokerTile.Match);
       expect(jokers.length).toBe(2);
     });
 
-    it.each(colors)("contains 26 tiles that are %p", (color) => {
-      const tiles = generateTiles();
+    it.each(stuff.colors)("contains 26 tiles that are %p", (color) => {
+      const tiles = stuff.generateTiles();
       const coloredTiles = tiles
-        .filter(RegularTile.Match)
+        .filter(stuff.RegularTile.Match)
         .filter((tile) => tile.Color == color);
       expect(coloredTiles.length).toBe(26);
     });
 
-    it.each(faces)("contains 8 tiles that are %p", (face) => {
-      const tiles = generateTiles();
+    it.each(stuff.faces)("contains 8 tiles that are %p", (face) => {
+      const tiles = stuff.generateTiles();
       const facedTiles = tiles
-        .filter(RegularTile.Match)
+        .filter(stuff.RegularTile.Match)
         .filter((tile) => tile.Face == face);
       expect(facedTiles.length).toBe(8);
     });
 
     it("contains two of each tile by identity", () => {
-      const tiles = generateTiles();
+      const tiles = stuff.generateTiles();
       const tilesCount: { [key: string]: number } = {};
       for (let { Color: color, Face: face } of tiles.filter(
-        RegularTile.Match
+        stuff.RegularTile.Match
       )) {
         const count = tilesCount[face + color];
         tilesCount[face + color] = (count ?? 0) + 1;
@@ -58,7 +50,7 @@ describe(generateTiles, () => {
     describe("failure", () => {
       it("throws on invalid sequences", () => {
         try {
-          unplayedSet("o22");
+          stuff.unplayedSet("o22");
         } catch (e) {
           expect(e.message).toEqual("Sequence has invalid identifiers.");
         }
@@ -67,11 +59,11 @@ describe(generateTiles, () => {
 
     describe("success", () => {
       it("generates tiles", () => {
-        const tiles = unplayedSet("r1,joker");
+        const tiles = stuff.unplayedSet("r1,joker");
         expect(tiles[0]).toEqual(
-          TileFactory.create({ face: "1", color: "RED" })
+          stuff.TileFactory.create({ face: "1", color: "RED" })
         );
-        expect(tiles[1]).toEqual(TileFactory.Joker());
+        expect(tiles[1]).toEqual(stuff.TileFactory.Joker());
       });
     });
   });
