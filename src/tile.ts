@@ -215,7 +215,7 @@ export const generateTiles: () => (RegularTile | JokerTile)[] = () => {
 };
 
 const sequenceExpression = /^joker$|^([rbou](13|12|11|10|[0-9]))$/;
-export const myfunction = (sequence: string) => {
+export const unplayedSet = (sequence: string) => {
   const tiles: (RegularTile | JokerTile)[] = [];
   const identifiers = sequence.split(",");
   for (let identifier of identifiers) {
