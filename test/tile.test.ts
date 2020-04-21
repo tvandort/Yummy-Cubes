@@ -4,7 +4,9 @@ import {
   colors,
   faces,
   generateSequence,
-  TileFactory
+  TileFactory,
+  RegularTile,
+  JokerTile
 } from "../src/tile";
 
 describe(generateTiles, () => {
@@ -16,28 +18,32 @@ describe(generateTiles, () => {
 
     it("contains 2 jokers", () => {
       const tiles = generateTiles();
-      const jokers = tiles.filter(
-        (tile) => tile.Face === JOKER && tile.Color === JOKER
-      );
+      const jokers = tiles.filter(JokerTile.Match);
       expect(jokers.length).toBe(2);
     });
 
     it.each(colors)("contains 26 tiles that are %p", (color) => {
       const tiles = generateTiles();
-      const coloredTiles = tiles.filter((tile) => tile.Color == color);
+      const coloredTiles = tiles
+        .filter(RegularTile.Match)
+        .filter((tile) => tile.Color == color);
       expect(coloredTiles.length).toBe(26);
     });
 
     it.each(faces)("contains 8 tiles that are %p", (face) => {
       const tiles = generateTiles();
-      const facedTiles = tiles.filter((tile) => tile.Face == face);
+      const facedTiles = tiles
+        .filter(RegularTile.Match)
+        .filter((tile) => tile.Face == face);
       expect(facedTiles.length).toBe(8);
     });
 
     it("contains two of each tile by identity", () => {
       const tiles = generateTiles();
       const tilesCount: { [key: string]: number } = {};
-      for (let { Color: color, Face: face } of tiles) {
+      for (let { Color: color, Face: face } of tiles.filter(
+        RegularTile.Match
+      )) {
         const count = tilesCount[face + color];
         tilesCount[face + color] = (count ?? 0) + 1;
       }

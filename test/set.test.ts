@@ -2,7 +2,7 @@ import { mustBeThree, isRun } from "../src/set";
 import { generateSequence } from "../src/tile";
 
 describe("rules", () => {
-  describe(mustBeThree, () => {
+  describe("Require 3 tiles", () => {
     it("passes", () => {
       expect(mustBeThree(generateSequence("r1,r1,r1"))).toBe(true);
     });
@@ -12,7 +12,7 @@ describe("rules", () => {
     });
   });
 
-  describe(isRun, () => {
+  describe("Require valid run", () => {
     describe("pass", () => {
       it("is in order", () => {
         expect(isRun(generateSequence("r1,r2,r3"))).toBe(true);
@@ -57,7 +57,7 @@ describe("rules", () => {
           expect(isRun(generateSequence("joker,r1,joker"))).toBe(false);
         });
 
-        fit("13 joker joker", () => {
+        it("13 joker joker", () => {
           expect(isRun(generateSequence("r13,joker,joker"))).toBe(false);
         });
 

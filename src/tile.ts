@@ -38,21 +38,17 @@ interface Id {
   Id: string;
 }
 
-class JokerTile implements Id {
-  get Face(): Joker {
-    return JOKER;
-  }
-
-  get Color(): Joker {
-    return JOKER;
-  }
-
+export class JokerTile implements Id {
   get Id(): string {
     return "joker";
   }
 
   get IsJoker(): Boolean {
     return true;
+  }
+
+  static Match(tile: RegularTile | JokerTile): tile is JokerTile {
+    return tile.IsJoker === true;
   }
 }
 
@@ -100,6 +96,10 @@ export class RegularTile {
 
   get IsJoker(): Boolean {
     return false;
+  }
+
+  static Match(tile: RegularTile | JokerTile): tile is RegularTile {
+    return tile.IsJoker === false;
   }
 }
 
