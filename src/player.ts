@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { Tile } from "./tile";
+import { UnplayedTile } from "./tile";
 
 export interface IPlayer {
   Name: string;
@@ -7,18 +7,18 @@ export interface IPlayer {
 }
 
 interface IInitializedPlayer {
-  InitialHand: Tile[] | undefined;
+  InitialHand: UnplayedTile[] | undefined;
 }
 
 export interface IPlayerContructor {
   name: string;
-  initialHand?: Tile[];
+  initialHand?: UnplayedTile[];
 }
 
 export class Player implements IPlayer, IInitializedPlayer {
   private name: string;
   private id: string;
-  private initialHand: Tile[] | undefined;
+  private initialHand: UnplayedTile[] | undefined;
 
   constructor({ name, initialHand }: IPlayerContructor) {
     this.name = name;

@@ -1,12 +1,11 @@
 import {
   generateTiles,
-  JOKER,
   colors,
   faces,
-  generateSequence,
   TileFactory,
   RegularTile,
-  JokerTile
+  JokerTile,
+  unplayedSet
 } from "../src/tile";
 
 describe(generateTiles, () => {
@@ -59,7 +58,7 @@ describe(generateTiles, () => {
     describe("failure", () => {
       it("throws on invalid sequences", () => {
         try {
-          generateSequence("o22");
+          unplayedSet("o22");
         } catch (e) {
           expect(e.message).toEqual("Sequence has invalid identifiers.");
         }
@@ -68,7 +67,7 @@ describe(generateTiles, () => {
 
     describe("success", () => {
       it("generates tiles", () => {
-        const tiles = generateSequence("r1,joker");
+        const tiles = unplayedSet("r1,joker");
         expect(tiles[0]).toEqual(
           TileFactory.create({ face: "1", color: "RED" })
         );

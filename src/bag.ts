@@ -1,16 +1,16 @@
-import { Tile, generateTiles } from "./tile";
+import { UnplayedTile, generateTiles } from "./tile";
 import { shuffle } from "./random";
 export class Bag {
-  private tiles: Tile[];
+  private tiles: UnplayedTile[];
   constructor({
     tiles
   }: {
-    tiles?: Tile[];
+    tiles?: UnplayedTile[];
   } = {}) {
     this.tiles = tiles ?? shuffle(generateTiles());
   }
 
-  draw(): Tile {
+  draw(): UnplayedTile {
     if (this.tiles.length > 0) {
       return this.tiles.shift()!;
     }
@@ -19,7 +19,7 @@ export class Bag {
   }
 
   drawHand() {
-    const hand: Tile[] = [];
+    const hand: UnplayedTile[] = [];
     for (let index = 0; index < 14; index++) {
       hand.push(this.draw());
     }
@@ -30,13 +30,13 @@ export class Bag {
     return this.tiles.length;
   }
 
-  removeTiles(tilesToRemoves: Tile[]) {
+  removeTiles(tilesToRemoves: UnplayedTile[]) {
     for (let tileToRemove of tilesToRemoves) {
       this.removeTile(tileToRemove);
     }
   }
 
-  removeTile(tileToDelete: Tile) {
+  removeTile(tileToDelete: UnplayedTile) {
     for (let index = 0; index < this.tiles.length; index++) {
       const tile = this.tiles[index];
       if (tile.Id === tileToDelete.Id) {

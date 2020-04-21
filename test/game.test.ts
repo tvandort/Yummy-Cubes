@@ -1,7 +1,7 @@
 import { Game } from "../src/game";
 import { Set } from "../src/set";
 import { Player, IPlayerContructor } from "../src/player";
-import { generateSequence } from "../src/tile";
+import { unplayedSet } from "../src/tile";
 
 describe(Game, () => {
   it("deals hands to players", () => {
@@ -30,7 +30,7 @@ describe(Game, () => {
 
     it("disallows drawing if tiles have been placed this turn", () => {
       const { tom, game } = setupGame({
-        tom: { initialHand: generateSequence("r10,o10,b10,u10,r1") }
+        tom: { initialHand: unplayedSet("r10,o10,b10,u10,r1") }
       });
 
       const [r10, o10, b10] = tom.Hand;
@@ -48,7 +48,7 @@ describe(Game, () => {
   describe("playing tiles", () => {
     it("plays tiles from hand to a set", () => {
       const { tom, game } = setupGame({
-        tom: { initialHand: generateSequence("r10,o10,u10,r1") }
+        tom: { initialHand: unplayedSet("r10,o10,u10,r1") }
       });
       const hand = tom.Hand;
 
@@ -61,12 +61,12 @@ describe(Game, () => {
 
     it("disallows playing tiles that are not in hand", () => {
       const { tom, game } = setupGame({
-        tom: { initialHand: generateSequence("r10,o10,u10,r1") }
+        tom: { initialHand: unplayedSet("r10,o10,u10,r1") }
       });
 
       expect(game.Sets.Count).toBe(0);
 
-      expect(() => tom.playFromHand(generateSequence("r1,r1"))).toThrowError(
+      expect(() => tom.playFromHand(unplayedSet("r1,r1"))).toThrowError(
         "Tom tried to play tiles that they don't have in their hand."
       );
 
@@ -75,7 +75,7 @@ describe(Game, () => {
 
     it("disallows placing when it is not players turn", () => {
       const { eileen, game } = setupGame({
-        eileen: { initialHand: generateSequence("r10,o10,u10,r1") }
+        eileen: { initialHand: unplayedSet("r10,o10,u10,r1") }
       });
       const hand = eileen.Hand;
 
@@ -92,7 +92,7 @@ describe(Game, () => {
   describe("ending turn", () => {
     it("is not allowed if board is in an invalid state", () => {
       const { tom } = setupGame({
-        tom: { initialHand: generateSequence("r10,o10,u10,r1,u1") }
+        tom: { initialHand: unplayedSet("r10,o10,u10,r1,u1") }
       });
       const [r10, o10, u10, r1] = tom.Hand;
 

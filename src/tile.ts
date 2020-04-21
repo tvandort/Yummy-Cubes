@@ -1,5 +1,4 @@
-export const JOKER = "JOKER";
-export type Joker = "JOKER";
+type Color = "RED" | "BLACK" | "BLUE" | "ORANGE";
 type Face =
   | "1"
   | "2"
@@ -14,11 +13,34 @@ type Face =
   | "11"
   | "12"
   | "13";
-type Color = "RED" | "BLACK" | "BLUE" | "ORANGE";
-type ShortColor = "r" | "b" | "u" | "o";
+
+const JOKER = "JOKER";
+type Joker = "JOKER";
+
 type TileFace = Face | Joker;
 type TileColor = Color | Joker;
-export type Tile = RegularTile | JokerTile;
+
+type ShortColor = "r" | "b" | "u" | "o";
+
+export type UnplayedTile = RegularTile | JokerTile;
+export type PlayedTile = RegularTile | PlayedJokerTile;
+
+export const colors: Color[] = ["RED", "BLACK", "BLUE", "ORANGE"];
+export const faces: Face[] = [
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "10",
+  "11",
+  "12",
+  "13"
+];
 
 const SHORT_COLOR_TO_COLOR: { [key: string]: Color } = {
   r: "RED",
@@ -103,7 +125,7 @@ export class RegularTile {
   }
 }
 
-class PlayedJokerTile extends JokerTile {
+export class PlayedJokerTile extends JokerTile {
   private playedFace: Face;
   private playedColor: Color;
 
@@ -193,7 +215,7 @@ export const generateTiles: () => (RegularTile | JokerTile)[] = () => {
 };
 
 const sequenceExpression = /^joker$|^([rbou](13|12|11|10|[0-9]))$/;
-export const generateSequence = (sequence: string) => {
+export const myfunction = (sequence: string) => {
   const tiles: (RegularTile | JokerTile)[] = [];
   const identifiers = sequence.split(",");
   for (let identifier of identifiers) {
@@ -213,20 +235,3 @@ export const generateSequence = (sequence: string) => {
 
   return tiles;
 };
-
-export const colors: Color[] = ["RED", "BLACK", "BLUE", "ORANGE"];
-export const faces: Face[] = [
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-  "13"
-];

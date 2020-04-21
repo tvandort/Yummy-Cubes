@@ -1,20 +1,20 @@
-import { Collection, Tile, JokerTile, RegularTile } from "./tile";
+import { Collection, UnplayedTile, JokerTile, RegularTile } from "./tile";
 
 interface Rule {
-  (tiles: Tile[]): Boolean;
+  (tiles: UnplayedTile[]): Boolean;
 }
 
-const split = (tiles: Tile[]) => ({
+const split = (tiles: UnplayedTile[]) => ({
   jokers: tiles.filter(JokerTile.Match),
   rest: tiles.filter(RegularTile.Match)
 });
 
-const oneColor: Rule = (tiles: Tile[]) => {
+const oneColor: Rule = (tiles: UnplayedTile[]) => {
   const { rest } = split(tiles);
   const color = rest[0].Color;
   return rest.every((tile) => tile.Color === color);
 };
-const isConsecutive: Rule = (tiles: Tile[]) => {
+const isConsecutive: Rule = (tiles: UnplayedTile[]) => {
   let offset: number | undefined;
   for (let index = 0; index < tiles.length; index++) {
     const tile = tiles[index];
@@ -36,14 +36,14 @@ const isConsecutive: Rule = (tiles: Tile[]) => {
 
   return true;
 };
-export const mustBeThree: Rule = (tiles: Tile[]) => tiles.length > 2;
-export const isRun: Rule = (tiles: Tile[]) => {
+export const mustBeThree: Rule = (tiles: UnplayedTile[]) => tiles.length > 2;
+export const isRun: Rule = (tiles: UnplayedTile[]) => {
   return oneColor(tiles) && isConsecutive(tiles);
 };
 
 const rules = [mustBeThree, isRun];
 
-export class Set extends Collection<Tile> {
+export class Set extends Collection<UnplayedTile> {
   valid() {
     return false;
   }
