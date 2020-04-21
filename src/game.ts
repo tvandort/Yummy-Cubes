@@ -1,6 +1,7 @@
 import { Tile, Tiles } from "./tile";
 import { Bag } from "./bag";
 import { IPlayer, Player } from "./player";
+import { Set } from "./set";
 
 interface IGamePlayer extends IPlayer {
   Hand: Tiles;
@@ -65,12 +66,6 @@ interface PlayerMessage {
 }
 
 type MeldMessage = PlayerMessage & (AddFromHand | DrewCard);
-
-export class Set extends Tiles {
-  valid() {
-    return false;
-  }
-}
 
 class Board {
   private sets: Set[];

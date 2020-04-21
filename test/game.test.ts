@@ -1,4 +1,5 @@
-import { Game, Set } from "../src/game";
+import { Game } from "../src/game";
+import { Set } from "../src/set";
 import { Player, IPlayerContructor } from "../src/player";
 import { generateSequence } from "../src/tile";
 
