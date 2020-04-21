@@ -1,4 +1,4 @@
-import { UnplayedTile, Collection } from "./tile";
+import { UnplayedTile, Collection, PlayedTile } from "./tile";
 import { Bag } from "./bag";
 import { IPlayer, Player } from "./player";
 import { Set } from "./set";
@@ -39,7 +39,7 @@ class GamePlayer implements IGamePlayer {
     this.hand.push(this.game.draw(this));
   }
 
-  playFromHand(tiles: UnplayedTile[]) {
+  playFromHand(tiles: PlayedTile[]) {
     this.game.meld({
       type: "ADD",
       tiles,
@@ -54,7 +54,7 @@ class GamePlayer implements IGamePlayer {
 
 interface AddFromHand {
   type: "ADD";
-  tiles: UnplayedTile[];
+  tiles: PlayedTile[];
 }
 
 interface DrewCard {

@@ -1,7 +1,7 @@
 import { Game } from "../src/game";
 import { Set } from "../src/set";
 import { Player, IPlayerContructor } from "../src/player";
-import { unplayedSet } from "../src/tile";
+import { unplayedSet, playedSet, RegularTile, PlayedTile } from "../src/tile";
 
 describe(Game, () => {
   it("deals hands to players", () => {
@@ -30,14 +30,16 @@ describe(Game, () => {
 
     it("disallows drawing if tiles have been placed this turn", () => {
       const { tom, game } = setupGame({
-        tom: { initialHand: unplayedSet("r10,o10,b10,u10,r1") }
+        tom: { initialHand: playedSet("r10,o10,b10,u10,r1") }
       });
 
       const [r10, o10, b10] = tom.Hand;
 
-      tom.playFromHand([r10, o10, b10]);
+      tom.playFromHand([r10, o10, b10] as PlayedTile[]);
 
-      expect(game.Sets.at(0)).toEqual(new Set([r10, o10, b10]));
+      expect(game.Sets.at(0)).toEqual(
+        new Set([r10, o10, b10] as RegularTile[])
+      );
 
       expect(() => tom.draw()).toThrowError(
         "Tom cannot draw because they have placed tiles on the board!"
@@ -54,7 +56,7 @@ describe(Game, () => {
 
       expect(game.Sets.Count).toBe(0);
 
-      tom.playFromHand([hand.at(0), hand.at(1), hand.at(2)]);
+      tom.playFromHand([hand.at(0), hand.at(1), hand.at(2)] as PlayedTile[]);
 
       expect(game.Sets.Count).toBe(1);
     });
@@ -66,7 +68,7 @@ describe(Game, () => {
 
       expect(game.Sets.Count).toBe(0);
 
-      expect(() => tom.playFromHand(unplayedSet("r1,r1"))).toThrowError(
+      expect(() => tom.playFromHand(playedSet("r1,r1"))).toThrowError(
         "Tom tried to play tiles that they don't have in their hand."
       );
 
@@ -82,7 +84,11 @@ describe(Game, () => {
       expect(game.Sets.Count).toBe(0);
 
       expect(() =>
-        eileen.playFromHand([hand.at(0), hand.at(1), hand.at(2)])
+        eileen.playFromHand([
+          hand.at(0),
+          hand.at(1),
+          hand.at(2)
+        ] as PlayedTile[])
       ).toThrowError("Not Eileen's turn!");
 
       expect(game.Sets.Count).toBe(0);
@@ -96,7 +102,7 @@ describe(Game, () => {
       });
       const [r10, o10, u10, r1] = tom.Hand;
 
-      tom.playFromHand([r10, o10, u10, r1]);
+      tom.playFromHand([r10, o10, u10, r1] as PlayedTile[]);
 
       expect(() => tom.endTurn()).toThrowError(
         "Board is not in a valid state!"

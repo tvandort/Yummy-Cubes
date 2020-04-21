@@ -1,49 +1,42 @@
-import { Collection, UnplayedTile, JokerTile, RegularTile } from "./tile";
+import { Collection, JokerTile, RegularTile, PlayedTile } from "./tile";
 
 interface Rule {
-  (tiles: UnplayedTile[]): Boolean;
+  (tiles: PlayedTile[]): Boolean;
 }
 
-const split = (tiles: UnplayedTile[]) => ({
-  jokers: tiles.filter(JokerTile.Match),
-  rest: tiles.filter(RegularTile.Match)
-});
-
-const oneColor: Rule = (tiles: UnplayedTile[]) => {
-  const { rest } = split(tiles);
-  const color = rest[0].Color;
-  return rest.every((tile) => tile.Color === color);
+const oneColor: Rule = (tiles: PlayedTile[]) => {
+  const color = tiles[0].Color;
+  return tiles.every((tile) => tile.Color === color);
 };
-const isConsecutive: Rule = (tiles: UnplayedTile[]) => {
+
+const isConsecutive: Rule = (tiles: PlayedTile[]) => {
   let offset: number | undefined;
   for (let index = 0; index < tiles.length; index++) {
     const tile = tiles[index];
 
-    if (RegularTile.Match(tile)) {
-      if (!offset) {
-        offset = parseInt(tile.Face);
-      }
+    if (!offset) {
+      offset = parseInt(tile.Face);
+    }
 
-      const expected = index + offset;
+    const expected = index + offset;
 
-      console.log(offset, expected, tile.Face);
-
-      if (parseInt(tile.Face) !== expected) {
-        return false;
-      }
+    if (parseInt(tile.Face) !== expected) {
+      return false;
     }
   }
 
   return true;
 };
-export const mustBeThree: Rule = (tiles: UnplayedTile[]) => tiles.length > 2;
-export const isRun: Rule = (tiles: UnplayedTile[]) => {
+
+export const mustBeThree: Rule = (tiles: PlayedTile[]) => tiles.length > 2;
+
+export const isRun: Rule = (tiles: PlayedTile[]) => {
   return oneColor(tiles) && isConsecutive(tiles);
 };
 
 const rules = [mustBeThree, isRun];
 
-export class Set extends Collection<UnplayedTile> {
+export class Set extends Collection<PlayedTile> {
   valid() {
     return false;
   }

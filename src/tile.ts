@@ -126,22 +126,22 @@ export class RegularTile {
 }
 
 export class PlayedJokerTile extends JokerTile {
-  private playedFace: Face;
-  private playedColor: Color;
+  private face: Face;
+  private color: Color;
 
   constructor({ face, color }: { face: Face; color: Color }) {
     super();
 
-    this.playedFace = face;
-    this.playedColor = color;
+    this.face = face;
+    this.color = color;
   }
 
-  get PlayedFace(): Face {
-    return this.playedFace;
+  get Face(): Face {
+    return this.face;
   }
 
-  get PlayedColor(): Color {
-    return this.playedColor;
+  get Color(): Color {
+    return this.color;
   }
 }
 
@@ -214,12 +214,12 @@ export const generateTiles: () => (RegularTile | JokerTile)[] = () => {
   return tiles;
 };
 
-const sequenceExpression = /^j$|^([rbou](13|12|11|10|[0-9]))$/;
+const unplayedExpression = /^j$|^([rbou](13|12|11|10|[0-9]))$/;
 export const unplayedSet = (sequence: string) => {
   const tiles: (RegularTile | JokerTile)[] = [];
   const identifiers = sequence.split(",");
   for (let identifier of identifiers) {
-    if (sequenceExpression.test(identifier) === false) {
+    if (unplayedExpression.test(identifier) === false) {
       throw new Error("Sequence has invalid identifiers.");
     }
 
@@ -236,6 +236,28 @@ export const unplayedSet = (sequence: string) => {
   return tiles;
 };
 
+const playedExpression = /^j?[rbou](13|12|11|10|[0-9])$/;
 export const playedSet = (sequence: string) => {
-  throw new Error("Unimplemented!");
+  const tiles: (PlayedJokerTile | RegularTile)[] = [];
+  const identifiers = sequence.split(",");
+  for (let identifier of identifiers) {
+    if (playedExpression.test(identifier) === false) {
+      throw new Error("Sequence has invalid identifiers.");
+    }
+
+    const isJoker = identifier.startsWith("j");
+
+    const jokerOffset = isJoker ? 1 : 0;
+    let colorChar = identifier[0 + jokerOffset];
+    let face = identifier.slice(1 + jokerOffset) as Face;
+    let color = SHORT_COLOR_TO_COLOR[colorChar];
+
+    if (isJoker) {
+      tiles.push(new PlayedJokerTile({ color, face }));
+    } else {
+      tiles.push(new RegularTile({ color, face }));
+    }
+  }
+
+  return tiles;
 };
