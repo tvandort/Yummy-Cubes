@@ -4,7 +4,7 @@ import {
   colors,
   faces,
   generateSequence,
-  Tile
+  TileFactory
 } from "../src/tile";
 
 describe(generateTiles, () => {
@@ -17,7 +17,7 @@ describe(generateTiles, () => {
     it("contains 2 jokers", () => {
       const tiles = generateTiles();
       const jokers = tiles.filter(
-        (tile) => tile.Face == JOKER && tile.Color == JOKER
+        (tile) => tile.Face === JOKER && tile.Color === JOKER
       );
       expect(jokers.length).toBe(2);
     });
@@ -63,8 +63,10 @@ describe(generateTiles, () => {
     describe("success", () => {
       it("generates tiles", () => {
         const tiles = generateSequence("r1,joker");
-        expect(tiles[0]).toEqual(new Tile({ face: "1", color: "RED" }));
-        expect(tiles[1]).toEqual(Tile.JOKER());
+        expect(tiles[0]).toEqual(
+          TileFactory.create({ face: "1", color: "RED" })
+        );
+        expect(tiles[1]).toEqual(TileFactory.Joker());
       });
     });
   });

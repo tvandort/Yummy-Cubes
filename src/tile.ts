@@ -1,5 +1,5 @@
 export const JOKER = "JOKER";
-export type JOKER = "JOKER";
+export type Joker = "JOKER";
 type Face =
   | "1"
   | "2"
@@ -14,10 +14,11 @@ type Face =
   | "11"
   | "12"
   | "13";
-type TileFace = Face | JOKER;
 type Color = "RED" | "BLACK" | "BLUE" | "ORANGE";
 type ShortColor = "r" | "b" | "u" | "o";
-type TileColor = Color | JOKER;
+type TileFace = Face | Joker;
+type TileColor = Color | Joker;
+export type Tile = RegularTile | JokerTile;
 
 const SHORT_COLOR_TO_COLOR: { [key: string]: Color } = {
   r: "RED",
@@ -33,26 +34,63 @@ const COLOR_TO_SHORT_COLOR: { [key: string]: ShortColor } = {
   ORANGE: "o"
 };
 
-export class Tile {
-  private face: TileFace;
-  private color: TileColor;
-  private id: string;
+interface Id {
+  Id: string;
+}
 
-  constructor({ face, color }: { face: TileFace; color: TileColor }) {
-    this.face = face;
-    this.color = color;
-    if (face === JOKER) {
-      this.id = JOKER;
-    } else {
-      this.id = `${COLOR_TO_SHORT_COLOR[color]}${face}`;
-    }
+class JokerTile implements Id {
+  get Face(): Joker {
+    return JOKER;
   }
 
-  get Face(): TileFace {
+  get Color(): Joker {
+    return JOKER;
+  }
+
+  get Id(): string {
+    return "joker";
+  }
+
+  get IsJoker(): Boolean {
+    return true;
+  }
+}
+
+export class TileFactory {
+  static create({ face, color }: { face: TileFace; color: TileColor }) {
+    if (face === JOKER && color === JOKER) {
+      return new JokerTile();
+    }
+
+    if (face !== JOKER && color !== JOKER) {
+      return new RegularTile({ face, color });
+    }
+
+    throw new Error("Some unknown tile.");
+  }
+
+  static Joker() {
+    return new JokerTile();
+  }
+}
+
+export class RegularTile {
+  private face: Face;
+  private color: Color;
+  private id: string;
+
+  constructor({ face, color }: { face: Face; color: Color }) {
+    this.face = face;
+    this.color = color;
+
+    this.id = `${COLOR_TO_SHORT_COLOR[color]}${face}`;
+  }
+
+  get Face(): Face {
     return this.face;
   }
 
-  get Color(): TileColor {
+  get Color(): Color {
     return this.color;
   }
 
@@ -61,34 +99,63 @@ export class Tile {
   }
 
   get IsJoker(): Boolean {
-    return this.face === JOKER && this.color === JOKER;
+    return false;
   }
-
-  static JOKER = () => new Tile({ color: JOKER, face: JOKER });
 }
 
-export class Tiles {
-  private tiles: Tile[];
+class PlayedJokerTile extends JokerTile {
+  private playedFace: Face;
+  private playedColor: Color;
 
-  constructor(tiles: Tile[]) {
-    this.tiles = tiles;
+  constructor({ face, color }: { face: Face; color: Color }) {
+    super();
+
+    this.playedFace = face;
+    this.playedColor = color;
   }
 
-  push(tile: Tile) {
-    this.tiles.push(tile);
+  get PlayedFace(): Face {
+    return this.playedFace;
+  }
+
+  get PlayedColor(): Color {
+    return this.playedColor;
+  }
+}
+
+function toHash<T extends Id>(items: T[]) {
+  const hash: { [key: string]: number } = {};
+  for (let item of items) {
+    let count = hash[item.Id];
+
+    hash[item.Id] = (count ?? 0) + 1;
+  }
+
+  return hash;
+}
+
+export class Collection<T extends Id> {
+  private items: T[];
+
+  constructor(items: T[]) {
+    this.items = items;
+  }
+
+  push(item: T) {
+    this.items.push(item);
   }
 
   at(identifier: number | string) {
     if (typeof identifier === "number") {
-      return this.tiles[identifier];
+      return this.items[identifier];
     } else {
-      return this.tiles.filter((tile) => tile.Id === identifier)[0];
+      return this.items.filter((item) => item.Id === identifier)[0];
     }
   }
 
-  contains(checkTiles: Tile[]) {
-    const checkTilesHash = Tiles.toHash(checkTiles);
-    const tilesHash = Tiles.toHash(this.tiles);
+  contains(checkTiles: T[]) {
+    const checkTilesHash = toHash(checkTiles);
+    const tilesHash = toHash(this.items);
 
     for (let key of Object.keys(checkTilesHash)) {
       const count = tilesHash[key];
@@ -103,36 +170,22 @@ export class Tiles {
   }
 
   get Count() {
-    return this.tiles.length;
-  }
-
-  private static toHash(tiles: Tile[]) {
-    const hash: { [key: string]: number } = {};
-    for (let tile of tiles) {
-      let count = hash[tile.Id];
-
-      hash[tile.Id] = (count ?? 0) + 1;
-    }
-
-    return hash;
+    return this.items.length;
   }
 
   public [Symbol.iterator]() {
-    return this.tiles[Symbol.iterator]();
+    return this.items[Symbol.iterator]();
   }
 }
 
-export const generateTiles: () => Tile[] = () => {
-  const tiles = [
-    new Tile({ color: JOKER, face: JOKER }),
-    new Tile({ color: JOKER, face: JOKER })
-  ];
+export const generateTiles: () => (RegularTile | JokerTile)[] = () => {
+  const tiles: (RegularTile | JokerTile)[] = [new JokerTile(), new JokerTile()];
 
   for (let color of colors) {
     for (let face of faces) {
       // Two of each tile.
-      tiles.push(new Tile({ color, face }));
-      tiles.push(new Tile({ color, face }));
+      tiles.push(new RegularTile({ color, face }));
+      tiles.push(new RegularTile({ color, face }));
     }
   }
 
@@ -141,7 +194,7 @@ export const generateTiles: () => Tile[] = () => {
 
 const sequenceExpression = /^joker$|^([rbou](13|12|11|10|[0-9]))$/;
 export const generateSequence = (sequence: string) => {
-  const tiles: Tile[] = [];
+  const tiles: (RegularTile | JokerTile)[] = [];
   const identifiers = sequence.split(",");
   for (let identifier of identifiers) {
     if (sequenceExpression.test(identifier) === false) {
@@ -149,12 +202,12 @@ export const generateSequence = (sequence: string) => {
     }
 
     if (identifier.toUpperCase() === JOKER) {
-      tiles.push(Tile.JOKER());
+      tiles.push(new JokerTile());
     } else {
       let colorChar = identifier[0];
       let face = identifier.slice(1) as Face;
       let color = SHORT_COLOR_TO_COLOR[colorChar];
-      tiles.push(new Tile({ color, face }));
+      tiles.push(new RegularTile({ color, face }));
     }
   }
 

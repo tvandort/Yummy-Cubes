@@ -1,15 +1,15 @@
-import { Tile, Tiles } from "./tile";
+import { Tile, Collection } from "./tile";
 import { Bag } from "./bag";
 import { IPlayer, Player } from "./player";
 import { Set } from "./set";
 
 interface IGamePlayer extends IPlayer {
-  Hand: Tiles;
+  Hand: Collection<Tile>;
 }
 
 class GamePlayer implements IGamePlayer {
   private player: Player;
-  private hand: Tiles;
+  private hand: Collection<Tile>;
   private game: Game;
 
   constructor({ player, game }: { player: Player; game: Game }) {
@@ -17,9 +17,9 @@ class GamePlayer implements IGamePlayer {
     this.game = game;
 
     if (player.InitialHand) {
-      this.hand = new Tiles(player.InitialHand);
+      this.hand = new Collection(player.InitialHand);
     } else {
-      this.hand = new Tiles(this.game.drawHand());
+      this.hand = new Collection(this.game.drawHand());
     }
   }
 

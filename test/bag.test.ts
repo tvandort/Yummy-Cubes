@@ -1,5 +1,5 @@
 import { Bag } from "../src/bag";
-import { generateSequence, Tile } from "../src/tile";
+import { generateSequence, TileFactory } from "../src/tile";
 
 describe(Bag, () => {
   describe("draw", () => {
@@ -21,7 +21,7 @@ describe(Bag, () => {
 
       expect(bag.Count).toBe(5);
 
-      bag.removeTile(new Tile({ face: "1", color: "RED" }));
+      bag.removeTile(TileFactory.create({ face: "1", color: "RED" }));
 
       expect(bag.Count).toBe(4);
       expect(bag.toString()).toBe("o1,r1,u1,u1");

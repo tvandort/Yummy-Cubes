@@ -1,4 +1,4 @@
-import { Tiles, Tile, JOKER } from "./tile";
+import { Collection, Tile, JOKER } from "./tile";
 
 interface Rule {
   (tiles: Tile[]): Boolean;
@@ -44,7 +44,7 @@ export const isRun: Rule = (tiles: Tile[]) => {
 
 const rules = [mustBeThree, isRun];
 
-export class Set extends Tiles {
+export class Set extends Collection<Tile> {
   valid() {
     return false;
   }
