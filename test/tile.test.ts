@@ -67,7 +67,7 @@ describe(generateTiles, () => {
 
     describe("success", () => {
       it("generates tiles", () => {
-        const tiles = unplayedSet("r1,joker");
+        const tiles = unplayedSet("r1,j");
         expect(tiles[0]).toEqual(
           TileFactory.create({ face: "1", color: "RED" })
         );

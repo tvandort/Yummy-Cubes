@@ -19,7 +19,7 @@ describe("rules", () => {
       });
 
       it("has jokers", () => {
-        expect(isRun(unplayedSet("r1,joker,r3,joker,r5"))).toBe(true);
+        expect(isRun(unplayedSet("r1,j,r3,j,r5"))).toBe(true);
       });
 
       it("can start later in a sequece", () => {
@@ -41,7 +41,7 @@ describe("rules", () => {
       });
 
       it("has more than one copy of a number and jokers", () => {
-        expect(isRun(unplayedSet("r1,r1,joker"))).toBe(false);
+        expect(isRun(unplayedSet("r1,r1,j"))).toBe(false);
       });
 
       it("is not in order", () => {
@@ -50,19 +50,19 @@ describe("rules", () => {
 
       describe("impossible sequences", () => {
         it("joker joker 1", () => {
-          expect(isRun(unplayedSet("joker,joker,r1"))).toBe(false);
+          expect(isRun(unplayedSet("j,j,r1"))).toBe(false);
         });
 
         it("joker 1 joker", () => {
-          expect(isRun(unplayedSet("joker,r1,joker"))).toBe(false);
+          expect(isRun(unplayedSet("j,r1,j"))).toBe(false);
         });
 
         it("13 joker joker", () => {
-          expect(isRun(unplayedSet("r13,joker,joker"))).toBe(false);
+          expect(isRun(unplayedSet("r13,j,j"))).toBe(false);
         });
 
         it("joker 13 joker", () => {
-          expect(isRun(unplayedSet("joker,r13,joker"))).toBe(false);
+          expect(isRun(unplayedSet("j,r13,j"))).toBe(false);
         });
       });
     });

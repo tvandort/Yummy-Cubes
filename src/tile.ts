@@ -214,7 +214,7 @@ export const generateTiles: () => (RegularTile | JokerTile)[] = () => {
   return tiles;
 };
 
-const sequenceExpression = /^joker$|^([rbou](13|12|11|10|[0-9]))$/;
+const sequenceExpression = /^j$|^([rbou](13|12|11|10|[0-9]))$/;
 export const unplayedSet = (sequence: string) => {
   const tiles: (RegularTile | JokerTile)[] = [];
   const identifiers = sequence.split(",");
@@ -223,7 +223,7 @@ export const unplayedSet = (sequence: string) => {
       throw new Error("Sequence has invalid identifiers.");
     }
 
-    if (identifier.toUpperCase() === JOKER) {
+    if (identifier.toUpperCase() === "J") {
       tiles.push(new JokerTile());
     } else {
       let colorChar = identifier[0];
@@ -234,4 +234,8 @@ export const unplayedSet = (sequence: string) => {
   }
 
   return tiles;
+};
+
+export const playedSet = (sequence: string) => {
+  throw new Error("Unimplemented!");
 };
