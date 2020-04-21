@@ -18,7 +18,7 @@ const isConsecutive: Rule = (tiles: Tile[]) => {
   let offset: number | undefined;
   for (let index = 0; index < tiles.length; index++) {
     const tile = tiles[index];
-    if (tile.isJoker) {
+    if (tile.IsJoker) {
       continue;
     }
 
@@ -27,6 +27,8 @@ const isConsecutive: Rule = (tiles: Tile[]) => {
     }
 
     const expected = index + offset;
+
+    console.log(offset, expected, tile.Face);
 
     if (parseInt(tile.Face) !== expected) {
       return false;

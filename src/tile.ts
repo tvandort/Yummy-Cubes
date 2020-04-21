@@ -60,7 +60,7 @@ export class Tile {
     return this.id;
   }
 
-  get isJoker(): Boolean {
+  get IsJoker(): Boolean {
     return this.face === JOKER && this.color === JOKER;
   }
 
