@@ -1,12 +1,12 @@
-import { Collection, Tile, JOKER } from "./tile";
+import { Collection, Tile, JokerTile, RegularTile } from "./tile";
 
 interface Rule {
   (tiles: Tile[]): Boolean;
 }
 
 const split = (tiles: Tile[]) => ({
-  jokers: tiles.filter((tile) => tile.Face === JOKER),
-  rest: tiles.filter((tile) => tile.Face !== JOKER)
+  jokers: tiles.filter(JokerTile.Match),
+  rest: tiles.filter(RegularTile.Match)
 });
 
 const oneColor: Rule = (tiles: Tile[]) => {
@@ -18,20 +18,19 @@ const isConsecutive: Rule = (tiles: Tile[]) => {
   let offset: number | undefined;
   for (let index = 0; index < tiles.length; index++) {
     const tile = tiles[index];
-    if (tile.IsJoker) {
-      continue;
-    }
 
-    if (!offset) {
-      offset = parseInt(tile.Face);
-    }
+    if (RegularTile.Match(tile)) {
+      if (!offset) {
+        offset = parseInt(tile.Face);
+      }
 
-    const expected = index + offset;
+      const expected = index + offset;
 
-    console.log(offset, expected, tile.Face);
+      console.log(offset, expected, tile.Face);
 
-    if (parseInt(tile.Face) !== expected) {
-      return false;
+      if (parseInt(tile.Face) !== expected) {
+        return false;
+      }
     }
   }
 
