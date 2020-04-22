@@ -79,7 +79,7 @@ class Board {
   }
 
   valid() {
-    return this.sets.every((set) => set.valid());
+    return this.sets.every((set) => set.isValid());
   }
 
   push(set: Set) {
