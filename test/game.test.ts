@@ -170,6 +170,24 @@ describe(Game, () => {
     });
   });
 
+  describe("adding tiles to existing sets", () => {
+    it("catches my attention", () => {
+      expect(false).toBe(true);
+    });
+  });
+
+  describe("moving tiles between sets", () => {
+    it("catches my attention", () => {
+      expect(false).toBe(true);
+    });
+  });
+
+  describe("undoing", () => {
+    it("catches my attention", () => {
+      expect(false).toBe(true);
+    });
+  });
+
   const setupGame = (args: Partial<SetupPlayersArgs> = {}) => {
     const {
       players,
