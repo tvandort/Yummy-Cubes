@@ -1,4 +1,4 @@
-import { Collection, JokerTile, RegularTile, PlayedTile } from "./tile";
+import { Collection, PlayedTile } from "./tile";
 
 interface Rule {
   (tiles: PlayedTile[]): Boolean;
@@ -58,10 +58,12 @@ export const isGroup: Rule = (tiles: PlayedTile[]) => {
   return allSameFace(tiles) && hasOnlyOneOfAnyColor(tiles);
 };
 
-const rules = [mustBeThree, isRun, isGroup];
+const rules = [isRun, isGroup];
 
 export class Set extends Collection<PlayedTile> {
-  valid() {
-    return false;
+  isValid() {
+    return (
+      mustBeThree(this.Items) && (isRun(this.Items) || isGroup(this.Items))
+    );
   }
 }

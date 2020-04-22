@@ -198,6 +198,10 @@ export class Collection<T extends Id> {
   public [Symbol.iterator]() {
     return this.items[Symbol.iterator]();
   }
+
+  get Items() {
+    return this.items.map((item) => item);
+  }
 }
 
 export const generateTiles: () => (RegularTile | JokerTile)[] = () => {
