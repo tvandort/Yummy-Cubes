@@ -57,8 +57,20 @@ interface AddFromHand {
   tiles: PlayedTile[];
 }
 
+function isAddMessage(
+  message: MeldMessage
+): message is AddFromHand & PlayerMessage {
+  return message.type === "ADD";
+}
+
 interface DrewCard {
   type: "DREW";
+}
+
+function isDrewMessage(
+  message: MeldMessage
+): message is DrewCard & PlayerMessage {
+  return message.type === "DREW";
 }
 
 interface PlayerMessage {
@@ -97,7 +109,8 @@ export class Game {
   private playersById: { [key: string]: GamePlayer | undefined };
   private bag: Bag;
   private board: Board;
-  private currentPlayerActions: PlayerMessage[];
+  private currentPlayerActions: MeldMessage[];
+  private meldTracker: { [key: string]: boolean };
 
   constructor({ players, bag }: { players: Player[]; bag?: Bag }) {
     this.bag = bag ?? new Bag();
@@ -110,9 +123,11 @@ export class Game {
       return gamePlayer;
     });
 
+    this.meldTracker = {};
     this.playersById = {};
     for (let player of this.players) {
       this.playersById[player.Id] = player;
+      this.meldTracker[player.Id] = false;
     }
   }
 
@@ -138,7 +153,7 @@ export class Game {
 
   draw(player: GamePlayer) {
     this.turnCheck(player);
-    const drawMessage = { player, type: "DREW" };
+    const drawMessage: DrewCard & PlayerMessage = { player, type: "DREW" };
 
     if (this.currentPlayerActions.length > 0) {
       throw new Error(
@@ -175,6 +190,23 @@ export class Game {
   endTurn(player: GamePlayer) {
     this.turnCheck(player);
 
+    if (
+      this.meldTracker[player.Id] === false &&
+      this.currentPlayerActions.filter((message) => !isDrewMessage(message))
+        .length > 0
+    ) {
+      const sum = this.currentPlayerActions
+        .filter(isAddMessage)
+        .flatMap((message) => message.tiles)
+        .reduce((sum, tile) => sum + tile.Value, 0);
+
+      if (sum > 29) {
+        this.meldTracker[player.Id] = true;
+      } else {
+        throw new Error(`${player.Name} hasn't melded yet.`);
+      }
+    }
+
     if (this.board.valid() === false) {
       throw new Error("Board is not in a valid state!");
     }
@@ -184,6 +216,7 @@ export class Game {
     }
 
     this.playerIndex = (this.playerIndex + 1) % this.players.length;
+    this.currentPlayerActions = [];
   }
 
   private turnCheck(player: GamePlayer) {

@@ -123,11 +123,51 @@ describe(Game, () => {
   });
 
   describe("melding", () => {
-    it("disallows tile playing unless they would cause a meld if player isn't melded", () => {});
+    it("disallows ending turn unless they would cause a meld if player isn't melded", () => {
+      const { tom } = setupGame({
+        tom: { initialHand: unplayedSet("r1,r2,r3") }
+      });
+      const [r1, r2, r3] = tom.Hand;
 
-    it("playing 30 > points makes a melt happen", () => {});
+      tom.playFromHand([r1, r2, r3].filter(RegularTile.Match));
 
-    it("more tiles can be played after a meld", () => {});
+      expect(() => tom.endTurn()).toThrowError("Tom hasn't melded yet.");
+    });
+
+    it("playing 29 > points makes a melt happen", () => {
+      const { tom, eileen, game } = setupGame({
+        tom: { initialHand: unplayedSet("r10,r11,r12") }
+      });
+
+      tom.playFromHand([...tom.Hand].filter(RegularTile.Match));
+
+      tom.endTurn();
+
+      expect(game.CurrentPlayer).toBe(eileen);
+    });
+
+    it("more tiles can be played after a meld", () => {
+      const { tom, eileen, hannah, game } = setupGame({
+        tom: { initialHand: unplayedSet("r10,r11,r12,r1,r2,r3") }
+      });
+
+      const [r10, r11, r12, ...six] = tom.Hand.Items.filter(RegularTile.Match);
+
+      tom.playFromHand([r10, r11, r12]);
+
+      tom.endTurn();
+
+      expect(game.CurrentPlayer).toBe(eileen);
+
+      eileen.draw();
+      hannah.draw();
+
+      tom.playFromHand(six);
+
+      tom.endTurn();
+
+      expect(game.CurrentPlayer).toBe(eileen);
+    });
   });
 
   const setupGame = (args: Partial<SetupPlayersArgs> = {}) => {

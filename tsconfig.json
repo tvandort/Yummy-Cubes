@@ -13,7 +13,7 @@
       "*": ["node_modules/*", "src/types/*"]
     },
     "strict": true,
-    "lib": ["ES2017", "DOM"]
+    "lib": ["ES2017", "DOM", "ES2019"]
   },
   "include": ["src/**/*", "test/**/*"]
 }

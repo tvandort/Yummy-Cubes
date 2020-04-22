@@ -123,6 +123,10 @@ export class RegularTile {
   static Match(tile: RegularTile | JokerTile): tile is RegularTile {
     return tile.IsJoker === false;
   }
+
+  get Value(): number {
+    return parseInt(this.face);
+  }
 }
 
 export class PlayedJokerTile extends JokerTile {
@@ -142,6 +146,10 @@ export class PlayedJokerTile extends JokerTile {
 
   get Color(): Color {
     return this.color;
+  }
+
+  get Value() {
+    return parseInt(this.face);
   }
 }
 
