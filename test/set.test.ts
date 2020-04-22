@@ -1,4 +1,4 @@
-import { mustBeThree, isRun } from "../src/set";
+import { mustBeThree, isRun, isGroup } from "../src/set";
 import { playedSet } from "../src/tile";
 
 describe("rules", () => {
@@ -64,6 +64,32 @@ describe("rules", () => {
         it("joker 13 joker", () => {
           expect(isRun(playedSet("jr1,r13,jr1"))).toBe(false);
         });
+      });
+    });
+  });
+
+  describe("Require valid group", () => {
+    describe("pass", () => {
+      it("is 3 color match", () => {
+        expect(isGroup(playedSet("r1,o1,u1"))).toBe(true);
+      });
+
+      it("is 4 tile group", () => {
+        expect(isGroup(playedSet("r1,o1,u1"))).toBe(true);
+      });
+
+      it("is max joker group", () => {
+        expect(isGroup(playedSet("jr1,ju1,o1"))).toBe(true);
+      });
+    });
+
+    describe("fail", () => {
+      it("has faces that do not match", () => {
+        expect(isGroup(playedSet("r1,o2,u1"))).toBe(false);
+      });
+
+      it("has duplicated colors", () => {
+        expect(isGroup(playedSet("r1,r1,o1"))).toBe(false);
       });
     });
   });

@@ -34,7 +34,31 @@ export const isRun: Rule = (tiles: PlayedTile[]) => {
   return oneColor(tiles) && isConsecutive(tiles);
 };
 
-const rules = [mustBeThree, isRun];
+const allSameFace: Rule = (tiles: PlayedTile[]) => {
+  const face = tiles[0].Face;
+  return tiles.every((tile) => tile.Face === face);
+};
+
+const hasOnlyOneOfAnyColor: Rule = (tiles: PlayedTile[]) => {
+  const counts: { [key: string]: number } = {};
+
+  for (let tile of tiles) {
+    const count = counts[tile.Color] ?? 0;
+    counts[tile.Color] = count + 1;
+
+    if (counts[tile.Color] > 1) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export const isGroup: Rule = (tiles: PlayedTile[]) => {
+  return allSameFace(tiles) && hasOnlyOneOfAnyColor(tiles);
+};
+
+const rules = [mustBeThree, isRun, isGroup];
 
 export class Set extends Collection<PlayedTile> {
   valid() {
