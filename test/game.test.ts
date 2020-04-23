@@ -178,9 +178,9 @@ describe(Game, () => {
 
       let set = game.Sets.at(0);
 
-      tom.play(r1, { to: set });
+      tom.play(r1, { to: set.from([...set.Items, r1]) });
 
-      expect(set.contains([r1])).toBe(true);
+      expect(game.Sets.at(0).contains([r1])).toBe(true);
     });
 
     it("allows tiles to be played at locations in set", () => {
@@ -198,11 +198,31 @@ describe(Game, () => {
 
       let set = game.Sets.at(0);
 
-      tom.play(r1, { to: set });
+      tom.play(r1, { to: set.from([r10, r1, r11, r12]) });
+
+      set = game.Sets.at(0);
 
       expect(set.contains([r1])).toBe(true);
 
-      expect(set).toEqual(new Set([r10, r1, r11, r12], set.Id));
+      expect(set).toEqual(set.from([r10, r1, r11, r12]));
+    });
+
+    it("does not allow tiles do not appear in hand or original set to be played", () => {
+      const { tom, eileen, hannah, game } = setupGame({
+        tom: { initialHand: unplayedSet("r10,r11,r12,r1,r2,r3") }
+      });
+
+      const [r10, r11, r12, r1] = tom.Hand.Items.filter(RegularTile.Match);
+
+      tom.play([r10, r11, r12]);
+
+      tom.endTurn();
+      eileen.draw();
+      hannah.draw();
+
+      let set = game.Sets.at(0);
+      const r8 = playedSet("r8");
+      tom.play(r8, { to: set.from([r10, r1, r11, r12]) });
     });
   });
 

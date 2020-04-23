@@ -197,6 +197,12 @@ export class Collection<T extends Id> {
     return true;
   }
 
+  // TODO: THIS NEEDS TO TAKE DUPLICATE TILES INTO ACCOUNT
+  without(items: T[]) {
+    const ids = items.map((item) => item.Id);
+    return this.items.filter((item) => ids.includes(item.Id) === false);
+  }
+
   get Count() {
     return this.items.length;
   }

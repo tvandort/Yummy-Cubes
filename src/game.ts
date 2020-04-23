@@ -8,7 +8,7 @@ interface IGamePlayer extends IPlayer {
 }
 
 type ToSet = {
-  to: Set | NewSet;
+  to: Set;
 };
 
 type BetweenSets = {
@@ -79,9 +79,35 @@ class GamePlayer implements IGamePlayer {
   }
 }
 
+// TODO AddFromHand
+// Create new set check hand.
+
+// TODO AddToSet
+// REMOVE TILES PROP RELY ON DIFFING OLD SET AND NEW SET.
+// NEW SET - OLD SET RESULT SHOULD HAVE TILES THAT ARE IN HAND.
+// REMOVE TILES FROM HAND.
+// REPLACE SET. DONE.
+
+// TODO SetToSet
+// Check that the counts between both sets are equal.
+// Replace sets at each index.
 interface AddFromHand {
   type: "ADD";
   tiles: PlayedTile[];
+}
+
+interface AddToSet {
+  type: "ADD_TO_SET";
+  set: Set;
+  tiles: PlayedTile[];
+}
+
+interface DrewCard {
+  type: "DREW";
+}
+
+interface PlayerMessage {
+  player: GamePlayer;
 }
 
 function isAddMessage(
@@ -90,24 +116,10 @@ function isAddMessage(
   return message.type === "ADD";
 }
 
-interface DrewCard {
-  type: "DREW";
-}
-
 function isDrewMessage(
   message: MeldMessage
 ): message is DrewCard & PlayerMessage {
   return message.type === "DREW";
-}
-
-interface AddToSet {
-  type: "ADD_TO_SET";
-  set: NewSet | Set;
-  tiles: PlayedTile[];
-}
-
-interface PlayerMessage {
-  player: GamePlayer;
 }
 
 type MeldMessage = PlayerMessage & (AddFromHand | DrewCard | AddToSet);
@@ -133,6 +145,23 @@ class Board {
 
   at(index: number) {
     return this.sets[index];
+  }
+
+  private indexOf(set: Set) {
+    for (let index = 0; index < this.sets.length; index++) {
+      if (set.Id === this.sets[index].Id) {
+        return index;
+      }
+    }
+  }
+
+  replace(set: Set) {
+    const index = this.indexOf(set);
+    if (index !== undefined) {
+      this.sets[index] = set;
+    } else {
+      throw new Error("That set doesn't exist.");
+    }
   }
 }
 
@@ -226,9 +255,14 @@ export class Game {
             `${player.Name} tried to play tiles that they don't have in their hand.`
           );
         }
-        for (let tile of tiles) {
-          set.push(tile);
+        if (set.contains(set.without(tiles)) === false) {
+          throw new Error(
+            `${player.Name} played tiles that were not originally in the set.`
+          );
         }
+
+        this.board.replace(set);
+
         break;
       }
 

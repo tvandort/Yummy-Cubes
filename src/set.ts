@@ -80,4 +80,8 @@ export class Set extends NewSet {
   get Id() {
     return this.id;
   }
+
+  from(items: PlayedTile[]) {
+    return new Set(items, this.id);
+  }
 }
