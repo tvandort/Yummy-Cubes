@@ -1,3 +1,5 @@
+import { Id } from "./id";
+
 type Color = "RED" | "BLACK" | "BLUE" | "ORANGE";
 type Face =
   | "1"
@@ -55,10 +57,6 @@ const COLOR_TO_SHORT_COLOR: { [key: string]: ShortColor } = {
   BLUE: "u",
   ORANGE: "o"
 };
-
-interface Id {
-  Id: string;
-}
 
 export class JokerTile implements Id {
   get Id(): string {

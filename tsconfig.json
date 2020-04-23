@@ -13,7 +13,8 @@
       "*": ["node_modules/*", "src/types/*"]
     },
     "strict": true,
-    "lib": ["ES2017", "DOM", "ES2019"]
+    "lib": ["ES2017", "DOM", "ES2019"],
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*", "test/**/*"]
 }

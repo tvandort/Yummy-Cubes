@@ -1,5 +1,5 @@
 import { Game } from "../src/game";
-import { Set } from "../src/set";
+import { NewSet, Set } from "../src/set";
 import { Player, IPlayerContructor } from "../src/player";
 import { unplayedSet, playedSet, RegularTile, PlayedTile } from "../src/tile";
 
@@ -28,18 +28,14 @@ describe(Game, () => {
       expect(() => eileen.draw()).toThrowError("Not Eileen's turn!");
     });
 
-    it("disallows drawing if tiles have been placed this turn", () => {
+    it("disallows drawing if tiles have been moved this turn", () => {
       const { tom, game } = setupGame({
         tom: { initialHand: playedSet("r10,o10,b10,u10,r1") }
       });
 
       const [r10, o10, b10] = tom.Hand;
 
-      tom.playFromHand([r10, o10, b10] as PlayedTile[]);
-
-      expect(game.Sets.at(0)).toEqual(
-        new Set([r10, o10, b10] as RegularTile[])
-      );
+      tom.play([r10, o10, b10].filter(RegularTile.Match));
 
       expect(() => tom.draw()).toThrowError(
         "Tom cannot draw because they have placed tiles on the board!"
@@ -56,7 +52,7 @@ describe(Game, () => {
 
       expect(game.Sets.Count).toBe(0);
 
-      tom.playFromHand([hand.at(0), hand.at(1), hand.at(2)] as PlayedTile[]);
+      tom.play([hand.at(0), hand.at(1), hand.at(2)] as PlayedTile[]);
 
       expect(game.Sets.Count).toBe(1);
     });
@@ -68,7 +64,7 @@ describe(Game, () => {
 
       expect(game.Sets.Count).toBe(0);
 
-      expect(() => tom.playFromHand(playedSet("r1,r1"))).toThrowError(
+      expect(() => tom.play(playedSet("r1,r1"))).toThrowError(
         "Tom tried to play tiles that they don't have in their hand."
       );
 
@@ -84,11 +80,7 @@ describe(Game, () => {
       expect(game.Sets.Count).toBe(0);
 
       expect(() =>
-        eileen.playFromHand([
-          hand.at(0),
-          hand.at(1),
-          hand.at(2)
-        ] as PlayedTile[])
+        eileen.play([hand.at(0), hand.at(1), hand.at(2)] as PlayedTile[])
       ).toThrowError("Not Eileen's turn!");
 
       expect(game.Sets.Count).toBe(0);
@@ -102,7 +94,7 @@ describe(Game, () => {
       });
       const [r10, o10, u10, r1] = tom.Hand;
 
-      tom.playFromHand([r10, o10, u10, r1] as PlayedTile[]);
+      tom.play([r10, o10, u10, r1] as PlayedTile[]);
 
       expect(() => tom.endTurn()).toThrowError(
         "Board is not in a valid state!"
@@ -129,7 +121,7 @@ describe(Game, () => {
       });
       const [r1, r2, r3] = tom.Hand;
 
-      tom.playFromHand([r1, r2, r3].filter(RegularTile.Match));
+      tom.play([r1, r2, r3].filter(RegularTile.Match));
 
       expect(() => tom.endTurn()).toThrowError("Tom hasn't melded yet.");
     });
@@ -139,7 +131,7 @@ describe(Game, () => {
         tom: { initialHand: unplayedSet("r10,r11,r12") }
       });
 
-      tom.playFromHand([...tom.Hand].filter(RegularTile.Match));
+      tom.play([...tom.Hand].filter(RegularTile.Match));
 
       tom.endTurn();
 
@@ -153,7 +145,7 @@ describe(Game, () => {
 
       const [r10, r11, r12, ...six] = tom.Hand.Items.filter(RegularTile.Match);
 
-      tom.playFromHand([r10, r11, r12]);
+      tom.play([r10, r11, r12]);
 
       tom.endTurn();
 
@@ -162,7 +154,7 @@ describe(Game, () => {
       eileen.draw();
       hannah.draw();
 
-      tom.playFromHand(six);
+      tom.play(six);
 
       tom.endTurn();
 
@@ -171,21 +163,55 @@ describe(Game, () => {
   });
 
   describe("adding tiles to existing sets", () => {
-    it("catches my attention", () => {
-      expect(false).toBe(true);
+    it("allows set to be modified", () => {
+      const { tom, eileen, hannah, game } = setupGame({
+        tom: { initialHand: unplayedSet("r10,r11,r12,r1,r2,r3") }
+      });
+
+      const [r10, r11, r12, r1] = tom.Hand.Items.filter(RegularTile.Match);
+
+      tom.play([r10, r11, r12]);
+
+      tom.endTurn();
+      eileen.draw();
+      hannah.draw();
+
+      let set = game.Sets.at(0);
+
+      tom.play(r1, { to: set });
+
+      expect(set.contains([r1])).toBe(true);
+    });
+
+    it("allows tiles to be played at locations in set", () => {
+      const { tom, eileen, hannah, game } = setupGame({
+        tom: { initialHand: unplayedSet("r10,r11,r12,r1,r2,r3") }
+      });
+
+      const [r10, r11, r12, r1] = tom.Hand.Items.filter(RegularTile.Match);
+
+      tom.play([r10, r11, r12]);
+
+      tom.endTurn();
+      eileen.draw();
+      hannah.draw();
+
+      let set = game.Sets.at(0);
+
+      tom.play(r1, { to: set });
+
+      expect(set.contains([r1])).toBe(true);
+
+      expect(set).toEqual(new Set([r10, r1, r11, r12], set.Id));
     });
   });
 
   describe("moving tiles between sets", () => {
-    it("catches my attention", () => {
-      expect(false).toBe(true);
-    });
+    it("catches my attention", () => {});
   });
 
   describe("undoing", () => {
-    it("catches my attention", () => {
-      expect(false).toBe(true);
-    });
+    it("catches my attention", () => {});
   });
 
   const setupGame = (args: Partial<SetupPlayersArgs> = {}) => {

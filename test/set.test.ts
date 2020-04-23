@@ -1,4 +1,4 @@
-import { mustBeThree, isRun, isGroup, Set } from "../src/set";
+import { mustBeThree, isRun, isGroup, NewSet } from "../src/set";
 import { playedSet } from "../src/tile";
 
 describe("rules", () => {
@@ -97,17 +97,17 @@ describe("rules", () => {
 
 describe("set", () => {
   it("matches a group", () => {
-    const set = new Set(playedSet("r1,u1,o1"));
+    const set = new NewSet(playedSet("r1,u1,o1"));
     expect(set.isValid()).toBe(true);
   });
 
   it("matches a run", () => {
-    const set = new Set(playedSet("r1,r2,r3"));
+    const set = new NewSet(playedSet("r1,r2,r3"));
     expect(set.isValid()).toBe(true);
   });
 
   it("rejects a bad broken run", () => {
-    const set = new Set(playedSet("r1,r3,r4"));
+    const set = new NewSet(playedSet("r1,r3,r4"));
     expect(set.isValid()).toBe(false);
   });
 });

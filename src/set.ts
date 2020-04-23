@@ -1,4 +1,6 @@
+import { v4 } from "uuid";
 import { Collection, PlayedTile } from "./tile";
+import { Id } from "./id";
 
 interface Rule {
   (tiles: PlayedTile[]): Boolean;
@@ -60,10 +62,22 @@ export const isGroup: Rule = (tiles: PlayedTile[]) => {
 
 const rules = [isRun, isGroup];
 
-export class Set extends Collection<PlayedTile> {
+export class NewSet extends Collection<PlayedTile> {
   isValid() {
     return (
       mustBeThree(this.Items) && (isRun(this.Items) || isGroup(this.Items))
     );
+  }
+}
+
+export class Set extends NewSet {
+  private id: string;
+  constructor(items: PlayedTile[], id?: string) {
+    super(items);
+    this.id = id ?? v4();
+  }
+
+  get Id() {
+    return this.id;
   }
 }

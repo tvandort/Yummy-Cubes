@@ -1,10 +1,23 @@
 import { UnplayedTile, Collection, PlayedTile } from "./tile";
 import { Bag } from "./bag";
 import { IPlayer, Player } from "./player";
-import { Set } from "./set";
+import { NewSet, Set } from "./set";
 
 interface IGamePlayer extends IPlayer {
   Hand: Collection<UnplayedTile>;
+}
+
+type ToSet = {
+  to: Set | NewSet;
+};
+
+type BetweenSets = {
+  to: Set | NewSet;
+  from: Set;
+};
+
+function isBetweenSets(movement: ToSet | BetweenSets): movement is BetweenSets {
+  return Boolean((movement as BetweenSets).from);
 }
 
 class GamePlayer implements IGamePlayer {
@@ -39,12 +52,26 @@ class GamePlayer implements IGamePlayer {
     this.hand.push(this.game.draw(this));
   }
 
-  playFromHand(tiles: PlayedTile[]) {
-    this.game.meld({
-      type: "ADD",
-      tiles,
-      player: this
-    });
+  play(tileOrTiles: PlayedTile[] | PlayedTile, movement?: ToSet | BetweenSets) {
+    const tiles = Array.isArray(tileOrTiles) ? tileOrTiles : [tileOrTiles];
+
+    if (movement) {
+      if (isBetweenSets(movement)) {
+      } else {
+        this.game.meld({
+          type: "ADD_TO_SET",
+          tiles,
+          set: movement.to,
+          player: this
+        });
+      }
+    } else {
+      this.game.meld({
+        type: "ADD",
+        tiles,
+        player: this
+      });
+    }
   }
 
   endTurn() {
@@ -73,11 +100,17 @@ function isDrewMessage(
   return message.type === "DREW";
 }
 
+interface AddToSet {
+  type: "ADD_TO_SET";
+  set: NewSet | Set;
+  tiles: PlayedTile[];
+}
+
 interface PlayerMessage {
   player: GamePlayer;
 }
 
-type MeldMessage = PlayerMessage & (AddFromHand | DrewCard);
+type MeldMessage = PlayerMessage & (AddFromHand | DrewCard | AddToSet);
 
 class Board {
   private sets: Set[];
@@ -94,8 +127,8 @@ class Board {
     return this.sets.every((set) => set.isValid());
   }
 
-  push(set: Set) {
-    this.sets.push(set);
+  push(set: NewSet) {
+    this.sets.push(new Set(set.Items));
   }
 
   at(index: number) {
@@ -182,7 +215,25 @@ export class Game {
             `${player.Name} tried to play tiles that they don't have in their hand.`
           );
         }
-        this.board.push(new Set(tiles));
+        this.board.push(new NewSet(tiles));
+        break;
+      }
+
+      case "ADD_TO_SET": {
+        const { tiles, set } = message;
+        if (player.Hand.contains(tiles) === false) {
+          throw new Error(
+            `${player.Name} tried to play tiles that they don't have in their hand.`
+          );
+        }
+        for (let tile of tiles) {
+          set.push(tile);
+        }
+        break;
+      }
+
+      default: {
+        throw new Error("Undefined action!");
       }
     }
   }
