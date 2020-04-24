@@ -119,8 +119,8 @@ interface SwapInSets {
 
 interface MoveToNewSet {
   type: "MOVE_TO_NEW_SET";
-  a: PersistedSet;
-  b: Set;
+  from: PersistedSet;
+  to: Set;
 }
 
 interface DrewCard {
@@ -329,6 +329,36 @@ export class Game {
 
         this.board.replace(a);
         this.board.replace(b);
+
+        break;
+      }
+
+      case "MOVE_TO_NEW_SET": {
+        const { from, to } = message;
+        const oldSet = this.board.find(from.Id);
+
+        const newSetCount = toCounts([...from.Items, ...to.Items]);
+        const oldSetCount = toCounts(oldSet.Items);
+
+        const equalKeys =
+          JSON.stringify(Object.keys(newSetCount).sort()) ===
+          JSON.stringify(Object.keys);
+
+        if (equalKeys === false) {
+          throw new Error("Sets didn't contain tiles expected.");
+        }
+
+        for (let key of Object.keys(newSetCount)) {
+          const newValue = newSetCount[key];
+          const oldValue = oldSetCount[key];
+
+          if (newValue !== oldValue) {
+            throw new Error("Sets didn't have the same tile counts");
+          }
+        }
+
+        this.board.replace(from);
+        this.board.push(to);
 
         break;
       }
