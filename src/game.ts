@@ -75,14 +75,17 @@ class GamePlayer implements IGamePlayer {
   endTurn() {
     this.game.endTurn(this);
   }
-}
 
-// TODO AddFromHand
-// Create new set check hand.
+  removeFromHand(tiles: PlayedTile[]) {
+    this.hand.remove(tiles);
+  }
+}
 
 // TODO AddToSet
 // REMOVE TILES PROP RELY ON DIFFING OLD SET AND NEW SET.
 // NEW SET - OLD SET RESULT SHOULD HAVE TILES THAT ARE IN HAND.
+// OLD SET - NEW SET RESULT SHOULD BE EMPTY BECAUSE NEW SET SHOULD CONTAIN ALL
+// OLD SET.
 // REMOVE TILES FROM HAND.
 // REPLACE SET. DONE.
 
@@ -252,6 +255,7 @@ export class Game {
             `${player.Name} tried to play tiles that they don't have in their hand.`
           );
         }
+        player.removeFromHand(set.Items);
         this.board.push(set);
         break;
       }

@@ -1,6 +1,4 @@
-import { v4 } from "uuid";
 import { Collection, PlayedTile } from "./tile";
-import { Id } from "./id";
 
 interface Rule {
   (tiles: PlayedTile[]): Boolean;

@@ -218,6 +218,19 @@ export class Collection<T extends Id> {
     return copy;
   }
 
+  remove(items: T[]) {
+    while (items.length > 0) {
+      const removeItem = items.shift()!;
+
+      for (let index = 0; index < this.items.length; index++) {
+        if (this.items[index].Id === removeItem.Id) {
+          this.items.splice(index, 1);
+          break;
+        }
+      }
+    }
+  }
+
   get Count() {
     return this.items.length;
   }

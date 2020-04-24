@@ -1,7 +1,14 @@
 import { Game } from "../src/game";
 import { NewSet, Set } from "../src/set";
 import { Player, IPlayerContructor } from "../src/player";
-import { unplayedSet, playedSet, RegularTile, PlayedTile } from "../src/tile";
+import {
+  unplayedSet,
+  playedSet,
+  RegularTile,
+  PlayedTile,
+  Collection,
+  UnplayedTile
+} from "../src/tile";
 
 describe(Game, () => {
   it("deals hands to players", () => {
@@ -51,6 +58,7 @@ describe(Game, () => {
       });
       const hand = tom.Hand;
 
+      expect(hand).toEqual(new Collection(unplayedSet("r10,o10,u10,r1")));
       expect(game.Sets.Count).toBe(0);
 
       const set = [hand.at(0), hand.at(1), hand.at(2)].filter(
@@ -60,6 +68,7 @@ describe(Game, () => {
       tom.play({ to: new NewSet(set) });
 
       expect(game.Sets.Count).toBe(1);
+      expect(tom.Hand).toEqual(new Collection(unplayedSet("r1")));
     });
 
     it("disallows playing tiles that are not in hand", () => {
