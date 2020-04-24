@@ -1,4 +1,4 @@
-import { UnplayedTile, Collection, PlayedTile } from "./tile";
+import { UnplayedTile, Collection, PlayedTile, toCounts } from "./tile";
 import { Bag } from "./bag";
 import { IPlayer, Player } from "./player";
 import { NewSet, Set } from "./set";
@@ -55,6 +55,15 @@ class GamePlayer implements IGamePlayer {
 
   play(movement: ToSet | BetweenSets) {
     if (isBetweenSets(movement)) {
+      if (Set.IsSet(movement.to)) {
+        this.game.meld({
+          type: "SWAP_TILES_IN_SETS",
+          a: movement.to,
+          b: movement.from,
+          player: this
+        });
+      } else {
+      }
     } else {
       if (Set.IsSet(movement.to)) {
         this.game.meld({
@@ -102,6 +111,18 @@ interface AddToSet {
   set: Set;
 }
 
+interface SwapInSets {
+  type: "SWAP_TILES_IN_SETS";
+  a: Set;
+  b: Set;
+}
+
+interface MoveToNewSet {
+  type: "MOVE_TO_NEW_SET";
+  a: Set;
+  b: NewSet;
+}
+
 interface DrewCard {
   type: "DREW";
 }
@@ -122,7 +143,8 @@ function isDrewMessage(
   return message.type === "DREW";
 }
 
-type MeldMessage = PlayerMessage & (AddFromHand | DrewCard | AddToSet);
+type MeldMessage = PlayerMessage &
+  (AddFromHand | DrewCard | AddToSet | SwapInSets | MoveToNewSet);
 
 class Board {
   private sets: Set[];
@@ -277,6 +299,37 @@ export class Game {
 
         player.removeFromHand(tilesPlayedFromHand);
         this.board.replace(set);
+        break;
+      }
+
+      case "SWAP_TILES_IN_SETS": {
+        const { a, b } = message;
+        const oldA = this.board.find(a.Id);
+        const oldB = this.board.find(b.Id);
+
+        const newUnion = toCounts([...a.Items, ...b.Items]);
+        const oldUnion = toCounts([...oldA.Items, ...oldB.Items]);
+
+        const equalKeys =
+          JSON.stringify(Object.keys(newUnion).sort()) ===
+          JSON.stringify(Object.keys(oldUnion).sort());
+
+        if (equalKeys === false) {
+          throw new Error("Sets didn't contain tiles expected.");
+        }
+
+        for (let key of Object.keys(newUnion)) {
+          const newValue = newUnion[key];
+          const oldValue = oldUnion[key];
+
+          if (newValue !== oldValue) {
+            throw new Error("Sets didn't have the same tile counts");
+          }
+        }
+
+        this.board.replace(a);
+        this.board.replace(b);
+
         break;
       }
 

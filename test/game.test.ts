@@ -261,7 +261,35 @@ describe(Game, () => {
   });
 
   describe("moving tiles between sets", () => {
-    it("catches my attention", () => {});
+    fit("moves tiles from one set to another", () => {
+      const { tom, eileen, hannah, game } = setupGame({
+        tom: { initialHand: unplayedSet("r10,r11,r12,r9,r5,r6,r7,r8,r1,r2,r3") }
+      });
+
+      const [r10, r11, r12, r9, r5, r6, r7, r8] = tom.Hand.Items.filter(
+        RegularTile.Match
+      );
+
+      tom.play({ to: new NewSet([r10, r11, r12]) });
+      tom.play({ to: new NewSet([r5, r6, r7, r8, r9]) });
+
+      let set1 = game.Sets.at(0);
+      let set2 = game.Sets.at(1);
+
+      expect(set1).toEqual(set1.from([r10, r11, r12]));
+      expect(set2).toEqual(set2.from([r5, r6, r7, r8, r9]));
+
+      tom.play({
+        to: set1.from([r9, r10, r11, r12]),
+        from: set2.from([r5, r6, r7, r8])
+      });
+
+      set1 = game.Sets.at(0);
+      set2 = game.Sets.at(1);
+
+      expect(set1).toEqual(set1.from([r9, r10, r11, r12]));
+      expect(set2).toEqual(set2.from([r5, r6, r7, r8]));
+    });
   });
 
   describe("undoing", () => {

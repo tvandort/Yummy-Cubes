@@ -151,7 +151,7 @@ export class PlayedJokerTile extends JokerTile {
   }
 }
 
-function toCounts<T extends Id>(items: T[]) {
+export function toCounts<T extends Id>(items: T[]) {
   const hash: { [key: string]: number } = {};
   for (let item of items) {
     let count = hash[item.Id];
