@@ -151,7 +151,7 @@ export class PlayedJokerTile extends JokerTile {
   }
 }
 
-function toHash<T extends Id>(items: T[]) {
+function toCounts<T extends Id>(items: T[]) {
   const hash: { [key: string]: number } = {};
   for (let item of items) {
     let count = hash[item.Id];
@@ -182,8 +182,8 @@ export class Collection<T extends Id> {
   }
 
   contains(checkTiles: T[]) {
-    const checkTilesHash = toHash(checkTiles);
-    const tilesHash = toHash(this.items);
+    const checkTilesHash = toCounts(checkTiles);
+    const tilesHash = toCounts(this.items);
 
     for (let key of Object.keys(checkTilesHash)) {
       const count = tilesHash[key];
@@ -197,10 +197,25 @@ export class Collection<T extends Id> {
     return true;
   }
 
-  // TODO: THIS NEEDS TO TAKE DUPLICATE TILES INTO ACCOUNT
   without(items: T[]) {
-    const ids = items.map((item) => item.Id);
-    return this.items.filter((item) => ids.includes(item.Id) === false);
+    const without = items.map((item) => item);
+    const copy = this.items.map((item) => item);
+
+    let index = 0;
+    while (without.length > 0) {
+      const find = without.shift()!;
+      while (copy.length > index) {
+        if (copy[index].Id === find.Id) {
+          copy.splice(index, 1);
+          break;
+        }
+        index += 1;
+      }
+
+      index = 0;
+    }
+
+    return copy;
   }
 
   get Count() {

@@ -72,9 +72,9 @@ export class NewSet extends Collection<PlayedTile> {
 
 export class Set extends NewSet {
   private id: string;
-  constructor(items: PlayedTile[], id?: string) {
+  constructor(items: PlayedTile[], id: string) {
     super(items);
-    this.id = id ?? v4();
+    this.id = id;
   }
 
   get Id() {
@@ -83,5 +83,9 @@ export class Set extends NewSet {
 
   from(items: PlayedTile[]) {
     return new Set(items, this.id);
+  }
+
+  static IsSet(set: Set | NewSet): set is Set {
+    return Boolean((set as Set).Id);
   }
 }

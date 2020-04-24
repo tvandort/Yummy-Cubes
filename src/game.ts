@@ -2,13 +2,14 @@ import { UnplayedTile, Collection, PlayedTile } from "./tile";
 import { Bag } from "./bag";
 import { IPlayer, Player } from "./player";
 import { NewSet, Set } from "./set";
+import { v4 } from "uuid";
 
 interface IGamePlayer extends IPlayer {
   Hand: Collection<UnplayedTile>;
 }
 
 type ToSet = {
-  to: Set;
+  to: Set | NewSet;
 };
 
 type BetweenSets = {
@@ -52,25 +53,22 @@ class GamePlayer implements IGamePlayer {
     this.hand.push(this.game.draw(this));
   }
 
-  play(tileOrTiles: PlayedTile[] | PlayedTile, movement?: ToSet | BetweenSets) {
-    const tiles = Array.isArray(tileOrTiles) ? tileOrTiles : [tileOrTiles];
-
-    if (movement) {
-      if (isBetweenSets(movement)) {
-      } else {
+  play(movement: ToSet | BetweenSets) {
+    if (isBetweenSets(movement)) {
+    } else {
+      if (Set.IsSet(movement.to)) {
         this.game.meld({
           type: "ADD_TO_SET",
-          tiles,
           set: movement.to,
           player: this
         });
+      } else {
+        this.game.meld({
+          type: "ADD",
+          player: this,
+          set: movement.to
+        });
       }
-    } else {
-      this.game.meld({
-        type: "ADD",
-        tiles,
-        player: this
-      });
     }
   }
 
@@ -93,13 +91,12 @@ class GamePlayer implements IGamePlayer {
 // Replace sets at each index.
 interface AddFromHand {
   type: "ADD";
-  tiles: PlayedTile[];
+  set: NewSet;
 }
 
 interface AddToSet {
   type: "ADD_TO_SET";
   set: Set;
-  tiles: PlayedTile[];
 }
 
 interface DrewCard {
@@ -140,11 +137,22 @@ class Board {
   }
 
   push(set: NewSet) {
-    this.sets.push(new Set(set.Items));
+    this.sets.push(new Set(set.Items, v4()));
   }
 
   at(index: number) {
     return this.sets[index];
+  }
+
+  find(id: string) {
+    const results = this.sets.filter((set) => set.Id === id);
+    if (results.length !== 1) {
+      throw new Error(
+        `Something weird happened, there are: ${results.length} sets that match ${id}? That shouldn't happen.`
+      );
+    }
+
+    return results[0];
   }
 
   private indexOf(set: Set) {
@@ -238,26 +246,27 @@ export class Game {
 
     switch (message.type) {
       case "ADD": {
-        const { tiles } = message;
-        if (player.Hand.contains(tiles) === false) {
+        const { set } = message;
+        if (player.Hand.contains(set.Items) === false) {
           throw new Error(
             `${player.Name} tried to play tiles that they don't have in their hand.`
           );
         }
-        this.board.push(new NewSet(tiles));
+        this.board.push(set);
         break;
       }
 
       case "ADD_TO_SET": {
-        const { tiles, set } = message;
-        if (player.Hand.contains(tiles) === false) {
+        const { set } = message;
+        const originalSet = this.board.find(set.Id);
+        if (player.Hand.contains(set.without(originalSet.Items)) === false) {
           throw new Error(
             `${player.Name} tried to play tiles that they don't have in their hand.`
           );
         }
-        if (set.contains(set.without(tiles)) === false) {
+        if (originalSet.without(set.Items).length > 0) {
           throw new Error(
-            `${player.Name} played tiles that were not originally in the set.`
+            `${player.Name} tried to play a set that is missing expected tiles.`
           );
         }
 
@@ -282,7 +291,7 @@ export class Game {
     ) {
       const sum = this.currentPlayerActions
         .filter(isAddMessage)
-        .flatMap((message) => message.tiles)
+        .flatMap((message) => message.set.Items)
         .reduce((sum, tile) => sum + tile.Value, 0);
 
       if (sum > 29) {
