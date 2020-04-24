@@ -58,8 +58,6 @@ export const isGroup: Rule = (tiles: PlayedTile[]) => {
   return allSameFace(tiles) && hasOnlyOneOfAnyColor(tiles);
 };
 
-const rules = [isRun, isGroup];
-
 export class Set extends Collection<PlayedTile> {
   isValid() {
     return (
