@@ -1,7 +1,7 @@
 import { UnplayedTile, Collection, PlayedTile, toCounts } from "./tile";
 import { Bag } from "./bag";
 import { IPlayer, Player } from "./player";
-import { NewSet, Set } from "./set";
+import { Set, PersistedSet } from "./set";
 import { v4 } from "uuid";
 
 interface IGamePlayer extends IPlayer {
@@ -9,12 +9,12 @@ interface IGamePlayer extends IPlayer {
 }
 
 type ToSet = {
-  to: Set | NewSet;
+  to: PersistedSet | Set;
 };
 
 type BetweenSets = {
-  to: Set | NewSet;
-  from: Set;
+  to: PersistedSet | Set;
+  from: PersistedSet;
 };
 
 function isBetweenSets(movement: ToSet | BetweenSets): movement is BetweenSets {
@@ -55,7 +55,7 @@ class GamePlayer implements IGamePlayer {
 
   play(movement: ToSet | BetweenSets) {
     if (isBetweenSets(movement)) {
-      if (Set.IsSet(movement.to)) {
+      if (PersistedSet.IsSet(movement.to)) {
         this.game.meld({
           type: "SWAP_TILES_IN_SETS",
           a: movement.to,
@@ -65,7 +65,7 @@ class GamePlayer implements IGamePlayer {
       } else {
       }
     } else {
-      if (Set.IsSet(movement.to)) {
+      if (PersistedSet.IsSet(movement.to)) {
         this.game.meld({
           type: "ADD_TO_SET",
           set: movement.to,
@@ -103,24 +103,24 @@ class GamePlayer implements IGamePlayer {
 // Replace sets at each index.
 interface AddFromHand {
   type: "ADD";
-  set: NewSet;
+  set: Set;
 }
 
 interface AddToSet {
   type: "ADD_TO_SET";
-  set: Set;
+  set: PersistedSet;
 }
 
 interface SwapInSets {
   type: "SWAP_TILES_IN_SETS";
-  a: Set;
-  b: Set;
+  a: PersistedSet;
+  b: PersistedSet;
 }
 
 interface MoveToNewSet {
   type: "MOVE_TO_NEW_SET";
-  a: Set;
-  b: NewSet;
+  a: PersistedSet;
+  b: Set;
 }
 
 interface DrewCard {
@@ -147,7 +147,7 @@ type MeldMessage = PlayerMessage &
   (AddFromHand | DrewCard | AddToSet | SwapInSets | MoveToNewSet);
 
 class Board {
-  private sets: Set[];
+  private sets: PersistedSet[];
 
   constructor() {
     this.sets = [];
@@ -161,8 +161,8 @@ class Board {
     return this.sets.every((set) => set.isValid());
   }
 
-  push(set: NewSet) {
-    this.sets.push(new Set(set.Items, v4()));
+  push(set: Set) {
+    this.sets.push(new PersistedSet(set.Items, v4()));
   }
 
   at(index: number) {
@@ -180,7 +180,7 @@ class Board {
     return results[0];
   }
 
-  private indexOf(set: Set) {
+  private indexOf(set: PersistedSet) {
     for (let index = 0; index < this.sets.length; index++) {
       if (set.Id === this.sets[index].Id) {
         return index;
@@ -188,7 +188,7 @@ class Board {
     }
   }
 
-  replace(set: Set) {
+  replace(set: PersistedSet) {
     const index = this.indexOf(set);
     if (index !== undefined) {
       this.sets[index] = set;

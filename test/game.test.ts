@@ -1,14 +1,7 @@
 import { Game } from "../src/game";
-import { NewSet, Set } from "../src/set";
+import { Set } from "../src/set";
 import { Player, IPlayerContructor } from "../src/player";
-import {
-  unplayedSet,
-  playedSet,
-  RegularTile,
-  PlayedTile,
-  Collection,
-  UnplayedTile
-} from "../src/tile";
+import { unplayedSet, playedSet, RegularTile, Collection } from "../src/tile";
 
 describe(Game, () => {
   it("deals hands to players", () => {
@@ -43,7 +36,7 @@ describe(Game, () => {
       const [r10, o10, b10] = tom.Hand;
       const set = [r10, o10, b10].filter(RegularTile.Match);
 
-      tom.play({ to: new NewSet(set) });
+      tom.play({ to: new Set(set) });
 
       expect(() => tom.draw()).toThrowError(
         "Tom cannot draw because they have placed tiles on the board!"
@@ -65,7 +58,7 @@ describe(Game, () => {
         RegularTile.Match
       );
 
-      tom.play({ to: new NewSet(set) });
+      tom.play({ to: new Set(set) });
 
       expect(game.Sets.Count).toBe(1);
       expect(tom.Hand).toEqual(new Collection(unplayedSet("r1")));
@@ -78,9 +71,7 @@ describe(Game, () => {
 
       expect(game.Sets.Count).toBe(0);
 
-      expect(() =>
-        tom.play({ to: new NewSet(playedSet("r1,r1")) })
-      ).toThrowError(
+      expect(() => tom.play({ to: new Set(playedSet("r1,r1")) })).toThrowError(
         "Tom tried to play tiles that they don't have in their hand."
       );
 
@@ -97,7 +88,7 @@ describe(Game, () => {
 
       expect(() =>
         eileen.play({
-          to: new NewSet(
+          to: new Set(
             [hand.at(0), hand.at(1), hand.at(2)].filter(RegularTile.Match)
           )
         })
@@ -115,7 +106,7 @@ describe(Game, () => {
       const [r10, o10, u10, r1] = tom.Hand;
 
       tom.play({
-        to: new NewSet([r10, o10, u10, r1].filter(RegularTile.Match))
+        to: new Set([r10, o10, u10, r1].filter(RegularTile.Match))
       });
 
       expect(() => tom.endTurn()).toThrowError(
@@ -143,7 +134,7 @@ describe(Game, () => {
       });
       const [r1, r2, r3] = tom.Hand;
 
-      tom.play({ to: new NewSet([r1, r2, r3].filter(RegularTile.Match)) });
+      tom.play({ to: new Set([r1, r2, r3].filter(RegularTile.Match)) });
 
       expect(() => tom.endTurn()).toThrowError("Tom hasn't melded yet.");
     });
@@ -153,7 +144,7 @@ describe(Game, () => {
         tom: { initialHand: unplayedSet("r10,r11,r12") }
       });
 
-      tom.play({ to: new NewSet([...tom.Hand].filter(RegularTile.Match)) });
+      tom.play({ to: new Set([...tom.Hand].filter(RegularTile.Match)) });
 
       tom.endTurn();
 
@@ -167,7 +158,7 @@ describe(Game, () => {
 
       const [r10, r11, r12, ...six] = tom.Hand.Items.filter(RegularTile.Match);
 
-      tom.play({ to: new NewSet([r10, r11, r12]) });
+      tom.play({ to: new Set([r10, r11, r12]) });
 
       tom.endTurn();
 
@@ -176,7 +167,7 @@ describe(Game, () => {
       eileen.draw();
       hannah.draw();
 
-      tom.play({ to: new NewSet(six) });
+      tom.play({ to: new Set(six) });
 
       tom.endTurn();
 
@@ -192,7 +183,7 @@ describe(Game, () => {
 
       const [r10, r11, r12, r1] = tom.Hand.Items.filter(RegularTile.Match);
 
-      tom.play({ to: new NewSet([r10, r11, r12]) });
+      tom.play({ to: new Set([r10, r11, r12]) });
 
       tom.endTurn();
       eileen.draw();
@@ -212,7 +203,7 @@ describe(Game, () => {
 
       const [r10, r11, r12, r1] = tom.Hand.Items.filter(RegularTile.Match);
 
-      tom.play({ to: new NewSet([r10, r11, r12]) });
+      tom.play({ to: new Set([r10, r11, r12]) });
 
       tom.endTurn();
       eileen.draw();
@@ -238,7 +229,7 @@ describe(Game, () => {
 
       const [r10, r11, r12, r1] = tom.Hand.Items.filter(RegularTile.Match);
 
-      tom.play({ to: new NewSet([r10, r11, r12]) });
+      tom.play({ to: new Set([r10, r11, r12]) });
 
       tom.endTurn();
       eileen.draw();
@@ -270,8 +261,8 @@ describe(Game, () => {
         RegularTile.Match
       );
 
-      tom.play({ to: new NewSet([r10, r11, r12]) });
-      tom.play({ to: new NewSet([r5, r6, r7, r8, r9]) });
+      tom.play({ to: new Set([r10, r11, r12]) });
+      tom.play({ to: new Set([r5, r6, r7, r8, r9]) });
 
       let set1 = game.Sets.at(0);
       let set2 = game.Sets.at(1);

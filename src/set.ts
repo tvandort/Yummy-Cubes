@@ -60,7 +60,7 @@ export const isGroup: Rule = (tiles: PlayedTile[]) => {
 
 const rules = [isRun, isGroup];
 
-export class NewSet extends Collection<PlayedTile> {
+export class Set extends Collection<PlayedTile> {
   isValid() {
     return (
       mustBeThree(this.Items) && (isRun(this.Items) || isGroup(this.Items))
@@ -68,7 +68,7 @@ export class NewSet extends Collection<PlayedTile> {
   }
 }
 
-export class Set extends NewSet {
+export class PersistedSet extends Set {
   private id: string;
   constructor(items: PlayedTile[], id: string) {
     super(items);
@@ -80,10 +80,10 @@ export class Set extends NewSet {
   }
 
   from(items: PlayedTile[]) {
-    return new Set(items, this.id);
+    return new PersistedSet(items, this.id);
   }
 
-  static IsSet(set: Set | NewSet): set is Set {
-    return Boolean((set as Set).Id);
+  static IsSet(set: PersistedSet | Set): set is PersistedSet {
+    return Boolean((set as PersistedSet).Id);
   }
 }
