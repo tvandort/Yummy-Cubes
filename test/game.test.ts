@@ -261,8 +261,8 @@ describe(Game, () => {
   });
 
   describe("moving tiles between sets", () => {
-    fit("moves tiles from one set to another", () => {
-      const { tom, eileen, hannah, game } = setupGame({
+    it("moves tiles from one set to another", () => {
+      const { tom, game } = setupGame({
         tom: { initialHand: unplayedSet("r10,r11,r12,r9,r5,r6,r7,r8,r1,r2,r3") }
       });
 
