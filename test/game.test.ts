@@ -227,6 +227,8 @@ describe(Game, () => {
       expect(set.contains([r1])).toBe(true);
 
       expect(set).toEqual(set.from([r10, r1, r11, r12]));
+
+      expect(tom.Hand).toEqual(new Collection(unplayedSet("r2,r3")));
     });
 
     it("does not allow tiles that do not appear in hand or original set to be played", () => {

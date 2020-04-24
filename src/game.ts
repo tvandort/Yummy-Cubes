@@ -263,7 +263,8 @@ export class Game {
       case "ADD_TO_SET": {
         const { set } = message;
         const originalSet = this.board.find(set.Id);
-        if (player.Hand.contains(set.without(originalSet.Items)) === false) {
+        const tilesPlayedFromHand = set.without(originalSet.Items);
+        if (player.Hand.contains(tilesPlayedFromHand) === false) {
           throw new Error(
             `${player.Name} tried to play tiles that they don't have in their hand.`
           );
@@ -274,8 +275,8 @@ export class Game {
           );
         }
 
+        player.removeFromHand(tilesPlayedFromHand);
         this.board.replace(set);
-
         break;
       }
 
