@@ -14,5 +14,8 @@
     "postinstall": "yarn bootstrap",
     "test": "yarn jest --watch",
     "clean": "lerna clean --yes"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

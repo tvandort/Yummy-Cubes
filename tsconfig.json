@@ -10,11 +10,12 @@
     "outDir": "out",
     "baseUrl": ".",
     "paths": {
-      "@app/*": ["packages/*/src"]
+      "@yummy-cubes/*": ["packages/*/src"]
     },
     "strict": true,
     "lib": ["ES2017", "DOM", "ES2019"],
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "declaration": true
   },
   "exclude": ["node_modules", "out"]
 }

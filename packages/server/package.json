@@ -1,0 +1,12 @@
+{
+  "name": "@yummy-cubes/server",
+  "version": "1.0.0",
+  "main": "out/index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@yummy-cubes/game": "1.0.0",
+    "express": "^4.17.1",
+    "ts-node": "^8.9.0"
+  }
+}
