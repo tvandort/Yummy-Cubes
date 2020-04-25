@@ -1,4 +1,7 @@
+const base = require("../../jest.config.base");
+
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node"
+  ...base,
+  name: "Game",
+  displayName: "game"
 };
