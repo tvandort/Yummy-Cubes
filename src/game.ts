@@ -232,6 +232,7 @@ export class Game {
   private currentPlayerActions: PlayerActions[];
   private meldTracker: { [key: string]: boolean };
   private tilesPlayedByPlayer: PlayedTile[];
+  private gameOver: boolean;
 
   constructor({ players, bag }: { players: Player[]; bag?: Bag }) {
     this.bag = bag ?? new Bag();
@@ -239,6 +240,7 @@ export class Game {
     this.board = new Board();
     this.currentPlayerActions = [];
     this.tilesPlayedByPlayer = [];
+    this.gameOver = false;
 
     this.players = players.map((player) => {
       const gamePlayer = new GamePlayer({ player, game: this });
@@ -430,6 +432,8 @@ export class Game {
     this.playerIndex = (this.playerIndex + 1) % this.players.length;
     this.currentPlayerActions = [];
     this.tilesPlayedByPlayer = [];
+
+    this.gameOver = this.players.some((player) => player.Hand.Count === 0);
   }
 
   giveUp(player: GamePlayer) {
@@ -456,10 +460,13 @@ export class Game {
   }
 
   get Over() {
-    return this.players.some((player) => player.Hand.Count === 0);
+    return this.gameOver;
   }
 
   private turnCheck(player: GamePlayer) {
+    if (this.Over) {
+      throw new Error("Game is over!");
+    }
     if (player != this.CurrentPlayer) {
       throw Error(`Not ${player.Name}'s turn!`);
     }

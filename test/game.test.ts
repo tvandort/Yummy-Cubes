@@ -138,7 +138,7 @@ describe(Game, () => {
   describe("melding", () => {
     it("disallows ending turn unless they would cause a meld if player isn't melded", () => {
       const { tom } = setupGame({
-        tom: { initialHand: unplayedSet("r1,r2,r3") }
+        tom: { initialHand: unplayedSet("r1,r2,r3,r1") }
       });
       const [r1, r2, r3] = tom.Hand;
 
@@ -149,10 +149,10 @@ describe(Game, () => {
 
     it("playing 29 > points makes a melt happen", () => {
       const { tom, eileen, game } = setupGame({
-        tom: { initialHand: unplayedSet("r10,r11,r12") }
+        tom: { initialHand: unplayedSet("r10,r11,r12,r1") }
       });
 
-      tom.play({ to: new Set([...tom.Hand].filter(RegularTile.Match)) });
+      tom.play({ to: new Set(playedSet("r10,r11,r12")) });
 
       tom.endTurn();
 
@@ -161,10 +161,10 @@ describe(Game, () => {
 
     it("more tiles can be played after a meld", () => {
       const { tom, eileen, hannah, game } = setupGame({
-        tom: { initialHand: unplayedSet("r10,r11,r12,r1,r2,r3") }
+        tom: { initialHand: unplayedSet("r10,r11,r12,r1,r2,r3,r1") }
       });
 
-      const [r10, r11, r12, ...six] = tom.Hand.Items.filter(RegularTile.Match);
+      const [r10, r11, r12] = tom.Hand.Items.filter(RegularTile.Match);
 
       tom.play({ to: new Set([r10, r11, r12]) });
 
@@ -175,7 +175,7 @@ describe(Game, () => {
       eileen.draw();
       hannah.draw();
 
-      tom.play({ to: new Set(six) });
+      tom.play({ to: new Set(playedSet("r1,r2,r3")) });
 
       tom.endTurn();
 
@@ -361,6 +361,27 @@ describe(Game, () => {
       tom.endTurn();
 
       expect(game.Over).toBe(true);
+    });
+
+    it("prevents actions if the game is over", () => {
+      const { tom, eileen, hannah } = setupGame({
+        tom: { initialHand: unplayedSet("r10,u10,b10,r1,u1,b1") }
+      });
+
+      tom.play({
+        to: new Set(playedSet("r10,u10,b10"))
+      });
+
+      tom.endTurn();
+
+      eileen.draw();
+      hannah.draw();
+
+      tom.play({ to: new Set(playedSet("r1,u1,b1")) });
+
+      tom.endTurn();
+
+      expect(() => eileen.draw()).toThrowError("Game is over!");
     });
   });
 
