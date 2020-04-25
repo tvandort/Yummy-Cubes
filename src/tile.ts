@@ -166,11 +166,12 @@ export class Collection<T extends Id> {
   private items: T[];
 
   constructor(items: T[]) {
-    this.items = items;
+    this.items = items.map((item) => item);
   }
 
-  push(item: T) {
-    this.items.push(item);
+  push(item: T | T[]) {
+    const items = Array.isArray(item) ? item : [item];
+    this.items.push(...items);
   }
 
   at(identifier: number | string) {

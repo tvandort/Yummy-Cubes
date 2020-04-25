@@ -88,6 +88,10 @@ class GamePlayer implements IGamePlayer {
   removeFromHand(tiles: PlayedTile[]) {
     this.hand.remove(tiles);
   }
+
+  giveUp() {
+    this.hand.push(this.game.giveUp(this));
+  }
 }
 
 // TODO AddToSet
@@ -146,11 +150,13 @@ function isDrewMessage(
 type MeldMessage = PlayerMessage &
   (AddFromHand | DrewCard | AddToSet | SwapInSets | MoveToNewSet);
 
-class Board {
+export class Board {
   private sets: PersistedSet[];
+  private history: PersistedSet[][];
 
-  constructor() {
-    this.sets = [];
+  constructor(sets?: PersistedSet[]) {
+    this.sets = sets ?? [];
+    this.history = [];
   }
 
   get Count() {
@@ -162,7 +168,8 @@ class Board {
   }
 
   push(set: Set) {
-    this.sets.push(new PersistedSet(set.Items, v4()));
+    this.history.push(this.sets);
+    this.sets = [...this.sets, new PersistedSet(set.Items, v4())];
   }
 
   at(index: number) {
@@ -188,13 +195,25 @@ class Board {
     }
   }
 
-  replace(set: PersistedSet) {
-    const index = this.indexOf(set);
-    if (index !== undefined) {
-      this.sets[index] = set;
-    } else {
+  replace(replacement: PersistedSet) {
+    this.history.push(this.sets);
+
+    if (this.sets.map((set) => set.Id).includes(replacement.Id) === false) {
       throw new Error("That set doesn't exist.");
     }
+
+    this.sets = this.sets.map((set) => {
+      if (set.Id === replacement.Id) {
+        return replacement;
+      } else {
+        return set;
+      }
+    });
+  }
+
+  reset() {
+    this.sets = this.history[0];
+    this.history = [];
   }
 }
 
@@ -206,12 +225,14 @@ export class Game {
   private board: Board;
   private currentPlayerActions: MeldMessage[];
   private meldTracker: { [key: string]: boolean };
+  private tilesPlayedByPlayer: PlayedTile[];
 
   constructor({ players, bag }: { players: Player[]; bag?: Bag }) {
     this.bag = bag ?? new Bag();
     this.playerIndex = 0;
     this.board = new Board();
     this.currentPlayerActions = [];
+    this.tilesPlayedByPlayer = [];
 
     this.players = players.map((player) => {
       const gamePlayer = new GamePlayer({ player, game: this });
@@ -234,7 +255,7 @@ export class Game {
     return this.players[this.playerIndex];
   }
 
-  get Sets() {
+  get Board() {
     return this.board;
   }
 
@@ -278,6 +299,7 @@ export class Game {
           );
         }
         player.removeFromHand(set.Items);
+        this.tilesPlayedByPlayer.push(...set.Items);
         this.board.push(set);
         break;
       }
@@ -298,6 +320,7 @@ export class Game {
         }
 
         player.removeFromHand(tilesPlayedFromHand);
+        this.tilesPlayedByPlayer.push(...tilesPlayedFromHand);
         this.board.replace(set);
         break;
       }
@@ -399,6 +422,18 @@ export class Game {
 
     this.playerIndex = (this.playerIndex + 1) % this.players.length;
     this.currentPlayerActions = [];
+    this.tilesPlayedByPlayer = [];
+  }
+
+  giveUp(player: GamePlayer) {
+    this.turnCheck(player);
+    const returnTiles = this.tilesPlayedByPlayer;
+
+    this.board.reset();
+
+    this.endTurn(player);
+
+    return [...returnTiles, this.bag.draw(), this.bag.draw(), this.bag.draw()];
   }
 
   private turnCheck(player: GamePlayer) {
