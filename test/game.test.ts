@@ -313,7 +313,7 @@ describe(Game, () => {
 
     it("returns tiles to user", () => {
       const exampleSet = unplayedSet("r10,r11,r12,r9,r5,r6,r7,r8,r1,r2,r3");
-      const { tom, game } = setupGame({
+      const { tom } = setupGame({
         tom: { initialHand: exampleSet }
       });
 
@@ -328,6 +328,39 @@ describe(Game, () => {
 
       expect(tom.Hand.contains(exampleSet)).toBe(true);
       expect(tom.Hand.Count - exampleSet.length).toBe(3);
+    });
+
+    it("disallows giving up without having previously touched tiles", () => {
+      const { tom } = setupGame();
+
+      expect(() => tom.giveUp()).toThrowError(
+        "Tom cannot give up until they've moved tiles."
+      );
+    });
+  });
+
+  describe("game has been won", () => {
+    it("knows when the game is over", () => {
+      const { game, tom, eileen, hannah } = setupGame({
+        tom: { initialHand: unplayedSet("r10,u10,b10,r1,u1,b1") }
+      });
+
+      expect(game.Over).toBe(false);
+
+      tom.play({
+        to: new Set(playedSet("r10,u10,b10"))
+      });
+
+      tom.endTurn();
+
+      eileen.draw();
+      hannah.draw();
+
+      tom.play({ to: new Set(playedSet("r1,u1,b1")) });
+
+      tom.endTurn();
+
+      expect(game.Over).toBe(true);
     });
   });
 

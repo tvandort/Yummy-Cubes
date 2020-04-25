@@ -131,24 +131,28 @@ interface DrewCard {
   type: "DREW";
 }
 
+interface GiveUp {
+  type: "GIVE_UP";
+}
+
 interface PlayerMessage {
   player: GamePlayer;
 }
 
 function isAddMessage(
-  message: MeldMessage
+  message: PlayerActions
 ): message is AddFromHand & PlayerMessage {
   return message.type === "ADD";
 }
 
 function isDrewMessage(
-  message: MeldMessage
+  message: PlayerActions
 ): message is DrewCard & PlayerMessage {
   return message.type === "DREW";
 }
 
-type MeldMessage = PlayerMessage &
-  (AddFromHand | DrewCard | AddToSet | SwapInSets | MoveToNewSet);
+type PlayerActions = PlayerMessage &
+  (AddFromHand | DrewCard | AddToSet | SwapInSets | MoveToNewSet | GiveUp);
 
 export class Board {
   private sets: PersistedSet[];
@@ -212,8 +216,10 @@ export class Board {
   }
 
   reset() {
-    this.sets = this.history[0];
-    this.history = [];
+    if (this.history.length > 0) {
+      this.sets = this.history[0];
+      this.history = [];
+    }
   }
 }
 
@@ -223,7 +229,7 @@ export class Game {
   private playersById: { [key: string]: GamePlayer | undefined };
   private bag: Bag;
   private board: Board;
-  private currentPlayerActions: MeldMessage[];
+  private currentPlayerActions: PlayerActions[];
   private meldTracker: { [key: string]: boolean };
   private tilesPlayedByPlayer: PlayedTile[];
 
@@ -285,10 +291,9 @@ export class Game {
     return tile;
   }
 
-  meld(message: MeldMessage) {
+  meld(message: PlayerActions) {
     const { player } = message;
     this.turnCheck(player);
-    this.currentPlayerActions.push(message);
 
     switch (message.type) {
       case "ADD": {
@@ -390,6 +395,8 @@ export class Game {
         throw new Error("Undefined action!");
       }
     }
+
+    this.currentPlayerActions.push(message);
   }
 
   endTurn(player: GamePlayer) {
@@ -397,7 +404,7 @@ export class Game {
 
     if (
       this.meldTracker[player.Id] === false &&
-      this.currentPlayerActions.filter((message) => !isDrewMessage(message))
+      this.currentPlayerActions.filter((message) => isAddMessage(message))
         .length > 0
     ) {
       const sum = this.currentPlayerActions
@@ -427,13 +434,29 @@ export class Game {
 
   giveUp(player: GamePlayer) {
     this.turnCheck(player);
+
+    if (
+      this.currentPlayerActions.filter(({ type }) => type !== "DREW").length < 1
+    ) {
+      throw new Error(
+        `${player.Name} cannot give up until they've moved tiles.`
+      );
+    }
+
     const returnTiles = this.tilesPlayedByPlayer;
+    const penaltyTiles = [this.bag.draw(), this.bag.draw(), this.bag.draw()];
+
+    this.currentPlayerActions.push({ type: "GIVE_UP", player });
 
     this.board.reset();
 
     this.endTurn(player);
 
-    return [...returnTiles, this.bag.draw(), this.bag.draw(), this.bag.draw()];
+    return [...returnTiles, ...penaltyTiles];
+  }
+
+  get Over() {
+    return this.players.some((player) => player.Hand.Count === 0);
   }
 
   private turnCheck(player: GamePlayer) {
