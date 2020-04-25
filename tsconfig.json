@@ -16,6 +16,5 @@
     "lib": ["ES2017", "DOM", "ES2019"],
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules", "out"]
 }
