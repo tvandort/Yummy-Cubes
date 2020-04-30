@@ -13,7 +13,10 @@
     "bootstrap": "lerna bootstrap",
     "postinstall": "yarn bootstrap",
     "test": "yarn jest --watch",
-    "clean": "lerna clean --yes",
+    "test:ci": "yarn jest",
+    "clean": "lerna run clean",
+    "preclean:all": "yarn clean",
+    "clean:all": "lerna clean --yes",
     "dev": "lerna run dev"
   },
   "workspaces": [
