@@ -11,6 +11,10 @@
   },
   "scripts": {
     "dev": "ts-node ./src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "clean": "cross-env rm -rf out"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.2"
   }
 }
