@@ -17,6 +17,7 @@
     "clean": "lerna run clean",
     "preclean:all": "yarn clean",
     "clean:all": "lerna clean --yes",
+    "build": "lerna run build",
     "dev": "lerna run dev"
   },
   "workspaces": [

@@ -144,3 +144,7 @@ lerna-debug.log
 yarn-debug.log
 packages/*/lib
 
+# package builds
+
+packages/*/out/**/*
+

@@ -18,6 +18,7 @@
   },
   "scripts": {
     "test": "yarn jest --watch",
-    "clean": "rm -rf out"
+    "clean": "rm -rf out",
+    "build": "tsc"
   }
 }
