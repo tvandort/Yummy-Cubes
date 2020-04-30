@@ -1,3 +1,3 @@
-import {} from "@yummy-cubes/game";
+import foo from "@yummy-cubes/game";
 
-console.log(foo);
+console.log(foo());
