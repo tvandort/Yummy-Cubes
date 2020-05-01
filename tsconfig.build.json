@@ -3,8 +3,13 @@
     "module": "commonjs",
     "target": "es5",
     "sourceMap": true,
+
     "lib": ["ES2017", "DOM", "ES2019"],
-    "downlevelIteration": true
+    "downlevelIteration": true,
+
+    "noImplicitAny": false,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true
   },
   "exclude": ["node_modules", "out"]
 }

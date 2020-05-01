@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "ts-node ./src/index.ts",
     "build": "tsc -b tsconfig.build.json",
-    "clean": "cross-env rm -rf out"
+    "clean": "cross-env rm -rf out tsconfig.build.tsbuildinfo"
   },
   "devDependencies": {
     "cross-env": "^7.0.2"

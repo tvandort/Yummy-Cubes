@@ -1,14 +1,7 @@
 import { Game, Board } from "../src/game";
 import { Set } from "../src/set";
 import { Player, IPlayerContructor } from "../src/player";
-import {
-  unplayedSet,
-  playedSet,
-  RegularTile,
-  Collection,
-  generateTiles,
-  UnplayedTile
-} from "../src/tile";
+import { unplayedSet, playedSet, RegularTile, Collection } from "../src/tile";
 import { Bag } from "../src/bag";
 
 describe(Game, () => {

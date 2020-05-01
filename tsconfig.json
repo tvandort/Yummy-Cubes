@@ -8,24 +8,3 @@
     }
   }
 }
-// {
-//   "compilerOptions": {
-//     "module": "commonjs",
-//     "esModuleInterop": true,
-//     "allowSyntheticDefaultImports": true,
-//     "target": "es6",
-//     "noImplicitAny": true,
-//     "moduleResolution": "node",
-//     "sourceMap": true,
-//     "outDir": "out",
-//     "baseUrl": ".",
-//     "paths": {
-//       "@yummy-cubes/*": ["packages/*/src"]
-//     },
-//     "strict": true,
-//     "lib": ["ES2017", "DOM", "ES2019"],
-//     "noFallthroughCasesInSwitch": true,
-//     "declaration": true
-//   },
-//   "exclude": ["node_modules", "out"]
-// }
