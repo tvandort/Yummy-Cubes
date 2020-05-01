@@ -18,7 +18,7 @@
     "preclean:all": "yarn clean",
     "clean:all": "lerna clean --yes",
     "build": "lerna run build",
-    "dev": "lerna run dev"
+    "dev": "lerna run --stream --scope @yummy-cubes/server dev"
   },
   "workspaces": [
     "packages/*"
