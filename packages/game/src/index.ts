@@ -1,4 +1,2 @@
-export default function () {
-  console.log("foo");
-  return 1;
-}
+export { Game, Board } from "./game";
+export { Player } from "./player";

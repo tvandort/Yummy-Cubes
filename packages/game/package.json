@@ -2,7 +2,8 @@
   "name": "@yummy-cubes/game",
   "version": "1.0.0",
   "description": "Delicious Cubes.",
-  "main": "out/index.js",
+  "main": "out/index",
+  "types": "out/index",
   "license": "MIT",
   "private": true,
   "files": [
@@ -20,6 +21,6 @@
   "scripts": {
     "test": "yarn jest --watch",
     "clean": "cross-env rm -rf out",
-    "build": "tsc"
+    "build": "tsc -b tsconfig.build.json"
   }
 }
