@@ -2,6 +2,6 @@ const base = require("../../jest.config.base");
 
 module.exports = {
   ...base,
-  name: "game",
-  displayName: "Game"
+  name: "server",
+  displayName: "Server"
 };

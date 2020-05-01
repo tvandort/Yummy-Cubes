@@ -11,7 +11,9 @@
     "ts-node": "^8.9.0"
   },
   "scripts": {
-    "dev": "ts-node ./src/index.ts",
+    "dev": "yarn build -- watch",
+    "test": "yarn jest --watch",
+    "test:ci": "yarn jest",
     "build": "tsc -b tsconfig.build.json",
     "clean": "cross-env rm -rf out tsconfig.build.tsbuildinfo"
   },
