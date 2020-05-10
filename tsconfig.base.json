@@ -16,9 +16,9 @@
     "rootDir": ".",
     "outDir": "out",
     "paths": {
-      "@app/*": ["./app/*"],
+      "@app/*": ["./src/*"],
       "*": ["node_modules/*"]
     }
   },
-  "include": ["app/**/*"]
+  "include": ["src/**/*"]
 }
