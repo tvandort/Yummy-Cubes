@@ -12,13 +12,13 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user connected?");
+  console.log("A user connected!");
 
   socket.on("message", (message) => {
     console.log(message);
   });
 });
 
-server.listen(3000, () => {
-  console.log("listening on port 3000");
+server.listen(3001, () => {
+  console.log("listening on port 3001");
 });

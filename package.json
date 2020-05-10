@@ -7,6 +7,7 @@
   "private": true,
   "devDependencies": {
     "@types/jest": "^25.2.1",
+    "@types/react": "^16.9.34",
     "@types/uuid": "^7.0.2",
     "concurrently": "^5.2.0",
     "nodemon": "^2.0.3",
@@ -16,12 +17,14 @@
   "scripts": {
     "test-once": "yarn jest",
     "test": "yarn test-once --watch",
-    "dev": "concurrently -k -p \"[{name}]\" -n \"Compiling,Game Server\" -c \"yellow.bold,cyan.bold\" \"yarn compile:watch\" \"yarn server:watch\" \"yarn client:watch\"",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"Compiling,Game Server,Client\" -c \"yellow.bold,cyan.bold,green.bold\" \"yarn compile:watch\" \"yarn server:watch\" \"yarn client:watch\"",
     "compile": "tsc -p tsconfig.base.json",
     "compile:watch": "yarn compile --watch",
-    "server:watch": "nodemon out/app/index.js",
-    "client:watch": "next ./app",
-    "clean": "rm -rf out"
+    "server:watch": "nodemon out/src/server/index.js",
+    "server": "node out/src/server/index.js",
+    "client:watch": "next",
+    "clean": "rm -rf out",
+    "something": "concurrently -k -p \"[{name}]\" -n \"Client\" -c \"yellow.bold,cyan.bold,green.bold\" \"yarn client:watch\""
   },
   "dependencies": {
     "@types/express": "^4.17.6",

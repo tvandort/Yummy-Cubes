@@ -4,12 +4,22 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+
+    "skipLibCheck": true,
 
     "target": "es6",
     "lib": ["ES2017", "DOM", "ES2019"],
     "noImplicitAny": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "allowJs": true,
+
+    "jsx": "preserve",
+    "jsxFactory": "React.createElement",
 
     "sourceMap": true,
     "baseUrl": ".",

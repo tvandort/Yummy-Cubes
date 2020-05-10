@@ -1,4 +1,14 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["src/**/*", "test/**/*"]
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "esnext"
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
