@@ -1,13 +1,13 @@
-import { Game, Board } from "../../app/game/game";
-import { Set } from "../../app/game/set";
-import { Player, IPlayerContructor } from "../../app/game/player";
+import { Game, Board } from "@app/game/game";
+import { Set } from "@app/game/set";
+import { Player, IPlayerContructor } from "@app/game/player";
 import {
   unplayedSet,
   playedSet,
   RegularTile,
   Collection
-} from "../../app/game/tile";
-import { Bag } from "../../app/game/bag";
+} from "@app/game/tile";
+import { Bag } from "@app/game/bag";
 
 describe(Game, () => {
   it("deals hands to players", () => {

@@ -13,9 +13,11 @@
 
     "sourceMap": true,
     "baseUrl": ".",
+    "rootDir": ".",
     "outDir": "out",
     "paths": {
-      "*": ["node_modules/*", "app/types/*"]
+      "@app/*": ["./app/*"],
+      "*": ["node_modules/*"]
     }
   },
   "include": ["app/**/*", "test/**/*"]
