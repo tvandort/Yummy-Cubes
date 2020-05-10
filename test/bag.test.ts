@@ -1,5 +1,5 @@
-import { Bag } from "../src/bag";
-import { unplayedSet, TileFactory } from "../src/tile";
+import { Bag } from "../app/bag";
+import { unplayedSet, TileFactory } from "../app/tile";
 
 describe(Bag, () => {
   describe("draw", () => {

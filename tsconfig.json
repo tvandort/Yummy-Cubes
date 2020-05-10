@@ -3,18 +3,20 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es6",
-    "noImplicitAny": true,
     "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "out",
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*", "src/types/*"]
-    },
-    "strict": true,
+
+    "target": "es6",
     "lib": ["ES2017", "DOM", "ES2019"],
-    "noFallthroughCasesInSwitch": true
+    "noImplicitAny": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "out",
+    "paths": {
+      "*": ["node_modules/*", "app/types/*"]
+    }
   },
-  "include": ["src/**/*", "test/**/*"]
+  "include": ["app/**/*", "test/**/*"]
 }

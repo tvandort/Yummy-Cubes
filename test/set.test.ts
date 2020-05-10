@@ -1,5 +1,5 @@
-import { mustBeThree, isRun, isGroup, Set } from "../src/set";
-import { playedSet } from "../src/tile";
+import { mustBeThree, isRun, isGroup, Set } from "../app/set";
+import { playedSet } from "../app/tile";
 
 describe("rules", () => {
   describe("Require 3 tiles", () => {
