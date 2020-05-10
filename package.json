@@ -8,12 +8,19 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/uuid": "^7.0.2",
+    "concurrently": "^5.2.0",
+    "nodemon": "^2.0.3",
     "ts-jest": "^25.4.0",
     "typescript": "^3.8.3"
   },
   "scripts": {
-    "start": "node out/index.js",
-    "test": "yarn jest --watch"
+    "test-once": "yarn jest",
+    "test": "yarn test-once --watch",
+    "dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\" \"yarn compile:watch\" \"yarn serve:watch\"",
+    "compile": "tsc -p tsconfig.base.json",
+    "compile:watch": "yarn compile --watch",
+    "serve:watch": "nodemon out/app/index.js",
+    "clean": "rm -rf out"
   },
   "dependencies": {
     "jest": "^25.3.0",

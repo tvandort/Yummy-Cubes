@@ -1,24 +1,4 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
-
-    "target": "es6",
-    "lib": ["ES2017", "DOM", "ES2019"],
-    "noImplicitAny": true,
-    "strict": true,
-    "noFallthroughCasesInSwitch": true,
-
-    "sourceMap": true,
-    "baseUrl": ".",
-    "rootDir": ".",
-    "outDir": "out",
-    "paths": {
-      "@app/*": ["./app/*"],
-      "*": ["node_modules/*"]
-    }
-  },
+  "extends": "./tsconfig.base.json",
   "include": ["app/**/*", "test/**/*"]
 }
