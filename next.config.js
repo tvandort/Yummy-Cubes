@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    API_URL: "http://localhost",
-    WEBSOCKET_PORT: "3001"
+    API_URL: process.env.API_URL,
+    WEBSOCKET_PORT: process.env.WEBSOCKET_PORT
   }
 };
