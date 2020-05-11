@@ -12,10 +12,12 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("A user connected!");
+  console.log("user joined");
+  io.emit("server_message", "user joined");
 
   socket.on("message", (message) => {
     console.log(message);
+    io.emit("message", message);
   });
 });
 
