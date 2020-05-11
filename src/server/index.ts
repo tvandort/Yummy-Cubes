@@ -2,7 +2,9 @@ import express from "express";
 import { Server } from "http";
 import socketio from "socket.io";
 import { resolve } from "path";
+import { config } from "dotenv";
 
+config();
 const app = express();
 const server = new Server(app);
 const io = socketio(server);
@@ -21,8 +23,8 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 3001;
+const WEBSOCKET_PORT = process.env.WEBSOCKET_PORT || 3003;
 
-server.listen(PORT, () => {
-  console.log(`listening on port ${PORT}`);
+server.listen(WEBSOCKET_PORT, () => {
+  console.log(`listening on port ${WEBSOCKET_PORT}`);
 });

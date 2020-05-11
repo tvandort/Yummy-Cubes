@@ -25,12 +25,13 @@
     "client:watch": "next",
     "clean": "rm -rf out",
     "build": "yarn compile && next build",
-    "start": "yarn server"
+    "start": "concurrently -k -p \"[{name}]\" -n \"Game Server,Client\" -c \"cyan.bold,green.bold\" \"yarn server\" \"yarn next start\""
   },
   "dependencies": {
     "@types/express": "^4.17.6",
     "@types/socket.io": "^2.1.4",
     "@types/socket.io-client": "^1.4.32",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jest": "^25.3.0",
     "next": "^9.3.6",
