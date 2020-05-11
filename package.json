@@ -24,7 +24,7 @@
     "client:watch": "next",
     "clean": "rm -rf out",
     "build": "yarn compile && next build",
-    "start": "concurrently -k -p \"[{name}]\" -n \"Client\" -c \"green.bold\"  \"yarn next start -p $PORT\""
+    "start": "concurrently -k -p \"[{name}]\" -n \"Game Server,Client\" -c \"cyan.bold,green.bold\" \"yarn server:watch\" \"yarn next start -p $PORT\""
   },
   "dependencies": {
     "@types/express": "^4.17.6",
