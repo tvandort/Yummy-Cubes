@@ -24,7 +24,7 @@
     "server": "node out/src/server/index.js",
     "client:watch": "next",
     "clean": "rm -rf out",
-    "build": "yarn compile"
+    "build": "yarn compile && next build"
   },
   "dependencies": {
     "@types/express": "^4.17.6",
