@@ -8,7 +8,7 @@ const server = new Server(app);
 const io = socketio(server);
 
 app.get("/", (req, res) => {
-  res.sendFile(resolve("./app/index.html"));
+  res.sendFile(resolve("./public/api-status.html"));
 });
 
 io.on("connection", (socket) => {
@@ -21,6 +21,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001, () => {
-  console.log("listening on port 3001");
+const PORT = process.env.PORT || 3001;
+
+server.listen(PORT, () => {
+  console.log(`listening on port ${PORT}`);
 });
