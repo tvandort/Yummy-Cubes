@@ -1,9 +1,7 @@
 import express from "express";
 import { Server } from "http";
 import socketio from "socket.io";
-import { config } from "dotenv";
 
-config();
 const app = express();
 const server = new Server(app);
 const io = socketio(server);
