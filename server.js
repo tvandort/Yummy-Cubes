@@ -19,11 +19,9 @@ apiRouter.get("hello-world", (req, res) => {
 
 // sockets
 io.on("connection", (socket) => {
-  console.log("user joined");
   io.emit("server_message", "user joined");
 
   socket.on("message", (message) => {
-    console.log(message);
     io.emit("message", message);
   });
 });

@@ -5,13 +5,15 @@ export default function Messages() {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
   const handleSend = () => {
-    socket.emit("message", text);
+    messageSocket.emit("message", text);
     setText("");
   };
 
-  const { socket } = useSocket("message", (message) =>
+  const { socket: messageSocket } = useSocket("message", (message) =>
     setMessages([...messages, message])
   );
+
+  useSocket("server_message", (message) => setMessages([...messages, message]));
 
   return (
     <div>
