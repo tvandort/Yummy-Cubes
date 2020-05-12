@@ -25,7 +25,7 @@ describe(generateTiles, () => {
       const tiles = generateTiles();
       const coloredTiles = tiles
         .filter(RegularTile.Match)
-        .filter((tile) => tile.Color == color);
+        .filter((tile) => tile.Color === color);
       expect(coloredTiles.length).toBe(26);
     });
 
@@ -33,7 +33,7 @@ describe(generateTiles, () => {
       const tiles = generateTiles();
       const facedTiles = tiles
         .filter(RegularTile.Match)
-        .filter((tile) => tile.Face == face);
+        .filter((tile) => tile.Face === face);
       expect(facedTiles.length).toBe(8);
     });
 

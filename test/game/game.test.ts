@@ -35,7 +35,7 @@ describe(Game, () => {
     });
 
     it("disallows drawing if tiles have been moved this turn", () => {
-      const { tom, game } = setupGame({
+      const { tom } = setupGame({
         tom: { initialHand: playedSet("r10,o10,b10,u10,r1") }
       });
 

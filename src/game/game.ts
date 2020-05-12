@@ -145,12 +145,6 @@ function isAddMessage(
   return message.type === "ADD";
 }
 
-function isDrewMessage(
-  message: PlayerActions
-): message is DrewCard & PlayerMessage {
-  return message.type === "DREW";
-}
-
 type PlayerActions = PlayerMessage &
   (AddFromHand | DrewCard | AddToSet | SwapInSets | MoveToNewSet | GiveUp);
 
@@ -467,7 +461,7 @@ export class Game {
     if (this.Over) {
       throw new Error("Game is over!");
     }
-    if (player != this.CurrentPlayer) {
+    if (player !== this.CurrentPlayer) {
       throw Error(`Not ${player.Name}'s turn!`);
     }
   }
