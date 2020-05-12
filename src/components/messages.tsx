@@ -4,7 +4,8 @@ import { useSocket } from "use-socketio";
 export default function Messages() {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
-  const handleSend = () => {
+  const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     messageSocket.emit("message", text);
     setText("");
   };
@@ -30,12 +31,14 @@ export default function Messages() {
         ))}
       </div>
 
-      <input
-        type="text"
-        onChange={(e) => setText(e.target.value)}
-        value={text}
-      />
-      <button onClick={handleSend}>Send</button>
+      <form onSubmit={handleSend}>
+        <input
+          type="text"
+          onChange={(e) => setText(e.target.value)}
+          value={text}
+        />
+        <button type="submit">Send</button>
+      </form>
     </div>
   );
 }
