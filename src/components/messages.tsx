@@ -9,11 +9,10 @@ export default function Messages() {
     setText("");
   };
 
+  useSocket("server_message", (message) => setMessages([...messages, message]));
   const { socket: messageSocket } = useSocket("message", (message) =>
     setMessages([...messages, message])
   );
-
-  useSocket("server_message", (message) => setMessages([...messages, message]));
 
   return (
     <div>
