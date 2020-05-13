@@ -17,7 +17,7 @@ export default function Messages() {
 
   return (
     <div>
-      <label>chat</label>
+      <div>chat</div>
       <div
         style={{
           minHeight: "200px",

@@ -3,7 +3,7 @@
     "browser": true,
     "es6": true
   },
-  "extends": ["react-app"],
+  "extends": ["plugin:jsx-a11y/recommended", "react-app"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
