@@ -11,5 +11,8 @@ module.exports = {
     }
 
     return config;
+  },
+  experimental: {
+    reactRefresh: false // Disabling the fast refresh for now because enabling it turns off type error reporting.
   }
 };
