@@ -27,7 +27,8 @@
       }
     ],
     "no-unused-vars": "off",
-    "react/prop-types": "error"
+    "react/prop-types": "error",
+    "@typescript-eslint/no-unused-vars": "off"
   },
   "settings": {
     "react": {
