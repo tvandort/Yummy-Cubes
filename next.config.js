@@ -1,3 +1,5 @@
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
+
 module.exports = {
   webpack: (config, { dev }) => {
     if (dev) {
@@ -8,11 +10,10 @@ module.exports = {
         enforce: "pre",
         options: { failOnWarning: true, failOnError: true }
       });
+
+      config.plugins.push(new ForkTsCheckerWebpackPlugin({ async: false }));
     }
 
     return config;
-  },
-  experimental: {
-    reactRefresh: false // Disabling the fast refresh for now because enabling it turns off type error reporting.
   }
 };
