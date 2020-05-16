@@ -1,17 +1,17 @@
-import { useState } from "react";
-import { useSocket } from "use-socketio";
+import { useState } from 'react';
+import { useSocket } from 'use-socketio';
 
 export default function Messages() {
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [messages, setMessages] = useState<string[]>([]);
   const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    messageSocket.emit("message", text);
-    setText("");
+    messageSocket.emit('message', text);
+    setText('');
   };
 
-  useSocket("server_message", (message) => setMessages([...messages, message]));
-  const { socket: messageSocket } = useSocket("message", (message) =>
+  useSocket('server_message', (message) => setMessages([...messages, message]));
+  const { socket: messageSocket } = useSocket('message', (message) =>
     setMessages([...messages, message])
   );
 
@@ -21,10 +21,10 @@ export default function Messages() {
       <div>chat</div>
       <div
         style={{
-          minHeight: "200px",
-          width: "300px",
-          border: "solid 1px",
-          borderColor: "black"
+          minHeight: '200px',
+          width: '300px',
+          border: 'solid 1px',
+          borderColor: 'black'
         }}
       >
         {messages.map((m, index) => (

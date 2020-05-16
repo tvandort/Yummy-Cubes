@@ -1,8 +1,8 @@
-import { UnplayedTile, Collection, PlayedTile, toCounts } from "./tile";
-import { Bag } from "./bag";
-import { IPlayer, Player } from "./player";
-import { Set, PersistedSet } from "./set";
-import { v4 } from "uuid";
+import { UnplayedTile, Collection, PlayedTile, toCounts } from './tile';
+import { Bag } from './bag';
+import { IPlayer, Player } from './player';
+import { Set, PersistedSet } from './set';
+import { v4 } from 'uuid';
 
 interface IGamePlayer extends IPlayer {
   Hand: Collection<UnplayedTile>;
@@ -57,7 +57,7 @@ class GamePlayer implements IGamePlayer {
     if (isBetweenSets(movement)) {
       if (PersistedSet.IsSet(movement.to)) {
         this.game.meld({
-          type: "SWAP_TILES_IN_SETS",
+          type: 'SWAP_TILES_IN_SETS',
           a: movement.to,
           b: movement.from,
           player: this
@@ -67,13 +67,13 @@ class GamePlayer implements IGamePlayer {
     } else {
       if (PersistedSet.IsSet(movement.to)) {
         this.game.meld({
-          type: "ADD_TO_SET",
+          type: 'ADD_TO_SET',
           set: movement.to,
           player: this
         });
       } else {
         this.game.meld({
-          type: "ADD",
+          type: 'ADD',
           player: this,
           set: movement.to
         });
@@ -106,33 +106,33 @@ class GamePlayer implements IGamePlayer {
 // Check that the counts between both sets are equal.
 // Replace sets at each index.
 interface AddFromHand {
-  type: "ADD";
+  type: 'ADD';
   set: Set;
 }
 
 interface AddToSet {
-  type: "ADD_TO_SET";
+  type: 'ADD_TO_SET';
   set: PersistedSet;
 }
 
 interface SwapInSets {
-  type: "SWAP_TILES_IN_SETS";
+  type: 'SWAP_TILES_IN_SETS';
   a: PersistedSet;
   b: PersistedSet;
 }
 
 interface MoveToNewSet {
-  type: "MOVE_TO_NEW_SET";
+  type: 'MOVE_TO_NEW_SET';
   from: PersistedSet;
   to: Set;
 }
 
 interface DrewCard {
-  type: "DREW";
+  type: 'DREW';
 }
 
 interface GiveUp {
-  type: "GIVE_UP";
+  type: 'GIVE_UP';
 }
 
 interface PlayerMessage {
@@ -142,7 +142,7 @@ interface PlayerMessage {
 function isAddMessage(
   message: PlayerActions
 ): message is AddFromHand & PlayerMessage {
-  return message.type === "ADD";
+  return message.type === 'ADD';
 }
 
 type PlayerActions = PlayerMessage &
@@ -271,7 +271,7 @@ export class Game {
 
   draw(player: GamePlayer) {
     this.turnCheck(player);
-    const drawMessage: DrewCard & PlayerMessage = { player, type: "DREW" };
+    const drawMessage: DrewCard & PlayerMessage = { player, type: 'DREW' };
 
     if (this.currentPlayerActions.length > 0) {
       throw new Error(
@@ -292,7 +292,7 @@ export class Game {
     this.turnCheck(player);
 
     switch (message.type) {
-      case "ADD": {
+      case 'ADD': {
         const { set } = message;
         if (player.Hand.contains(set.Items) === false) {
           throw new Error(
@@ -305,7 +305,7 @@ export class Game {
         break;
       }
 
-      case "ADD_TO_SET": {
+      case 'ADD_TO_SET': {
         const { set } = message;
         const originalSet = this.board.find(set.Id);
         const tilesPlayedFromHand = set.without(originalSet.Items);
@@ -326,7 +326,7 @@ export class Game {
         break;
       }
 
-      case "SWAP_TILES_IN_SETS": {
+      case 'SWAP_TILES_IN_SETS': {
         const { a, b } = message;
         const oldA = this.board.find(a.Id);
         const oldB = this.board.find(b.Id);
@@ -357,7 +357,7 @@ export class Game {
         break;
       }
 
-      case "MOVE_TO_NEW_SET": {
+      case 'MOVE_TO_NEW_SET': {
         const { from, to } = message;
         const oldSet = this.board.find(from.Id);
 
@@ -388,7 +388,7 @@ export class Game {
       }
 
       default: {
-        throw new Error("Undefined action!");
+        throw new Error('Undefined action!');
       }
     }
 
@@ -416,7 +416,7 @@ export class Game {
     }
 
     if (this.board.valid() === false) {
-      throw new Error("Board is not in a valid state!");
+      throw new Error('Board is not in a valid state!');
     }
 
     if (this.currentPlayerActions.length < 1) {
@@ -434,7 +434,7 @@ export class Game {
     this.turnCheck(player);
 
     if (
-      this.currentPlayerActions.filter(({ type }) => type !== "DREW").length < 1
+      this.currentPlayerActions.filter(({ type }) => type !== 'DREW').length < 1
     ) {
       throw new Error(
         `${player.Name} cannot give up until they've moved tiles.`
@@ -444,7 +444,7 @@ export class Game {
     const returnTiles = this.tilesPlayedByPlayer;
     const penaltyTiles = [this.bag.draw(), this.bag.draw(), this.bag.draw()];
 
-    this.currentPlayerActions.push({ type: "GIVE_UP", player });
+    this.currentPlayerActions.push({ type: 'GIVE_UP', player });
 
     this.board.reset();
 
@@ -459,7 +459,7 @@ export class Game {
 
   private turnCheck(player: GamePlayer) {
     if (this.Over) {
-      throw new Error("Game is over!");
+      throw new Error('Game is over!');
     }
     if (player !== this.CurrentPlayer) {
       throw Error(`Not ${player.Name}'s turn!`);

@@ -6,22 +6,22 @@ import {
   JokerTile,
   unplayedSet,
   TileFactory
-} from "@app/game/tile";
+} from '@app/game/tile';
 
 describe(generateTiles, () => {
-  describe("generated bag", () => {
-    it("generates 106 tiles", () => {
+  describe('generated bag', () => {
+    it('generates 106 tiles', () => {
       const tiles = generateTiles();
       expect(tiles.length).toBe(106);
     });
 
-    it("contains 2 jokers", () => {
+    it('contains 2 jokers', () => {
       const tiles = generateTiles();
       const jokers = tiles.filter(JokerTile.Match);
       expect(jokers.length).toBe(2);
     });
 
-    it.each(colors)("contains 26 tiles that are %p", (color) => {
+    it.each(colors)('contains 26 tiles that are %p', (color) => {
       const tiles = generateTiles();
       const coloredTiles = tiles
         .filter(RegularTile.Match)
@@ -29,7 +29,7 @@ describe(generateTiles, () => {
       expect(coloredTiles.length).toBe(26);
     });
 
-    it.each(faces)("contains 8 tiles that are %p", (face) => {
+    it.each(faces)('contains 8 tiles that are %p', (face) => {
       const tiles = generateTiles();
       const facedTiles = tiles
         .filter(RegularTile.Match)
@@ -37,7 +37,7 @@ describe(generateTiles, () => {
       expect(facedTiles.length).toBe(8);
     });
 
-    it("contains two of each tile by identity", () => {
+    it('contains two of each tile by identity', () => {
       const tiles = generateTiles();
       const tilesCount: { [key: string]: number } = {};
       for (let { Color: color, Face: face } of tiles.filter(
@@ -54,22 +54,22 @@ describe(generateTiles, () => {
     });
   });
 
-  describe("generate manual sequence", () => {
-    describe("failure", () => {
-      it("throws on invalid sequences", () => {
+  describe('generate manual sequence', () => {
+    describe('failure', () => {
+      it('throws on invalid sequences', () => {
         try {
-          unplayedSet("o22");
+          unplayedSet('o22');
         } catch (e) {
-          expect(e.message).toEqual("Sequence has invalid identifiers.");
+          expect(e.message).toEqual('Sequence has invalid identifiers.');
         }
       });
     });
 
-    describe("success", () => {
-      it("generates tiles", () => {
-        const tiles = unplayedSet("r1,j");
+    describe('success', () => {
+      it('generates tiles', () => {
+        const tiles = unplayedSet('r1,j');
         expect(tiles[0]).toEqual(
-          TileFactory.create({ face: "1", color: "RED" })
+          TileFactory.create({ face: '1', color: 'RED' })
         );
         expect(tiles[1]).toEqual(TileFactory.Joker());
       });

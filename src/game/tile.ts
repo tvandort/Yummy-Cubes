@@ -1,66 +1,66 @@
-import { Id } from "./id";
+import { Id } from './id';
 
-type Color = "RED" | "BLACK" | "BLUE" | "ORANGE";
+type Color = 'RED' | 'BLACK' | 'BLUE' | 'ORANGE';
 type Face =
-  | "1"
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-  | "10"
-  | "11"
-  | "12"
-  | "13";
+  | '1'
+  | '2'
+  | '3'
+  | '4'
+  | '5'
+  | '6'
+  | '7'
+  | '8'
+  | '9'
+  | '10'
+  | '11'
+  | '12'
+  | '13';
 
-const JOKER = "JOKER";
-type Joker = "JOKER";
+const JOKER = 'JOKER';
+type Joker = 'JOKER';
 
 type TileFace = Face | Joker;
 type TileColor = Color | Joker;
 
-type ShortColor = "r" | "b" | "u" | "o";
+type ShortColor = 'r' | 'b' | 'u' | 'o';
 
 export type UnplayedTile = RegularTile | JokerTile;
 export type PlayedTile = RegularTile | PlayedJokerTile;
 
-export const colors: Color[] = ["RED", "BLACK", "BLUE", "ORANGE"];
+export const colors: Color[] = ['RED', 'BLACK', 'BLUE', 'ORANGE'];
 export const faces: Face[] = [
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "10",
-  "11",
-  "12",
-  "13"
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10',
+  '11',
+  '12',
+  '13'
 ];
 
 const SHORT_COLOR_TO_COLOR: { [key: string]: Color } = {
-  r: "RED",
-  b: "BLACK",
-  u: "BLUE",
-  o: "ORANGE"
+  r: 'RED',
+  b: 'BLACK',
+  u: 'BLUE',
+  o: 'ORANGE'
 };
 
 const COLOR_TO_SHORT_COLOR: { [key: string]: ShortColor } = {
-  RED: "r",
-  BLACK: "b",
-  BLUE: "u",
-  ORANGE: "o"
+  RED: 'r',
+  BLACK: 'b',
+  BLUE: 'u',
+  ORANGE: 'o'
 };
 
 export class JokerTile implements Id {
   get Id(): string {
-    return "joker";
+    return 'joker';
   }
 
   get IsJoker(): Boolean {
@@ -82,7 +82,7 @@ export class TileFactory {
       return new RegularTile({ face, color });
     }
 
-    throw new Error("Some unknown tile.");
+    throw new Error('Some unknown tile.');
   }
 
   static Joker() {
@@ -175,7 +175,7 @@ export class Collection<T extends Id> {
   }
 
   at(identifier: number | string) {
-    if (typeof identifier === "number") {
+    if (typeof identifier === 'number') {
       return this.items[identifier];
     } else {
       return this.items.filter((item) => item.Id === identifier)[0];
@@ -262,13 +262,13 @@ export const generateTiles: () => (RegularTile | JokerTile)[] = () => {
 const unplayedExpression = /^j$|^([rbou](13|12|11|10|[0-9]))$/;
 export const unplayedSet = (sequence: string) => {
   const tiles: (RegularTile | JokerTile)[] = [];
-  const identifiers = sequence.split(",");
+  const identifiers = sequence.split(',');
   for (let identifier of identifiers) {
     if (unplayedExpression.test(identifier) === false) {
-      throw new Error("Sequence has invalid identifiers.");
+      throw new Error('Sequence has invalid identifiers.');
     }
 
-    if (identifier.toUpperCase() === "J") {
+    if (identifier.toUpperCase() === 'J') {
       tiles.push(new JokerTile());
     } else {
       let colorChar = identifier[0];
@@ -284,13 +284,13 @@ export const unplayedSet = (sequence: string) => {
 const playedExpression = /^j?[rbou](13|12|11|10|[0-9])$/;
 export const playedSet = (sequence: string) => {
   const tiles: (PlayedJokerTile | RegularTile)[] = [];
-  const identifiers = sequence.split(",");
+  const identifiers = sequence.split(',');
   for (let identifier of identifiers) {
     if (playedExpression.test(identifier) === false) {
-      throw new Error("Sequence has invalid identifiers.");
+      throw new Error('Sequence has invalid identifiers.');
     }
 
-    const isJoker = identifier.startsWith("j");
+    const isJoker = identifier.startsWith('j');
 
     const jokerOffset = isJoker ? 1 : 0;
     let colorChar = identifier[0 + jokerOffset];

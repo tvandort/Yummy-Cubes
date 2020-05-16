@@ -1,4 +1,4 @@
-import { Collection, PlayedTile } from "./tile";
+import { Collection, PlayedTile } from './tile';
 
 interface Rule {
   (tiles: PlayedTile[]): Boolean;

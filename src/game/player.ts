@@ -1,5 +1,5 @@
-import { v4 } from "uuid";
-import { UnplayedTile } from "./tile";
+import { v4 } from 'uuid';
+import { UnplayedTile } from './tile';
 
 export interface IPlayer {
   Name: string;

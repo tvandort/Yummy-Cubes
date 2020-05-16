@@ -1,5 +1,5 @@
-import { UnplayedTile, generateTiles } from "./tile";
-import { shuffle } from "./random";
+import { UnplayedTile, generateTiles } from './tile';
+import { shuffle } from './random';
 export class Bag {
   private tiles: UnplayedTile[];
   constructor({
@@ -15,7 +15,7 @@ export class Bag {
       return this.tiles.shift()!;
     }
 
-    throw new Error("Out of tiles.");
+    throw new Error('Out of tiles.');
   }
 
   drawHand() {
@@ -47,6 +47,6 @@ export class Bag {
   }
 
   toString() {
-    return this.tiles.map((tile) => tile.Id).join(",");
+    return this.tiles.map((tile) => tile.Id).join(',');
   }
 }

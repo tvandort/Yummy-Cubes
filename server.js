@@ -1,10 +1,10 @@
-const express = require("express");
-const next = require("next");
-const socketio = require("socket.io");
-const { createServer } = require("http");
+const express = require('express');
+const next = require('next');
+const socketio = require('socket.io');
+const { createServer } = require('http');
 
 const port = process.env.PORT || 3000;
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
 const app = express();
 const nextHandler = nextApp.getRequestHandler();
@@ -13,21 +13,21 @@ const io = socketio(server);
 
 // api
 const apiRouter = express.Router();
-apiRouter.get("hello-world", (req, res) => {
-  res.send("Hello, world!");
+apiRouter.get('hello-world', (req, res) => {
+  res.send('Hello, world!');
 });
 
 // sockets
-io.on("connection", (socket) => {
-  io.emit("server_message", "user joined");
+io.on('connection', (socket) => {
+  io.emit('server_message', 'user joined');
 
-  socket.on("message", (message) => {
-    io.emit("message", message);
+  socket.on('message', (message) => {
+    io.emit('message', message);
   });
 });
 
 nextApp.prepare().then(() => {
-  app.all("*", (req, res) => {
+  app.all('*', (req, res) => {
     return nextHandler(req, res);
   });
 
