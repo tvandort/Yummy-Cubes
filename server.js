@@ -44,7 +44,9 @@ io.on('connection', (socket) => {
     const player = gameState.players.filter(
       (player) => player.name === move.name
     )[0];
-    player.position = move.position;
+    if (player) {
+      player.position = move.position;
+    }
 
     io.emit('game', gameState);
   });
