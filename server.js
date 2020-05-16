@@ -32,6 +32,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('add_player', (name) => {
+    console.log(`adding ${name}`);
     if (!gameState.players.some((player) => player.name === name)) {
       gameState.players.push({ name, position: { x: random(), y: random() } });
     }

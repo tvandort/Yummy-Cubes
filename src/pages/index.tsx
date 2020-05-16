@@ -41,8 +41,11 @@ const NamePicker = ({ onSelect }: { onSelect: (name: string) => void }) => {
 
 const Player = ({ name, x, y }: { name: string; x: number; y: number }) => {
   return (
-    <div className="w-20 h-20 bg-gray-800 absolute" style={{ top: y, left: x }}>
-      {name}
+    <div
+      className="w-20 h-20 bg-gray-800 absolute flex justify-center items-center text-lg text-white p-2"
+      style={{ top: y, left: x }}
+    >
+      <div className="text-center">{name}</div>
     </div>
   );
 };
