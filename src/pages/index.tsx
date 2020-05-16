@@ -75,13 +75,15 @@ const Room = ({ name }: { name: string }) => {
         >
           <input
             type="text"
-            className="py-2 px-3 flex-grow"
+            className="py-2 px-3 w-auto min-w-0 flex-grow"
             onChange={({ target: { value } }) => {
               setNewMessage(value);
             }}
             value={newMessage}
           />
-          <button className="bg-blue-500 text-white w-1/4">Submit</button>
+          <button className="hidden sm:block bg-blue-500 text-white w-1/4">
+            Submit
+          </button>
         </form>
       </div>
     </div>
