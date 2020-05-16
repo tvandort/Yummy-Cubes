@@ -119,7 +119,7 @@ const Room = ({ name }: { name: string }) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            messagesSocket.emit('message', { user: name, message: newMessage });
+            messagesSocket.emit('message', { name, message: newMessage });
             setNewMessage('');
           }}
           className="w-full flex justify-between border-t-2"
