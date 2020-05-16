@@ -1,6 +1,6 @@
 import { SocketIOProvider, useSocket } from 'use-socketio';
 import Messages from '@app/components/messages';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocalStorage } from '@app/hooks/useLocalStorage';
 
 enum Page {
@@ -39,25 +39,46 @@ const NamePicker = ({ onSelect }: { onSelect: (name: string) => void }) => {
   );
 };
 
+const Player = ({ name, x, y }: { name: string; x: number; y: number }) => {
+  return (
+    <div className="w-20 h-20 bg-gray-800 absolute" style={{ top: y, left: x }}>
+      {name}
+    </div>
+  );
+};
+
 const Room = ({ name }: { name: string }) => {
   const [newMessage, setNewMessage] = useState('');
-  const [messages, setMessages] = useState<{ user: string; message: string }[]>(
+  const [messages, setMessages] = useState<{ name: string; message: string }[]>(
     []
   );
-  const { socket } = useSocket('message', (message) =>
+  const { socket: messagesSocket } = useSocket('message', (message) =>
     setMessages([...messages, message])
   );
+  const [players, setPlayers] = useState<
+    { name: string; position: { x: number; y: number } }[]
+  >([]);
+
+  const { socket: gameSocket } = useSocket('game', (gameState) => {
+    setPlayers(gameState.players);
+  });
+
+  useEffect(() => {
+    gameSocket.emit('add_player', name);
+  }, [gameSocket, name]);
   return (
     <div className="h-full w-full flex justify-between">
-      <div className="bg-blue-100 h-full flex-grow">
-        This will be where the players start
+      <div className="bg-blue-100 h-full flex-grow relative">
+        {players.map(({ name, position: { x, y } }) => {
+          return <Player name={name} x={x} y={y} key={name} />;
+        })}
       </div>
       <div className="bg-red-100 w-1/4 h-full flex flex-col justify-between border-l">
         <div className="px-4">
-          {messages.map(({ user, message }, index) => {
+          {messages.map(({ name, message }, index) => {
             return (
               <div key={index}>
-                <span className="font-bold">{user}:</span>
+                <span className="font-bold">{name}:</span>
                 &nbsp;
                 <span>{message}</span>
               </div>
@@ -68,7 +89,7 @@ const Room = ({ name }: { name: string }) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            socket.emit('message', { user: name, message: newMessage });
+            messagesSocket.emit('message', { user: name, message: newMessage });
             setNewMessage('');
           }}
           className="w-full flex justify-between border-t-2"

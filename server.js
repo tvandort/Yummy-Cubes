@@ -17,12 +17,26 @@ apiRouter.get('hello-world', (req, res) => {
   res.send('Hello, world!');
 });
 
+const gameState = {
+  players: []
+};
+
+const random = () => Math.random() * 1000;
+
 // sockets
 io.on('connection', (socket) => {
-  io.emit('server_message', 'user joined');
+  io.emit('message', { name: 'system', message: 'user joined' });
 
   socket.on('message', (args) => {
     io.emit('message', args);
+  });
+
+  socket.on('add_player', (name) => {
+    if (!gameState.players.some((player) => player.name === name)) {
+      gameState.players.push({ name, position: { x: random(), y: random() } });
+    }
+
+    io.emit('game', gameState);
   });
 });
 
