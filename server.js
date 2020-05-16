@@ -39,6 +39,15 @@ io.on('connection', (socket) => {
 
     io.emit('game', gameState);
   });
+
+  socket.on('move', (move) => {
+    const player = gameState.players.filter(
+      (player) => player.name === move.name
+    )[0];
+    player.position = move.position;
+
+    io.emit('game', gameState);
+  });
 });
 
 nextApp.prepare().then(() => {

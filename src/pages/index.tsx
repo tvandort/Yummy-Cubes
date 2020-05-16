@@ -2,6 +2,7 @@ import { SocketIOProvider, useSocket } from 'use-socketio';
 import Messages from '@app/components/messages';
 import { useState, useEffect } from 'react';
 import { useLocalStorage } from '@app/hooks/useLocalStorage';
+import Draggable from 'react-draggable';
 
 enum Page {
   Name
@@ -39,14 +40,28 @@ const NamePicker = ({ onSelect }: { onSelect: (name: string) => void }) => {
   );
 };
 
-const Player = ({ name, x, y }: { name: string; x: number; y: number }) => {
+const Player = ({
+  name,
+  position,
+  onPositionChange
+}: {
+  name: string;
+  position: { x: number; y: number };
+  onPositionChange: (position: { x: number; y: number }) => void;
+}) => {
   return (
-    <div
-      className="w-20 h-20 bg-gray-800 absolute flex justify-center items-center text-lg text-white p-2"
-      style={{ top: y, left: x }}
+    <Draggable
+      position={position}
+      onDrag={(e, data) => {
+        onPositionChange({ x: data.x, y: data.y });
+      }}
     >
-      <div className="text-center">{name}</div>
-    </div>
+      <div>
+        <div className="w-20 h-20 bg-gray-800 flex justify-center items-center text-lg text-white p-2">
+          <div className="text-center">{name}</div>
+        </div>
+      </div>
+    </Draggable>
   );
 };
 
@@ -61,7 +76,6 @@ const Room = ({ name }: { name: string }) => {
   const [players, setPlayers] = useState<
     { name: string; position: { x: number; y: number } }[]
   >([]);
-
   const { socket: gameSocket } = useSocket('game', (gameState) => {
     setPlayers(gameState.players);
   });
@@ -69,11 +83,24 @@ const Room = ({ name }: { name: string }) => {
   useEffect(() => {
     gameSocket.emit('add_player', name);
   }, [gameSocket, name]);
+
   return (
     <div className="h-full w-full flex justify-between">
-      <div className="bg-blue-100 h-full flex-grow relative">
-        {players.map(({ name, position: { x, y } }) => {
-          return <Player name={name} x={x} y={y} key={name} />;
+      <div className="bg-blue-100 h-full flex-grow">
+        {players.map(({ name, position }) => {
+          return (
+            <Player
+              name={name}
+              position={position}
+              key={name}
+              onPositionChange={(position) => {
+                gameSocket.emit('move', {
+                  name,
+                  position
+                });
+              }}
+            />
+          );
         })}
       </div>
       <div className="bg-red-100 w-1/4 h-full flex flex-col justify-between border-l">
