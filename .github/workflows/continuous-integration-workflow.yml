@@ -1,0 +1,20 @@
+name: Node.js CI
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: nodenv/node-version
+        uses: nodenv/actions-node-version@v2.0.4
+        id: nodenv
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '${{ steps.nodenv.outputs.node-version }}'
+      - run: yarn --frozen-lockfile
+      - run: yarn test:ci
+        env:
+          CI: true
