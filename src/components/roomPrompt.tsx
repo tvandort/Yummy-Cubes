@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import randomWords from 'random-words';
 
 export default function RoomPrompt({ onGo }: { onGo: (name: string) => void }) {
   const [code, setCode] = useState('');
+
+  const placeholder = randomWords(3).join('-');
 
   return (
     <form
@@ -22,6 +25,7 @@ export default function RoomPrompt({ onGo }: { onGo: (name: string) => void }) {
           onChange={({ target: { value } }) => {
             setCode(value);
           }}
+          placeholder={`e.g. ${placeholder}`}
         />
         <button
           type="submit"
