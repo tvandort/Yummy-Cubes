@@ -1,7 +1,7 @@
 import { render, fireEvent } from '@testing-library/react';
 import NamePrompt from '@app/components/namePrompt';
 
-test('renders name input', () => {
+test('allows name to be changed', () => {
   const handleChangeName = jest.fn();
   const { getByLabelText, getByText } = render(
     <NamePrompt onGo={handleChangeName} />

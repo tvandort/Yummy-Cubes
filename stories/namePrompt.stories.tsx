@@ -4,4 +4,4 @@ export default {
   title: 'Name Prompt'
 };
 
-export const Example = () => <NamePrompt onChange={action(`Go! clicked:`)} />;
+export const Example = () => <NamePrompt onGo={action(`Go! clicked:`)} />;
