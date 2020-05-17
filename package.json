@@ -56,8 +56,8 @@
     "webpack": "4.42.x"
   },
   "scripts": {
-    "test-once": "yarn jest",
-    "test": "yarn test-once --watch",
+    "test:ci": "yarn jest",
+    "test": "yarn jest --watch",
     "dev": "yarn compile && yarn lint && yarn client:watch",
     "compile": "tsc",
     "client:watch": "nodemon",
