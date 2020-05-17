@@ -38,7 +38,10 @@ export default function NamePrompt({ onGo }: { onGo: (name: string) => void }) {
             setName(value);
           }}
         />
-        <button className="border-t border-r border-b border-blue-600 bg-blue-600 text-white px-3 py-2 flex-no-wrap">
+        <button
+          type="submit"
+          className="border-t border-r border-b border-blue-600 bg-blue-600 text-white px-3 py-2 flex-no-wrap"
+        >
           Go!
         </button>
       </div>
