@@ -17,18 +17,7 @@ export default function Index() {
         />
       )}
       {page === 'code' && (
-        <div className="flex flex-col items-center justify-center space-y-4">
-          <RoomPrompt onGo={() => {}} name={name} />
-          <label htmlFor="createNewRoom" className="text-lg font-bold">
-            or create a new room:
-          </label>
-          <button
-            id="createNewRoom"
-            className="font-bold text-white bg-blue-600 px-3 py-2"
-          >
-            Create New Room
-          </button>
-        </div>
+        <RoomPrompt onJoin={() => {}} name={name} onCreate={() => {}} />
       )}
     </div>
   );

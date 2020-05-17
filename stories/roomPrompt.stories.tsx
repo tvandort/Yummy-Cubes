@@ -6,5 +6,9 @@ export default {
 };
 
 export const Example = () => (
-  <RoomPrompt onGo={action('Go clicked: ')} name="Karkat" />
+  <RoomPrompt
+    onJoin={action('Go clicked: ')}
+    name="Karkat"
+    onCreate={action('Create clicked')}
+  />
 );
