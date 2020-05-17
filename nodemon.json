@@ -2,6 +2,7 @@
   "$schema": "http://json.schemastore.org/nodemon",
   "verbose": true,
   "ignore": ["node_modules", ".next"],
-  "watch": ["server.js"],
-  "ext": "js json"
+  "watch": ["server", "game"],
+  "ext": "js ts json",
+  "exec": "ts-node --project tsconfig.server.json src/server/index.ts"
 }

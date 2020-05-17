@@ -1,7 +1,7 @@
-const express = require('express');
-const next = require('next');
-const socketio = require('socket.io');
-const { createServer } = require('http');
+import next from 'next';
+import socketio from 'socket.io';
+import { createServer } from 'http';
+import express from 'express';
 
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -11,13 +11,9 @@ const nextHandler = nextApp.getRequestHandler();
 const server = createServer(app);
 const io = socketio(server);
 
-// api
-const apiRouter = express.Router();
-apiRouter.get('hello-world', (req, res) => {
-  res.send('Hello, world!');
-});
-
-const gameState = {
+const gameState: {
+  players: { name: string; position: { x: number; y: number } }[];
+} = {
   players: []
 };
 
@@ -25,6 +21,7 @@ const random = () => Math.random() * 1000;
 
 // sockets
 io.on('connection', (socket) => {
+  console.log('someone connected');
   io.emit('message', { name: 'system', message: 'user joined' });
 
   socket.on('message', (args) => {
@@ -61,3 +58,5 @@ nextApp.prepare().then(() => {
     console.log(`> Ready on http://localhost:${port}`);
   });
 });
+
+console.log('foo');

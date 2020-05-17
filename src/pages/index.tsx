@@ -1,12 +1,7 @@
 import { SocketIOProvider, useSocket } from 'use-socketio';
-import Messages from '@app/components/messages';
 import { useState, useEffect } from 'react';
 import { useLocalStorage } from '@app/hooks/useLocalStorage';
 import Draggable from 'react-draggable';
-
-enum Page {
-  Name
-}
 
 const NamePicker = ({ onSelect }: { onSelect: (name: string) => void }) => {
   const [name, setName] = useState('');
@@ -86,7 +81,7 @@ const Room = ({ name }: { name: string }) => {
 
   return (
     <div className="h-full w-full flex justify-between">
-      <div className="bg-blue-100 h-full flex-grow">
+      <div className="bg-blue-100 h-full flex-grow overflow-x-scroll overflow-y-scroll">
         {players.map(({ name, position }) => {
           return (
             <Player
@@ -104,7 +99,7 @@ const Room = ({ name }: { name: string }) => {
         })}
       </div>
       <div className="bg-red-100 w-1/4 h-full flex flex-col justify-between border-l">
-        <div className="px-4">
+        <div className="px-4 overflow-y-scroll">
           {messages.map(({ name, message }, index) => {
             return (
               <div key={index}>
@@ -142,12 +137,6 @@ const Room = ({ name }: { name: string }) => {
 };
 
 export default function () {
-  // return (
-  //   <SocketIOProvider url="/">
-  //     <Messages />
-  //   </SocketIOProvider>
-  // );
-
   const [name, setName] = useLocalStorage('name', '');
 
   return !Boolean(name) ? (

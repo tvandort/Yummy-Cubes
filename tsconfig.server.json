@@ -1,0 +1,13 @@
+// This feel like a ridiculous hack unfortunately. Nextjs modifies tsconfig.json
+// to have { "module": "esnext" } which is incompatible with express.
+// Next seems to work just fine using { "module": "commonjs" } which does work
+// with express so we override that here.
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "outDir": "out",
+    "noEmit": false
+  },
+  "include": ["src/server"]
+}

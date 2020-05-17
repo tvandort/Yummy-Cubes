@@ -20,6 +20,7 @@
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "tailwindcss": "^1.4.6",
+    "ts-node": "^8.10.1",
     "use-socketio": "^2.0.1",
     "uuid": "^7.0.3"
   },
@@ -44,10 +45,11 @@
     "test": "yarn test-once --watch",
     "dev": "yarn compile && yarn lint && yarn client:watch",
     "compile": "tsc",
-    "compile:watch": "yarn compile --watch",
-    "client:watch": "nodemon -w server.js server.js",
-    "build": "yarn compile && next build",
-    "start": "NODE_ENV=production node server.js",
+    "client:watch": "nodemon",
+    "build:server": "yarn compile --project tsconfig.server.json",
+    "build:next": "next build",
+    "build": "yarn build:next && yarn build:server",
+    "start": "NODE_ENV=production node out/index.js",
     "lint": "eslint --fix --ext .js,.ts,.tsx ."
   }
 }
