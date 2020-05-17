@@ -8,6 +8,8 @@ Install [yarn](https://classic.yarnpkg.com/lang/en/).
 
 Run `yarn` then `yarn dev`.
 
+Run `yarn storybook` to see component previews.
+
 ## Deploy
 
 Each PR should create a preview deploy on Heroku.
