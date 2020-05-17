@@ -1,42 +1,26 @@
 import { useState } from 'react';
 
-const placeholderNames = [
-  'John',
-  'Jade',
-  'Rose',
-  'Dave',
-  'Jake',
-  'Roxy',
-  'Dirk',
-  'Jane'
-];
-
-const randomInt = (max: number) => Math.floor(Math.random() * Math.floor(max));
-
-const randomName = () => placeholderNames[randomInt(placeholderNames.length)];
-
-export default function NamePrompt({ onGo }: { onGo: (name: string) => void }) {
-  const [name, setName] = useState('');
+export default function RoomPrompt({ onGo }: { onGo: (name: string) => void }) {
+  const [code, setCode] = useState('');
 
   return (
     <form
       className="flex flex-col text-center items-center space-y-4"
       onSubmit={(e) => {
         e.preventDefault();
-        onGo(name);
+        onGo(code);
       }}
     >
-      <label className="font-bold text-xl" htmlFor="nameInput">
-        What's your name?
+      <label className="font-bold text-xl" htmlFor="roomCodeInput">
+        Have a room code?
       </label>
       <div className="flex">
         <input
-          id="nameInput"
           type="text"
+          id="roomCodeInput"
           className="border px-3 py-2"
-          placeholder={`e.g. ${randomName()}`}
           onChange={({ target: { value } }) => {
-            setName(value);
+            setCode(value);
           }}
         />
         <button
