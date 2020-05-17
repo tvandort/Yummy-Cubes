@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import randomWords from 'random-words';
 
-export default function RoomPrompt({ onGo }: { onGo: (name: string) => void }) {
+export default function RoomPrompt({
+  onGo,
+  name
+}: {
+  onGo: (code: string) => void;
+  name: string;
+}) {
   const [code, setCode] = useState('');
 
   const placeholder = randomWords(3).join('-');
@@ -14,8 +20,12 @@ export default function RoomPrompt({ onGo }: { onGo: (name: string) => void }) {
         onGo(code);
       }}
     >
-      <label className="font-bold text-xl" htmlFor="roomCodeInput">
-        Have a room code?
+      <label
+        className="font-bold text-xl flex flex-col space-y-2"
+        htmlFor="roomCodeInput"
+      >
+        <span>Hi, {name}!</span>
+        <span>If you have a room code enter it below:</span>
       </label>
       <div className="flex">
         <input

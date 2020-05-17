@@ -5,4 +5,6 @@ export default {
   title: 'Room Prompt'
 };
 
-export const Example = () => <RoomPrompt onGo={action('Go clicked: ')} />;
+export const Example = () => (
+  <RoomPrompt onGo={action('Go clicked: ')} name="Karkat" />
+);
