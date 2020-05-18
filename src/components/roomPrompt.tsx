@@ -1,14 +1,13 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import randomWords from 'random-words';
 
 export default function RoomPrompt({
   onJoin,
-  onCreate,
-  name
+  onCreate
 }: {
   onJoin: (code: string) => void;
   onCreate: () => void;
-  name: string;
 }) {
   const [code, setCode] = useState('');
 
@@ -21,7 +20,7 @@ export default function RoomPrompt({
   }, []);
 
   return (
-    <div className="flex flex-col items-center space-y-4">
+    <div className="flex flex-col items-center space-y-20">
       <form
         className="flex flex-col text-center items-center space-y-4"
         onSubmit={(e) => {
@@ -29,12 +28,8 @@ export default function RoomPrompt({
           onJoin(code);
         }}
       >
-        <label
-          className="font-bold text-xl flex flex-col space-y-2"
-          htmlFor="roomCodeInput"
-        >
-          <span>Hi, {name}!</span>
-          <span>If you have a room code enter it below:</span>
+        <label className="font-bold text-xl" htmlFor="roomCodeInput">
+          If you have a room code enter it below:
         </label>
         <div className="flex">
           <input

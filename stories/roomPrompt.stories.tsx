@@ -8,7 +8,6 @@ export default {
 export const Example = () => (
   <RoomPrompt
     onJoin={action('Go clicked: ')}
-    name="Karkat"
     onCreate={action('Create clicked')}
   />
 );

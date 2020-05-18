@@ -8,8 +8,17 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
   testPathIgnorePatterns: ['/node_modules/', '/.next/', '/out/'],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest',
+    '^.+\\.tsx?$': 'ts-jest',
     '^.+\\.css$': '<rootDir>/jest.cssTransform.js'
   },
-  transformIgnorePatterns: ['/node_modules/', '^.+\\.module\\.(css|sass|scss)$']
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  transformIgnorePatterns: [
+    '/node_modules/',
+    '^.+\\.module\\.(css|sass|scss)$'
+  ],
+  globals: {
+    'ts-jest': {
+      tsConfig: 'tsconfig.test.json'
+    }
+  }
 };

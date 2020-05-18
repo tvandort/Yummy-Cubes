@@ -16,9 +16,7 @@ export default function Index() {
           }}
         />
       )}
-      {page === 'code' && (
-        <RoomPrompt onJoin={() => {}} name={name} onCreate={() => {}} />
-      )}
+      {page === 'code' && <RoomPrompt onJoin={() => {}} onCreate={() => {}} />}
     </div>
   );
 }
