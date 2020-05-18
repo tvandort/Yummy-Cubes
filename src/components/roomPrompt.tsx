@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import randomWords from 'random-words';
 
 export default function RoomPrompt({
@@ -12,7 +12,13 @@ export default function RoomPrompt({
 }) {
   const [code, setCode] = useState('');
 
-  const placeholder = randomWords(3).join('-');
+  const [placeholder, setPlaceholder] = useState('');
+
+  useEffect(() => {
+    // Needed because otherwise the SRR renders two different values.
+    // NextJS isn't a fan of that.
+    setPlaceholder(randomWords(3).join('-'));
+  }, []);
 
   return (
     <div className="flex flex-col items-center space-y-4">
