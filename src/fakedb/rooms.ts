@@ -4,6 +4,7 @@ export interface Room {
 
 export class Rooms {
   private rooms: { [key: string]: Room };
+  private length: number;
 
   constructor({ rooms }: { rooms: Room[] } = { rooms: [] }) {
     const init: { [key: string]: Room } = {};
@@ -11,6 +12,8 @@ export class Rooms {
       rooms[room.id] = room;
       return rooms;
     }, init);
+
+    this.length = rooms.length;
   }
 
   add(room: Room) {
@@ -19,6 +22,20 @@ export class Rooms {
     }
 
     this.rooms[room.id] = room;
+    this.length++;
+  }
+
+  remove(room: Room) {
+    if (room.id in rooms === false) {
+      throw new Error("Room doens't exist.");
+    }
+
+    delete this.rooms[room.id];
+    this.length--;
+  }
+
+  get Length() {
+    return this.length;
   }
 }
 

@@ -1,7 +1,15 @@
+// Don't use aliased imports in this file. Unfortunately it doesn't seem to work.
+// That might be due to how next bootstraps. Maybe that aliasing isn't set up
+// until some process early in the pipeline starts / builds.
 import next from 'next';
 import socketio from 'socket.io';
 import { createServer } from 'http';
 import express from 'express';
+import * as D from 'io-ts/lib/Decoder';
+
+import { validator } from './validator';
+import { RoomsController } from './roomsController';
+import { Rooms } from '../fakedb/rooms';
 
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -49,7 +57,14 @@ io.on('connection', (socket) => {
   });
 });
 
+const fooDec = D.type({
+  test: D.literal('test')
+});
+
 nextApp.prepare().then(() => {
+  const rooms = new Rooms();
+  const roomsController = new RoomsController({ rooms });
+  app.get('/foo', validator(fooDec));
   app.all('*', (req, res) => {
     return nextHandler(req, res);
   });
@@ -58,5 +73,3 @@ nextApp.prepare().then(() => {
     console.log(`> Ready on http://localhost:${port}`);
   });
 });
-
-console.log('foo');
