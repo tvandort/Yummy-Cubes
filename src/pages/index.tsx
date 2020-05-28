@@ -16,7 +16,14 @@ export default function Index() {
           }}
         />
       )}
-      {page === 'code' && <RoomPrompt onJoin={() => {}} onCreate={() => {}} />}
+      {page === 'code' && (
+        <RoomPrompt
+          onJoin={() => {}}
+          onCreate={() => {
+            fetch('/api/rooms', { method: 'POST' });
+          }}
+        />
+      )}
     </div>
   );
 }

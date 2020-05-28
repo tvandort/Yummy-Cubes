@@ -15,9 +15,7 @@ import socketio from 'socket.io';
 import { createServer } from 'http';
 import express from 'express';
 
-import { validator } from './validator';
-import { RoomsController } from './roomsController';
-import { Rooms } from '../fakedb/rooms';
+import routes from './routes';
 
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -65,14 +63,9 @@ io.on('connection', (socket) => {
   });
 });
 
-const fooDec = D.type({
-  test: D.literal('test')
-});
-
 nextApp.prepare().then(() => {
-  const rooms = new Rooms();
-  const roomsController = new RoomsController({ rooms });
-  app.get('/foo', validator(fooDec));
+  app.use('/api', routes);
+
   app.all('*', (req, res) => {
     return nextHandler(req, res);
   });

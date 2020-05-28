@@ -8,13 +8,13 @@ export class RoomsController {
     this.rooms = rooms;
   }
 
-  newRoom(
+  newRoom = (
     _req: Request<ParamsDictionary, any, { test: 'test' }>,
     res: Response<{ id: string }>
-  ) {
+  ) => {
     const newRoom = { id: 'test' };
     this.rooms.add(newRoom);
 
     res.json({ id: newRoom.id });
-  }
+  };
 }
