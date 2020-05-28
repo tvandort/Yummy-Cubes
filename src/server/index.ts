@@ -1,6 +1,5 @@
-// Don't use aliased imports in this file. Unfortunately it doesn't seem to work.
-// That might be due to how next bootstraps. Maybe that aliasing isn't set up
-// until some process early in the pipeline starts / builds.
+import 'module-alias/register'; // Set up aliased imports.
+
 import next from 'next';
 import socketio from 'socket.io';
 import { createServer } from 'http';
