@@ -1,10 +1,19 @@
-import 'module-alias/register'; // Set up aliased imports.
+// The following line sets up aliased imports. I thought that nextjs would do
+// this for me but it turns out that this is not the case for any code running
+// in a custom server. So many things need to be taken care of manually.
+// The config for this is currently in package.json which means there are
+// Three locations to change if you want to add an alias across all parts of
+// this project.
+// 1. tsconfig.json     - all frontend code and editor.
+// 2. package.json      - all custom sever code.
+// 3. jest.config.json  - all tests
+// 4. .storybook        - In the future, I haven't set this up yet. TODO set this up.
+import 'module-alias/register';
 
 import next from 'next';
 import socketio from 'socket.io';
 import { createServer } from 'http';
 import express from 'express';
-import * as D from 'io-ts/lib/Decoder';
 
 import { validator } from './validator';
 import { RoomsController } from './roomsController';
