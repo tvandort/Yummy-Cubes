@@ -4,10 +4,10 @@
 // The config for this is currently in package.json which means there are
 // Three locations to change if you want to add an alias across all parts of
 // this project.
-// 1. tsconfig.json     - all frontend code and editor.
-// 2. package.json      - all custom sever code.
-// 3. jest.config.json  - all tests
-// 4. .storybook        - In the future, I haven't set this up yet. TODO set this up.
+// 1. tsconfig.json       - all frontend code and editor
+// 2. package.json        - all custom sever code
+// 3. jest.config.json    - all tests
+// 4. .storybook/main.js  - all storybook files
 import 'module-alias/register';
 
 import next from 'next';

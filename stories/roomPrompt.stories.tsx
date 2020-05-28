@@ -1,4 +1,4 @@
-import RoomPrompt from '../src/components/roomPrompt';
+import RoomPrompt from '@app/components/roomPrompt';
 import { action } from '@storybook/addon-actions';
 
 export default {
