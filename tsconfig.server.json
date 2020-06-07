@@ -12,5 +12,5 @@
   // Need to include all directories server imports. This feels hacky, I'm not
   // 100% sure I need to do it or if the import graph can know that.
   // TODO test whether these all need to be here.
-  "include": ["src/server", "src/validators", "src/game", "src/fakedb"]
+  "include": ["src/server", "src/shared", "src/game", "src/fakedb"]
 }

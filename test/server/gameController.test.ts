@@ -1,5 +1,5 @@
 import { RoomsController } from '@app/server/roomsController';
-import { Rooms } from '@app/fakedb/rooms';
+import { Rooms } from '@app/server/fakedb/rooms';
 
 const exampleId = 'example-id';
 

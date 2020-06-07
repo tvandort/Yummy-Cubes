@@ -1,7 +1,10 @@
-import { Rooms } from '@app/fakedb/rooms';
+import { Rooms } from '@app/server/fakedb/rooms';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { Request, Response } from 'express';
-import { NewRoomRequest, NewRoomResponse } from '@app/validators/roomTypes';
+import {
+  NewRoomRequest,
+  NewRoomResponse
+} from '@app/shared/validators/roomTypes';
 
 const handler = <RequestType, ResponseType>(
   fn: (

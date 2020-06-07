@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { RoomsController } from '@app/server/roomsController';
-import { Rooms } from '@app/fakedb/rooms';
-import { newRoomRequestDecoder } from '@app/validators/roomTypes';
+import { Rooms } from '@app/server/fakedb/rooms';
+import { newRoomRequestDecoder } from '@app/shared/validators/roomTypes';
 import { validator } from '@app/server/validator';
-import { generateRoomId } from '@app/validators/generateRoomId';
+import { generateRoomId } from '@app/shared/generateRoomId';
 
 const router = Router();
 
