@@ -5,14 +5,13 @@ import { Tree } from 'fp-ts/lib/Tree';
 
 const ERROR_TAG = 'Left';
 
-export const validator: <T>(
-  decoder: Decoder<T>
-) => RequestHandler<ParamsDictionary, any, T> = (decoder) => (
-  req,
-  res,
-  next
-) => {
+export const validator: <RequestType, ResponseType>(
+  decoder: Decoder<RequestType>
+) => RequestHandler<ParamsDictionary, ResponseType, RequestType> = (
+  decoder
+) => (req, res, next) => {
   const result = decoder.decode(req.body);
+
   if (result._tag === ERROR_TAG) {
     const details: Array<RestError> = getErrorValues(
       result.left
@@ -24,7 +23,7 @@ export const validator: <T>(
       details
     };
 
-    res.status(400).send({ status: 'error', error });
+    res.status(400).send({ status: 'error', error } as any);
   } else {
     next();
   }

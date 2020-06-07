@@ -64,6 +64,9 @@ io.on('connection', (socket) => {
 });
 
 nextApp.prepare().then(() => {
+  // Parse application/json content and put it in the body as a JSON object.
+  app.use(express.json());
+
   app.use('/api', routes);
 
   app.all('*', (req, res) => {
