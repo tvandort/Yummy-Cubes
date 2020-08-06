@@ -4,33 +4,25 @@ import RoomPrompt from '@app/components/roomPrompt';
 
 test('allows room input', () => {
   const handleGo = jest.fn();
-  const handleCreate = jest.fn();
   const { getByLabelText, getByText } = render(
-    <RoomPrompt onJoin={handleGo} onCreate={handleCreate} />
+    <RoomPrompt onJoin={handleGo} initialRoomId="example-initial-id" />
   );
   const input = getByLabelText(/If you have a room code enter it below:/);
   const go = getByText('Go!');
-  const create = getByText(/Create/);
   const roomCode = 'some-value';
 
   fireEvent.change(input, { target: { value: roomCode } });
   fireEvent.click(go);
 
   expect(handleGo).toHaveBeenCalledWith(roomCode);
-  expect(handleCreate).not.toHaveBeenCalled();
 });
 
-test("buttons don't fire the same events", () => {
-  const handleGo = jest.fn();
-  const handleCreate = jest.fn();
-  const { getByText } = render(
-    <RoomPrompt onJoin={handleGo} onCreate={handleCreate} />
+test('room prompt has placeholder and starts with value', () => {
+  const initialRoomId = 'look-for-me';
+  const { getByPlaceholderText, getByDisplayValue } = render(
+    <RoomPrompt onJoin={jest.fn()} initialRoomId={initialRoomId} />
   );
-  const create = getByText(/Create/);
-  const roomCode = 'some-value';
 
-  fireEvent.click(create);
-
-  expect(handleCreate).toHaveBeenCalled();
-  expect(handleGo).not.toHaveBeenCalledWith(roomCode);
+  expect(getByPlaceholderText('e.g. horse-battery-staple')).toBeTruthy();
+  expect(getByDisplayValue(initialRoomId)).toBeTruthy();
 });

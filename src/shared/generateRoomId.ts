@@ -8,3 +8,7 @@ const randomWord = uniqueRandomArray(
 
 export const generateRoomId = () =>
   `${randomWord()}-${randomWord()}-${randomWord()}`;
+
+export const generateRoomIdNotContainedInList = (roomIds: string[]) => {
+  // TODO
+};

@@ -58,7 +58,8 @@
     "use-socketio": "^2.0.1",
     "uuid": "^7.0.3",
     "webpack": "4.42.x",
-    "word-list": "^3.1.0"
+    "word-list": "^3.1.0",
+    "wretch": "^1.7.2"
   },
   "_moduleAliases": {
     "@app": "./src"

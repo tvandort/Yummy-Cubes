@@ -8,6 +8,6 @@ export default {
 export const Example = () => (
   <RoomPrompt
     onJoin={action('Go clicked: ')}
-    onCreate={action('Create clicked')}
+    initialRoomId="this-is-a-placeholder?"
   />
 );

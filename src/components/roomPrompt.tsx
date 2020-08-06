@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 
 export default function RoomPrompt({
   onJoin,
-  onCreate
+  initialRoomId
 }: {
   onJoin: (code: string) => void;
-  onCreate: () => void;
+  initialRoomId: string;
 }) {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState(initialRoomId);
 
   return (
     <div className="flex flex-col items-center space-y-20">
@@ -26,11 +26,12 @@ export default function RoomPrompt({
           <input
             type="text"
             id="roomCodeInput"
-            className="border px-3 py-2"
+            className="border w-64 px-3 py-2"
             onChange={({ target: { value } }) => {
               setCode(value);
             }}
-            placeholder={`e.g. horse-battery-staple`}
+            placeholder="e.g. horse-battery-staple"
+            value={code}
           />
           <button
             type="submit"
@@ -39,25 +40,6 @@ export default function RoomPrompt({
             Go!
           </button>
         </div>
-      </form>
-      <form
-        className="flex flex-col text-center items-center space-y-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          onCreate();
-        }}
-      >
-        <label htmlFor="createNewRoom" className="text-lg font-bold">
-          or create a new room:
-        </label>
-        <button
-          id="createNewRoom"
-          className="font-bold text-white bg-blue-600 px-3 py-2"
-          onClick={onCreate}
-          type="submit"
-        >
-          Create New Room
-        </button>
       </form>
     </div>
   );
