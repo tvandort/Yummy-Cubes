@@ -18,6 +18,7 @@
     "@types/express": "^4.17.6",
     "@types/express-serve-static-core": "^4.17.7",
     "@types/jest": "^25.2.1",
+    "@types/module-alias": "^2.0.0",
     "@types/react": "^16.9.34",
     "@types/socket.io": "^2.1.4",
     "@types/socket.io-client": "^1.4.32",
@@ -60,9 +61,6 @@
     "webpack": "4.42.x",
     "word-list": "^3.1.0",
     "wretch": "^1.7.2"
-  },
-  "_moduleAliases": {
-    "@app": "./src"
   },
   "scripts": {
     "test:ci": "yarn jest",
