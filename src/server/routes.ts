@@ -16,7 +16,7 @@ const roomsController = new RoomsController({
 router.post(
   '/rooms',
   validator(newRoomRequestDecoder),
-  roomsController.newRoom
+  roomsController.joinRoom
 );
 
 export default router;
