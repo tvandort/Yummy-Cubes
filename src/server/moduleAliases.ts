@@ -16,6 +16,3 @@ import path from 'path';
 // in ../../out. The server index is contained in both one level beneath source.
 // So we can alias @app to the parent directory to have it alias the "root".
 moduleAlias.addAlias('@app', path.join(__dirname, '../'));
-
-console.log(__dirname);
-console.log(process.env.NODE_ENV);
