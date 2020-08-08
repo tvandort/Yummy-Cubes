@@ -17,7 +17,7 @@ export class Rooms {
   }
 
   add(room: Room) {
-    if (room.id in rooms) {
+    if (room.id in this.rooms) {
       throw new Error('Room already exists.');
     }
 
@@ -26,7 +26,7 @@ export class Rooms {
   }
 
   remove(room: Room) {
-    if (room.id in rooms === false) {
+    if (room.id in this.rooms === false) {
       throw new Error("Room doens't exist.");
     }
 
@@ -37,8 +37,13 @@ export class Rooms {
   get Length() {
     return this.length;
   }
+
+  clear() {
+    this.rooms = {};
+    this.length = 0;
+  }
 }
 
-const rooms = new Rooms();
+const _rooms = new Rooms();
 
-export default rooms;
+export default _rooms;
