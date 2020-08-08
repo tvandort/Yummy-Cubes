@@ -13,9 +13,7 @@ describe(useUserIdentity, () => {
     const fn1 = () => 'test-identity-1';
     const fn2 = () => 'test-identity-2';
 
-    const { getByText, rerender, container } = render(
-      <TestComponent generator={fn1} />
-    );
+    const { getByText, rerender } = render(<TestComponent generator={fn1} />);
 
     expect(getByText('test-identity-1')).toBeTruthy();
 

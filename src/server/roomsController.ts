@@ -31,7 +31,7 @@ export class RoomsController {
     this.roomIdGenerator = roomIdGenerator;
   }
 
-  joinRoom = handler<NewRoomRequest, NewRoomResponse>((_req, res) => {
+  joinRoom = handler<NewRoomRequest, NewRoomResponse>((req, res) => {
     const newRoom = { id: this.roomIdGenerator() };
     this.rooms.add(newRoom);
     res.json({ roomId: newRoom.id });
