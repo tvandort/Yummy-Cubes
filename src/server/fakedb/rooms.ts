@@ -1,5 +1,6 @@
 export interface Room {
   id: string;
+  players: { userIdentifier: string }[];
 }
 
 export class Rooms {
@@ -34,6 +35,10 @@ export class Rooms {
     this.length--;
   }
 
+  exists(id: string) {
+    return id in this.rooms;
+  }
+
   get Length() {
     return this.length;
   }
@@ -41,6 +46,14 @@ export class Rooms {
   clear() {
     this.rooms = {};
     this.length = 0;
+  }
+
+  get(id: string) {
+    if (!this.exists(id)) {
+      throw new Error(`Room with Id ${id} does not exist.`);
+    }
+
+    return this.rooms[id];
   }
 }
 

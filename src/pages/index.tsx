@@ -22,7 +22,7 @@ export default function Index({ initialRoomId }: IndexProps) {
     <div className="flex justify-center items-center h-full">
       <RoomPrompt
         onJoin={(code) => {
-          joinRoom({ name: code });
+          joinRoom({ roomId: code });
         }}
         initialRoomId={initialRoomId}
       />

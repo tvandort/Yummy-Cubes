@@ -1,4 +1,4 @@
-import { Rooms } from '@app/server/fakedb/rooms';
+import { Rooms, Room } from '@app/server/fakedb/rooms';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { Request, Response } from 'express';
 import {
@@ -18,22 +18,26 @@ const handler = <RequestType, ResponseType>(
 
 export class RoomsController {
   private rooms: Rooms;
-  private roomIdGenerator: () => string;
 
-  constructor({
-    rooms,
-    roomIdGenerator
-  }: {
-    rooms: Rooms;
-    roomIdGenerator: () => string;
-  }) {
+  constructor({ rooms }: { rooms: Rooms }) {
     this.rooms = rooms;
-    this.roomIdGenerator = roomIdGenerator;
   }
 
   joinRoom = handler<NewRoomRequest, NewRoomResponse>((req, res) => {
-    const newRoom = { id: this.roomIdGenerator() };
-    this.rooms.add(newRoom);
-    res.json({ roomId: newRoom.id });
+    const roomId = req.body.roomId;
+    let code: number;
+    let room: Room;
+    if (this.rooms.exists(roomId)) {
+      room = this.rooms.get(roomId);
+      code = 200;
+    } else {
+      room = { id: roomId, players: [] };
+      this.rooms.add(room);
+      code = 201;
+    }
+
+    room.players.push({ userIdentifier: 'players-id' });
+
+    res.status(code).json({ roomId });
   });
 }

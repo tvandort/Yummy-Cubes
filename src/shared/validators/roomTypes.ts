@@ -1,7 +1,7 @@
 import * as t from 'io-ts/lib/Decoder';
 
 export const newRoomRequestDecoder = t.type({
-  name: t.string
+  roomId: t.string
 });
 export type NewRoomRequest = t.TypeOf<typeof newRoomRequestDecoder>;
 
