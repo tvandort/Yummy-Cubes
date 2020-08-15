@@ -5,6 +5,7 @@ import {
   NewRoomRequest,
   NewRoomResponse
 } from '@app/shared/validators/roomTypes';
+import { IRoomsManager } from './roomsManager';
 
 const handler = <RequestType, ResponseType>(
   fn: (
@@ -17,27 +18,24 @@ const handler = <RequestType, ResponseType>(
 ) => fn(req, res);
 
 export class RoomsController {
-  private rooms: Rooms;
+  private roomsManager: IRoomsManager;
 
-  constructor({ rooms }: { rooms: Rooms }) {
-    this.rooms = rooms;
+  constructor({ roomsManager }: { roomsManager: IRoomsManager }) {
+    this.roomsManager = roomsManager;
   }
 
   joinRoom = handler<NewRoomRequest, NewRoomResponse>((req, res) => {
     const roomId = req.body.roomId;
-    let code: number;
-    let room: Room;
-    if (this.rooms.exists(roomId)) {
-      room = this.rooms.get(roomId);
-      code = 200;
-    } else {
-      room = { id: roomId, players: [] };
-      this.rooms.add(room);
-      code = 201;
+
+    try {
+      const result = this.roomsManager.joinRoom(roomId, 'test-player');
+      if (result.new) {
+        res.status(201).json({ roomId });
+      } else {
+        res.status(200).json({ roomId });
+      }
+    } catch (ex) {
+      res.status(400).statusMessage = (ex as Error).message;
     }
-
-    room.players.push({ userIdentifier: 'players-id' });
-
-    res.status(code).json({ roomId });
   });
 }

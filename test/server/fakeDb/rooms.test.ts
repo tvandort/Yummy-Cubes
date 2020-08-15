@@ -1,4 +1,4 @@
-import { Rooms } from '@app/server/fakedb/rooms';
+import { Rooms, Room } from '@app/server/fakedb/rooms';
 
 describe('Rooms', () => {
   test('adding a room twice causes an exception', () => {
@@ -56,12 +56,13 @@ describe('Rooms', () => {
 
   test('can get room', () => {
     const rooms = new Rooms();
-    rooms.add(makeRoom('test'));
+    rooms.add(makeRoom('test', 'example-1'));
 
     const room = rooms.get('test');
 
     expect(room).toMatchInlineSnapshot(`
-      Object {
+      Room {
+        "code": "example-1",
         "id": "test",
         "players": Array [],
       }
@@ -76,5 +77,6 @@ describe('Rooms', () => {
     );
   });
 
-  const makeRoom = (identifier: string) => ({ id: identifier, players: [] });
+  const makeRoom = (identifier: string, code: string = 'example') =>
+    new Room({ id: identifier, code });
 });

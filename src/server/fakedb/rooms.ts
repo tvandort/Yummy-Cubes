@@ -1,6 +1,41 @@
-export interface Room {
-  id: string;
-  players: { userIdentifier: string }[];
+import { v4 } from 'uuid';
+
+export interface RoomLike {
+  Id: string;
+  Players: { userIdentifier: string }[];
+  Code: string;
+}
+
+export class Room implements RoomLike {
+  private id: string;
+  private players: { userIdentifier: string }[];
+  private code: string;
+
+  constructor({
+    id,
+    code = v4(),
+    players = []
+  }: {
+    code?: string;
+    id: string;
+    players?: { userIdentifier: string }[];
+  }) {
+    this.id = id;
+    this.players = players;
+    this.code = code;
+  }
+
+  get Id() {
+    return this.id;
+  }
+
+  get Players() {
+    return this.players;
+  }
+
+  get Code() {
+    return this.code;
+  }
 }
 
 export class Rooms {
@@ -10,7 +45,7 @@ export class Rooms {
   constructor({ rooms }: { rooms: Room[] } = { rooms: [] }) {
     const init: { [key: string]: Room } = {};
     this.rooms = rooms.reduce((rooms, room) => {
-      rooms[room.id] = room;
+      rooms[room.Id] = room;
       return rooms;
     }, init);
 
@@ -18,20 +53,20 @@ export class Rooms {
   }
 
   add(room: Room) {
-    if (room.id in this.rooms) {
+    if (room.Id in this.rooms) {
       throw new Error('Room already exists.');
     }
 
-    this.rooms[room.id] = room;
+    this.rooms[room.Id] = room;
     this.length++;
   }
 
   remove(room: Room) {
-    if (room.id in this.rooms === false) {
+    if (room.Id in this.rooms === false) {
       throw new Error("Room doens't exist.");
     }
 
-    delete this.rooms[room.id];
+    delete this.rooms[room.Id];
     this.length--;
   }
 

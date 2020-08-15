@@ -1,45 +1,74 @@
 import { RoomsController } from '@app/server/roomsController';
-import { Rooms } from '@app/server/fakedb/rooms';
-import { ParamsDictionary } from 'express-serve-static-core';
+import { Rooms, Room } from '@app/server/fakedb/rooms';
+import { RoomsManager, IRoomsManager } from '@app/server/roomsManager';
+import { Server } from 'socket.io';
 
 const exampleId = 'example-id';
 
 describe('game controller', function () {
   it('responds with OK for a new room player joins to', () => {
-    const rooms = new Rooms();
-    const { controller } = setup({ rooms });
-    const mockRequest = {
-      json: jest.fn().mockReturnThis(),
-      status: jest.fn().mockReturnThis()
-    };
+    const { controller, joinRoom } = setup();
+    const mockResponse = createMockResponse();
+
+    joinRoom.mockReturnValue({ new: true });
 
     controller.joinRoom(
       { body: { roomId: exampleId } } as any,
-      mockRequest as any
+      mockResponse as any
     );
 
-    expect(mockRequest.json).toHaveBeenCalledWith({ roomId: exampleId });
-    expect(rooms.exists(exampleId)).toBeTruthy();
-    const room = rooms.get(exampleId);
-
-    expect(room.players.length).toBe(1);
+    expect(mockResponse.status).toHaveBeenCalledWith(201);
+    expect(mockResponse.json).toHaveBeenCalledWith({ roomId: exampleId });
   });
 
-  it('response OK if the room is not full', () => {
-    const room = { id: 'room-id', players: [] };
-    const { controller } = setup({ rooms: new Rooms({ rooms: [room] }) });
-    const json = jest.fn();
-    controller.joinRoom({} as any, { json } as any);
-    expect(json).toHaveBeenCalledWith({ roomId: exampleId });
+  it('responds with OK for an existing room and a new player joins', () => {
+    const { controller, joinRoom } = setup();
+    const mockResponse = createMockResponse();
+
+    joinRoom.mockReturnValue({ new: false });
+
+    controller.joinRoom(
+      { body: { roomId: exampleId } } as any,
+      mockResponse as any
+    );
+
+    expect(mockResponse.status).toHaveBeenCalledWith(200);
+    expect(mockResponse.json).toHaveBeenCalledWith({ roomId: exampleId });
   });
 
-  const setup = ({ rooms }: { rooms: Rooms } = { rooms: new Rooms() }) => {
+  it('responds with a 400 for a player joining a full room', () => {
+    const { controller, joinRoom } = setup();
+    const mockResponse = createMockResponse();
+    const roomError = 'Room is full';
+
+    joinRoom.mockImplementation(() => {
+      throw new Error(roomError);
+    });
+
+    controller.joinRoom(
+      { body: { roomId: exampleId } } as any,
+      mockResponse as any
+    );
+
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.statusMessage).toEqual(roomError);
+  });
+
+  const createMockResponse = () => ({
+    json: jest.fn().mockReturnThis(),
+    status: jest.fn().mockReturnThis(),
+    statusMessage: ''
+  });
+
+  const setup = () => {
+    const joinRoom = jest.fn();
+    const roomsManager: IRoomsManager = { joinRoom };
     const controller = new RoomsController({
-      rooms
+      roomsManager
     });
 
     return {
-      rooms,
+      joinRoom,
       controller
     };
   };

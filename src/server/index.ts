@@ -8,7 +8,7 @@ import socketio from 'socket.io';
 import { createServer } from 'http';
 import express from 'express';
 
-import routes from './routes';
+import createRouter from './routes';
 
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -60,7 +60,7 @@ nextApp.prepare().then(() => {
   // Parse application/json content and put it in the body as a JSON object.
   app.use(express.json());
 
-  app.use('/api', routes);
+  app.use('/api', createRouter({ server: io }));
 
   app.all('*', (req, res) => {
     return nextHandler(req, res);
