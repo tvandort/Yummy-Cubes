@@ -33,12 +33,13 @@ export default function RoomPrompt({
             placeholder="e.g. horse-battery-staple"
             value={code}
           />
-          <button
+          <a
             type="submit"
             className="border-t border-r border-b border-blue-600 bg-blue-600 text-white px-3 py-2 flex-no-wrap font-bold"
+            href={`room/${code}`}
           >
             Go!
-          </button>
+          </a>
         </div>
       </form>
     </div>
