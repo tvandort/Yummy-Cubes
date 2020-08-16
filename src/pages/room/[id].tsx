@@ -16,7 +16,8 @@ const joinRoom = createPost<NewRoomRequest, NewRoomResponse>(
 
 interface SuccessState {
   state: 'done';
-  roomCode: string;
+  code: string;
+  roomId: string;
 }
 interface ErroredState {
   state: 'errored';
@@ -27,6 +28,10 @@ interface LoadingState {
 }
 
 type JoinState = SuccessState | ErroredState | LoadingState;
+
+const Joined = ({ code, id }: { code: string; id: string }) => {
+  return <div></div>;
+};
 
 // eslint-disable-next-line no-empty-pattern
 export default function Room({}: RoomProps) {
@@ -42,7 +47,7 @@ export default function Room({}: RoomProps) {
         const result = await joinRoom({ roomId: id });
 
         if (!canceled) {
-          setJoinState({ state: 'done', roomCode: result.code });
+          setJoinState({ state: 'done', ...result });
         }
       } catch (ex) {
         if (!canceled) {
@@ -61,7 +66,9 @@ export default function Room({}: RoomProps) {
     <>
       {joinState.state === 'loading' && <div>Joining...</div>}
       {joinState.state === 'errored' && <div>{joinState.message}</div>}
-      {joinState.state === 'done' && <div>You joined!</div>}
+      {joinState.state === 'done' && (
+        <Joined code={joinState.code} id={joinState.roomId} />
+      )}
     </>
   );
 }
