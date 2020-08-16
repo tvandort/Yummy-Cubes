@@ -3,9 +3,8 @@ import { render, fireEvent } from '@testing-library/react';
 import RoomPrompt from '@app/components/roomPrompt';
 
 test('allows room input', () => {
-  const handleGo = jest.fn();
   const { getByLabelText, getByText } = render(
-    <RoomPrompt onJoin={handleGo} initialRoomId="example-initial-id" />
+    <RoomPrompt initialRoomId="example-initial-id" />
   );
   const go = getByText('Go!');
 
@@ -22,7 +21,7 @@ test('allows room input', () => {
 test('room prompt has placeholder and starts with value', () => {
   const initialRoomId = 'look-for-me';
   const { getByPlaceholderText, getByDisplayValue } = render(
-    <RoomPrompt onJoin={jest.fn()} initialRoomId={initialRoomId} />
+    <RoomPrompt initialRoomId={initialRoomId} />
   );
 
   expect(getByPlaceholderText('e.g. horse-battery-staple')).toBeTruthy();
