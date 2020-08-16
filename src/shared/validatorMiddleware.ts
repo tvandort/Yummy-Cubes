@@ -6,6 +6,11 @@ export const validatorMiddleware = <RT>(
 ): ConfiguredMiddleware => (next: FetchLike) => (url, opts) => {
   return next(url, opts).then(async (response) => {
     const clone = response.clone(); // Why do I have to do this?
+
+    if (![200, 201].includes(response.status)) {
+      return clone;
+    }
+
     const json = await response.json();
     const decodingResult = decoder.decode(json);
 

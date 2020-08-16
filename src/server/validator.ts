@@ -29,6 +29,32 @@ export const validator: <RequestType, ResponseType>(
   }
 };
 
+export const cookieValidator: <Cookie>(
+  decoder: Decoder<Cookie>
+) => RequestHandler<ParamsDictionary, Request, Response> = (decoder) => (
+  req,
+  res,
+  next
+) => {
+  const result = decoder.decode(req.cookies);
+
+  if (result._tag === ERROR_TAG) {
+    const details: Array<RestError> = getErrorValues(
+      result.left
+    ).map((message) => ({ code: 'BadArgument', message, details: [] }));
+
+    const error: RestError = {
+      code: 'BadArgument',
+      message: 'Missing player cookie',
+      details
+    };
+
+    res.status(400).send({ status: 'error', error } as any);
+  } else {
+    next();
+  }
+};
+
 export interface RestError {
   code: 'BadArgument';
   message: string;

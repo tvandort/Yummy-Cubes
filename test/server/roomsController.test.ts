@@ -10,7 +10,8 @@ describe('game controller', function () {
     const { controller, joinRoom } = setup();
     const mockResponse = createMockResponse();
 
-    joinRoom.mockReturnValue({ new: true });
+    const code = 'test-code';
+    joinRoom.mockReturnValue({ new: true, code });
 
     controller.joinRoom(
       { body: { roomId: exampleId } } as any,
@@ -18,14 +19,18 @@ describe('game controller', function () {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(201);
-    expect(mockResponse.json).toHaveBeenCalledWith({ roomId: exampleId });
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      roomId: exampleId,
+      code
+    });
   });
 
   it('responds with OK for an existing room and a new player joins', () => {
     const { controller, joinRoom } = setup();
     const mockResponse = createMockResponse();
 
-    joinRoom.mockReturnValue({ new: false });
+    const code = 'test-code';
+    joinRoom.mockReturnValue({ new: false, code });
 
     controller.joinRoom(
       { body: { roomId: exampleId } } as any,
@@ -33,7 +38,10 @@ describe('game controller', function () {
     );
 
     expect(mockResponse.status).toHaveBeenCalledWith(200);
-    expect(mockResponse.json).toHaveBeenCalledWith({ roomId: exampleId });
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      roomId: exampleId,
+      code
+    });
   });
 
   it('responds with a 400 for a player joining a full room', () => {
@@ -57,6 +65,7 @@ describe('game controller', function () {
   const createMockResponse = () => ({
     json: jest.fn().mockReturnThis(),
     status: jest.fn().mockReturnThis(),
+    send: jest.fn().mockReturnThis(),
     statusMessage: ''
   });
 

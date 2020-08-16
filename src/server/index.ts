@@ -7,6 +7,7 @@ import next from 'next';
 import socketio from 'socket.io';
 import { createServer } from 'http';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 
 import createRouter from './routes';
 
@@ -59,6 +60,8 @@ io.on('connection', (socket) => {
 nextApp.prepare().then(() => {
   // Parse application/json content and put it in the body as a JSON object.
   app.use(express.json());
+
+  app.use(cookieParser());
 
   app.use('/api', createRouter({ server: io }));
 

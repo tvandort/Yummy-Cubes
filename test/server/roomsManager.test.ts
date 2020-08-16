@@ -42,6 +42,32 @@ describe(RoomsManager, () => {
   });
 
   describe('room is full', () => {
+    test('that error is thrown after 5 people try to join', () => {
+      const roomId = 'example-id';
+      const [player1, player2, player3, player4, player5] = [
+        'player-1',
+        'player-2',
+        'player-3',
+        'player-4',
+        'player-5'
+      ];
+      const socketServer = {} as Server;
+      const room = new Room({
+        id: roomId
+      });
+      const rooms = new Rooms({ rooms: [room] });
+      const manager = new RoomsManager({ rooms, io: socketServer });
+
+      manager.joinRoom(roomId, player1);
+      manager.joinRoom(roomId, player2);
+      manager.joinRoom(roomId, player3);
+      manager.joinRoom(roomId, player4);
+
+      expect(() =>
+        manager.joinRoom(roomId, player5)
+      ).toThrowErrorMatchingInlineSnapshot(`"Room already full."`);
+    });
+
     test('that error is thrown', () => {
       const roomId = 'example-id';
       const players = ['player-1', 'player-2', 'player-3', 'player-4'];

@@ -29,13 +29,18 @@ export class RoomsController {
 
     try {
       const result = this.roomsManager.joinRoom(roomId, 'test-player');
+      const response = {
+        roomId,
+        code: result.code
+      };
       if (result.new) {
-        res.status(201).json({ roomId });
+        res.status(201).json(response);
       } else {
-        res.status(200).json({ roomId });
+        res.status(200).json(response);
       }
     } catch (ex) {
-      res.status(400).statusMessage = (ex as Error).message;
+      res.statusMessage = (ex as Error).message;
+      res.status(400).send();
     }
   });
 }

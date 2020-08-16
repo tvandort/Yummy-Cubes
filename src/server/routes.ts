@@ -2,9 +2,10 @@ import { Router } from 'express';
 import { RoomsController } from '@app/server/roomsController';
 import { Rooms } from '@app/server/fakedb/rooms';
 import { newRoomRequestDecoder } from '@app/shared/validators/roomTypes';
-import { validator } from '@app/server/validator';
+import { validator, cookieValidator } from '@app/server/validator';
 import { RoomsManager } from './roomsManager';
 import { Server } from 'socket.io';
+import { userIdentifierCookieDecoder } from '@app/shared/validators/userIdentifierCookieTypes';
 
 const createRouter = ({ server }: { server: Server }) => {
   const router = Router();
@@ -17,7 +18,10 @@ const createRouter = ({ server }: { server: Server }) => {
 
   router.post(
     '/rooms',
-    validator(newRoomRequestDecoder),
+    [
+      cookieValidator(userIdentifierCookieDecoder),
+      validator(newRoomRequestDecoder)
+    ],
     roomsController.joinRoom
   );
 
