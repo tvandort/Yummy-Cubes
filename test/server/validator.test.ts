@@ -25,22 +25,16 @@ describe('validator middlware', () => {
 
     expect(next).not.toHaveBeenCalled();
     expect(mockResponse.status).toHaveBeenCalledWith(400);
-    expect(mockResponse.send).toHaveBeenCalledWith(
-      expect.objectContaining({
-        error: {
-          code: 'BadArgument',
-          message: 'Invalid request body',
-          details: [
-            {
-              code: 'BadArgument',
-              details: [],
-              message:
-                'cannot decode undefined, should be Record<string, unknown>'
-            }
-          ]
-        }
-      })
-    );
+    expect(mockResponse.send.mock.calls[0][0]).toMatchInlineSnapshot(`
+      Object {
+        "error": Object {
+          "code": "BadArgument",
+          "details": "cannot decode undefined, should be Record<string, unknown>",
+          "message": "Invalid request body",
+        },
+        "status": "error",
+      }
+    `);
   });
 
   it('accepts a valid body', () => {

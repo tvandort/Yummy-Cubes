@@ -44,10 +44,12 @@ export default function Room({}: RoomProps) {
 
     const run = async () => {
       try {
-        const result = await joinRoom({ roomId: id });
+        if (Boolean(id)) {
+          const result = await joinRoom({ roomId: id });
 
-        if (!canceled) {
-          setJoinState({ state: 'done', ...result });
+          if (!canceled) {
+            setJoinState({ state: 'done', ...result });
+          }
         }
       } catch (ex) {
         if (!canceled) {

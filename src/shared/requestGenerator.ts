@@ -7,7 +7,7 @@ export type Request<RequestType, ResponseType> = (
 ) => Promise<ResponseType>;
 
 export const createPost = <RequestType, ResponseType>(
-  decoder: Decoder<ResponseType>,
+  decoder: Decoder<unknown, ResponseType>,
   url: string,
   opts?: WretcherOptions
 ): Request<RequestType, ResponseType> => {
