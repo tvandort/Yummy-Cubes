@@ -6,6 +6,7 @@ import {
   NewRoomResponse
 } from '@app/shared/validators/roomTypes';
 import { createPost } from '@app/shared/requestGenerator';
+import { SocketIOProvider, useSocket } from 'use-socketio';
 
 interface RoomProps {}
 
@@ -27,10 +28,91 @@ interface LoadingState {
   state: 'loading';
 }
 
+interface Emittable<Key extends string> {
+  key: Key;
+}
+
+interface CallbackEvent<Key extends string> {
+  key: Key;
+}
+
+type CallbackKeyInitializeMessages = 'initialize-messages';
+type CallbackKeyAddMessage = 'add-message';
+type CallbackKeys = CallbackKeyInitializeMessages;
+interface InitializeMessagesEvent
+  extends CallbackEvent<CallbackKeyInitializeMessages> {
+  messages: string[];
+}
+
+interface AddMessageEvent extends CallbackEvent<CallbackKeyAddMessage> {
+  message: string;
+  user: string;
+}
+
+type CallbackEvents = InitializeMessagesEvent | AddMessageEvent;
+
+function useTypedSocket<
+  CallbackEvents,
+  EmitKeys extends string,
+  EmitEvents extends Emittable<EmitKeys>
+>(eventKey: string, callback: (message: CallbackEvents) => void) {
+  const validateResponseCallback = (message: unknown) => {
+    // decode
+    // throw if bad
+    // call method if good.
+    //callback(message);
+  };
+  const { socket } = useSocket(eventKey, validateResponseCallback);
+
+  return {
+    socket: {
+      emit: function (emit: EmitEvents) {
+        socket.emit(emit.key, emit);
+      }
+    }
+  };
+}
+
 type JoinState = SuccessState | ErroredState | LoadingState;
 
-const Joined = ({ code, id }: { code: string; id: string }) => {
+type EmitKeyJoin = 'join';
+interface JoinEvent extends Emittable<EmitKeyJoin> {
+  code: string;
+  id: string;
+}
+
+type EmitKeySay = 'say';
+interface SayEvent extends Emittable<EmitKeySay> {
+  words: string;
+}
+
+type EmitKeys = EmitKeyJoin | EmitKeySay;
+
+type EmitEvents = JoinEvent | SayEvent;
+
+const Something = ({ code, id }: { code: string; id: string }) => {
+  const { socket: roomSocket } = useTypedSocket<
+    CallbackEvents,
+    EmitKeys,
+    EmitEvents
+  >('room', (roomState) => {
+    if (roomState.key === 'add-message') {
+    }
+  });
+
+  useEffect(() => {
+    roomSocket.emit({ key: 'join', code, id });
+  });
+
   return <div></div>;
+};
+
+const Joined = ({ code, id }: { code: string; id: string }) => {
+  return (
+    <SocketIOProvider url="/">
+      <Something code={code} id={id} />
+    </SocketIOProvider>
+  );
 };
 
 // eslint-disable-next-line no-empty-pattern
