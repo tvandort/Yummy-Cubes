@@ -7,6 +7,9 @@ import {
 } from '@app/shared/validators/roomTypes';
 import { createPost } from '@app/shared/requestGenerator';
 import { SocketIOProvider, useSocket } from 'use-socketio';
+import { Decoder } from 'io-ts/lib/Decoder';
+import { isLeft } from 'fp-ts/lib/Either';
+import * as t from 'io-ts/lib/Decoder';
 
 interface RoomProps {}
 
@@ -36,33 +39,80 @@ interface CallbackEvent<Key extends string> {
   key: Key;
 }
 
-type CallbackKeyInitializeMessages = 'initialize-messages';
-type CallbackKeyAddMessage = 'add-message';
-type CallbackKeys = CallbackKeyInitializeMessages;
-interface InitializeMessagesEvent
-  extends CallbackEvent<CallbackKeyInitializeMessages> {
-  messages: string[];
-}
+const InitializeMessagesDecoder = t.literal('initialize-messages');
+const AddMessageDecoder = t.literal('add-message');
+const CallbackKeysDecoder = t.union(
+  InitializeMessagesDecoder,
+  AddMessageDecoder
+);
 
-interface AddMessageEvent extends CallbackEvent<CallbackKeyAddMessage> {
-  message: string;
-  user: string;
-}
+type CallbackKeyInitializeMessages = t.TypeOf<typeof InitializeMessagesDecoder>;
+type CallbackKeyAddMessage = t.TypeOf<typeof AddMessageDecoder>;
+type CallbackKeys = t.TypeOf<typeof CallbackKeysDecoder>;
 
-type CallbackEvents = InitializeMessagesEvent | AddMessageEvent;
+const InitializeMessagesEventDecoder = t.type({
+  key: InitializeMessagesDecoder,
+  messages: t.array(t.string)
+});
+
+const AddMessageEventDecoder = t.type({
+  key: AddMessageDecoder,
+  message: t.string,
+  user: t.string
+});
+
+const Meta = t.union(InitializeMessagesEventDecoder, AddMessageEventDecoder);
+
+const asd = Meta.decode;
+
+type types = t.TypeOf<typeof Meta>;
+
+type InitializeMessagesEvent = t.TypeOf<typeof InitializeMessagesEventDecoder>;
+type AddMessageEvent = t.TypeOf<typeof AddMessageEventDecoder>;
+
+// interface InitializeMessagesEvent
+//   extends CallbackEvent<CallbackKeyInitializeMessages> {
+//   messages: string[];
+// }
+
+// interface AddMessageEvent extends CallbackEvent<CallbackKeyAddMessage> {
+//   message: string;
+//   user: string;
+// }
+
+type CallbackEvents = types;
+
+function useSocketWithDecoder<
+  CallbackEvents,
+  EmitKeys extends string,
+  EmitEvents extends Emittable<EmitKeys>
+>(
+  eventKey: string,
+  decoder: Decoder<unknown, CallbackEvents>,
+  callback: (message: CallbackEvents) => void
+) {
+  const validator = (message: unknown) => {
+    const result = decoder.decode(message);
+
+    if (isLeft(result)) {
+      throw new Error('Could not decode socket.io message.');
+    } else {
+      callback(result.right);
+    }
+  };
+
+  return useTypedSocket<CallbackEvents, EmitKeys, EmitEvents>(
+    eventKey,
+    validator
+  );
+}
 
 function useTypedSocket<
   CallbackEvents,
   EmitKeys extends string,
   EmitEvents extends Emittable<EmitKeys>
 >(eventKey: string, callback: (message: CallbackEvents) => void) {
-  const validateResponseCallback = (message: unknown) => {
-    // decode
-    // throw if bad
-    // call method if good.
-    //callback(message);
-  };
-  const { socket } = useSocket(eventKey, validateResponseCallback);
+  const { socket } = useSocket(eventKey, callback);
 
   return {
     socket: {
@@ -91,11 +141,11 @@ type EmitKeys = EmitKeyJoin | EmitKeySay;
 type EmitEvents = JoinEvent | SayEvent;
 
 const Something = ({ code, id }: { code: string; id: string }) => {
-  const { socket: roomSocket } = useTypedSocket<
+  const { socket: roomSocket } = useSocketWithDecoder<
     CallbackEvents,
     EmitKeys,
     EmitEvents
-  >('room', (roomState) => {
+  >('room', Meta, (roomState) => {
     if (roomState.key === 'add-message') {
     }
   });
