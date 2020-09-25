@@ -63,22 +63,10 @@ const AddMessageEventDecoder = t.type({
 
 const Meta = t.union(InitializeMessagesEventDecoder, AddMessageEventDecoder);
 
-const asd = Meta.decode;
-
 type types = t.TypeOf<typeof Meta>;
 
 type InitializeMessagesEvent = t.TypeOf<typeof InitializeMessagesEventDecoder>;
 type AddMessageEvent = t.TypeOf<typeof AddMessageEventDecoder>;
-
-// interface InitializeMessagesEvent
-//   extends CallbackEvent<CallbackKeyInitializeMessages> {
-//   messages: string[];
-// }
-
-// interface AddMessageEvent extends CallbackEvent<CallbackKeyAddMessage> {
-//   message: string;
-//   user: string;
-// }
 
 type CallbackEvents = types;
 
@@ -140,7 +128,7 @@ type EmitKeys = EmitKeyJoin | EmitKeySay;
 
 type EmitEvents = JoinEvent | SayEvent;
 
-const Something = ({ code, id }: { code: string; id: string }) => {
+const Room = ({ code, id }: { code: string; id: string }) => {
   const { socket: roomSocket } = useSocketWithDecoder<
     CallbackEvents,
     EmitKeys,
@@ -154,19 +142,19 @@ const Something = ({ code, id }: { code: string; id: string }) => {
     roomSocket.emit({ key: 'join', code, id });
   });
 
-  return <div></div>;
+  return <div>hello!</div>;
 };
 
 const Joined = ({ code, id }: { code: string; id: string }) => {
   return (
     <SocketIOProvider url="/">
-      <Something code={code} id={id} />
+      <Room code={code} id={id} />
     </SocketIOProvider>
   );
 };
 
 // eslint-disable-next-line no-empty-pattern
-export default function Room({}: RoomProps) {
+export default function JoinedRoom({}: RoomProps) {
   const { query } = useRouter();
   const id = query.id as string;
   const [joinState, setJoinState] = useState<JoinState>({ state: 'loading' });
