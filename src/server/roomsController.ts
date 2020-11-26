@@ -6,6 +6,13 @@ import {
   NewRoomResponse
 } from '@app/shared/validators/roomTypes';
 import { IRoomsManager } from './roomsManager';
+import { userIdentifierCookieDecoder } from '@app/shared/validators/userIdentifierCookieTypes';
+
+const typedCookies = ({ cookies }: Request<ParamsDictionary, any>) => {
+  return {
+    userIdentity: cookies['user-identity']
+  };
+};
 
 const handler = <RequestType, ResponseType>(
   fn: (
@@ -26,9 +33,13 @@ export class RoomsController {
 
   joinRoom = handler<NewRoomRequest, NewRoomResponse>((req, res) => {
     const roomId = req.body.roomId;
+    const { userIdentity } = typedCookies(req);
 
     try {
-      const result = this.roomsManager.joinRoom(roomId, 'test-player');
+      const result = this.roomsManager.joinRoom({
+        roomId,
+        playerId: userIdentity
+      });
       const response = {
         roomId,
         code: result.code

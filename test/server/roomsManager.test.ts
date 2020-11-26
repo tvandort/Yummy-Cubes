@@ -10,7 +10,10 @@ describe(RoomsManager, () => {
       const rooms = new Rooms();
       const manager = new RoomsManager({ rooms, io: socketServer });
 
-      const result = manager.joinRoom('example-id', player1);
+      const result = manager.joinRoom({
+        roomId: 'example-id',
+        playerId: player1
+      });
       const room = rooms.get('example-id');
 
       expect(result.new).toBeTruthy();
@@ -32,7 +35,7 @@ describe(RoomsManager, () => {
       const rooms = new Rooms({ rooms: [room] });
       const manager = new RoomsManager({ rooms, io: socketServer });
 
-      const result = manager.joinRoom(roomId, player2);
+      const result = manager.joinRoom({ roomId, playerId: player2 });
 
       expect(result.new).toBeFalsy();
       expect(room.Players.length).toBe(2);
@@ -58,13 +61,13 @@ describe(RoomsManager, () => {
       const rooms = new Rooms({ rooms: [room] });
       const manager = new RoomsManager({ rooms, io: socketServer });
 
-      manager.joinRoom(roomId, player1);
-      manager.joinRoom(roomId, player2);
-      manager.joinRoom(roomId, player3);
-      manager.joinRoom(roomId, player4);
+      manager.joinRoom({ roomId, playerId: player1 });
+      manager.joinRoom({ roomId, playerId: player2 });
+      manager.joinRoom({ roomId, playerId: player3 });
+      manager.joinRoom({ roomId, playerId: player4 });
 
       expect(() =>
-        manager.joinRoom(roomId, player5)
+        manager.joinRoom({ roomId, playerId: player5 })
       ).toThrowErrorMatchingInlineSnapshot(`"Room already full."`);
     });
 
@@ -81,7 +84,7 @@ describe(RoomsManager, () => {
       const manager = new RoomsManager({ rooms, io: socketServer });
 
       expect(() =>
-        manager.joinRoom(roomId, player5)
+        manager.joinRoom({ roomId, playerId: player5 })
       ).toThrowErrorMatchingInlineSnapshot(`"Room already full."`);
     });
   });

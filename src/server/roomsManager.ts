@@ -8,7 +8,7 @@ export interface IJoinRoomResult {
 }
 
 export interface IRoomsManager {
-  joinRoom: (roomId: string, playerId: string) => IJoinRoomResult;
+  joinRoom: (params: { roomId: string; playerId: string }) => IJoinRoomResult;
 }
 
 export class RoomsManager implements IRoomsManager {
@@ -20,14 +20,12 @@ export class RoomsManager implements IRoomsManager {
     this.io = io;
   }
 
-  joinRoom = (roomId: string, playerId: string) => {
+  joinRoom = ({ roomId, playerId }: { roomId: string; playerId: string }) => {
     let room: Room;
-    let newRoom = false;
-    if (this.rooms.exists(roomId)) {
-      newRoom = false;
+    let roomExistsAlready = this.rooms.exists(roomId);
+    if (roomExistsAlready) {
       room = this.rooms.get(roomId);
     } else {
-      newRoom = true;
       room = new Room({ id: roomId, players: [], code: v4() });
       this.rooms.add(room);
     }
@@ -39,7 +37,7 @@ export class RoomsManager implements IRoomsManager {
     if (playerInRoomAlready) {
       // respond 200 with existing unique code that gets sent to the react page from the server.
       return {
-        new: newRoom,
+        new: !roomExistsAlready,
         code: room.Code
       };
     } else if (!full) {
@@ -48,7 +46,7 @@ export class RoomsManager implements IRoomsManager {
       // respond 201 with new unique code that gets sent to the react page from the server.
       // room should be named based on the url slug however.
       return {
-        new: newRoom,
+        new: !roomExistsAlready,
         code: room.Code
       };
     } else {

@@ -14,7 +14,10 @@ describe('game controller', function () {
     joinRoom.mockReturnValue({ new: true, code });
 
     controller.joinRoom(
-      { body: { roomId: exampleId } } as any,
+      {
+        body: { roomId: exampleId },
+        cookies: { 'user-identity': 'test' }
+      } as any,
       mockResponse as any
     );
 
@@ -33,7 +36,10 @@ describe('game controller', function () {
     joinRoom.mockReturnValue({ new: false, code });
 
     controller.joinRoom(
-      { body: { roomId: exampleId } } as any,
+      {
+        body: { roomId: exampleId },
+        cookies: { 'user-identity': 'test' }
+      } as any,
       mockResponse as any
     );
 
@@ -54,7 +60,10 @@ describe('game controller', function () {
     });
 
     controller.joinRoom(
-      { body: { roomId: exampleId } } as any,
+      {
+        body: { roomId: exampleId },
+        cookies: { 'user-identity': 'test' }
+      } as any,
       mockResponse as any
     );
 
