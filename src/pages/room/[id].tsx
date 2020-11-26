@@ -9,8 +9,15 @@ import { createPost } from '@app/shared/requestGenerator';
 import { SocketIOProvider, useSocket } from 'use-socketio';
 import { Decoder } from 'io-ts/lib/Decoder';
 import { isLeft } from 'fp-ts/lib/Either';
-import * as t from 'io-ts/lib/Decoder';
+
 import NamePrompt from '@app/components/namePrompt';
+import {
+  CallbackEvents,
+  Emittable,
+  CallbackEventsDecoders,
+  EmitKeys,
+  EmitEvents
+} from '@app/shared/validators/messages';
 
 interface RoomProps {}
 
@@ -32,57 +39,6 @@ interface ErroredState {
 interface LoadingState {
   state: 'loading';
 }
-
-interface Emittable<Key extends string> {
-  key: Key;
-}
-
-interface CallbackEvent<Key extends string> {
-  key: Key;
-}
-
-const InitializeMessagesDecoder = t.literal('initialize-messages');
-const AddMessageDecoder = t.literal('add-message');
-const CallbackKeysDecoder = t.union(
-  InitializeMessagesDecoder,
-  AddMessageDecoder
-);
-
-type CallbackKeyInitializeMessages = t.TypeOf<typeof InitializeMessagesDecoder>;
-type CallbackKeyAddMessage = t.TypeOf<typeof AddMessageDecoder>;
-type CallbackKeys = t.TypeOf<typeof CallbackKeysDecoder>;
-
-const InitializeMessagesEventDecoder = t.type({
-  key: InitializeMessagesDecoder,
-  messages: t.array(t.string)
-});
-
-const AddMessageEventDecoder = t.type({
-  key: AddMessageDecoder,
-  message: t.string,
-  user: t.string
-});
-
-const Meta = t.union(InitializeMessagesEventDecoder, AddMessageEventDecoder);
-
-const asd = Meta.decode;
-
-type types = t.TypeOf<typeof Meta>;
-
-type InitializeMessagesEvent = t.TypeOf<typeof InitializeMessagesEventDecoder>;
-type AddMessageEvent = t.TypeOf<typeof AddMessageEventDecoder>;
-
-// interface InitializeMessagesEvent
-//   extends CallbackEvent<CallbackKeyInitializeMessages> {
-//   messages: string[];
-// }
-
-// interface AddMessageEvent extends CallbackEvent<CallbackKeyAddMessage> {
-//   message: string;
-//   user: string;
-// }
-
-type CallbackEvents = types;
 
 function useSocketWithDecoder<
   CallbackEvents,
@@ -127,22 +83,6 @@ function useTypedSocket<
 
 type JoinState = SuccessState | ErroredState | LoadingState;
 
-type EmitKeyJoin = 'join';
-interface JoinEvent extends Emittable<EmitKeyJoin> {
-  code: string;
-  id: string;
-  nickname: string;
-}
-
-type EmitKeySay = 'say';
-interface SayEvent extends Emittable<EmitKeySay> {
-  words: string;
-}
-
-type EmitKeys = EmitKeyJoin | EmitKeySay;
-
-type EmitEvents = JoinEvent | SayEvent;
-
 const Something = ({
   code,
   id,
@@ -156,9 +96,12 @@ const Something = ({
     CallbackEvents,
     EmitKeys,
     EmitEvents
-  >('room', Meta, (roomState) => {
-    if (roomState.key === 'add-message') {
-      console.log(roomState);
+  >('room', CallbackEventsDecoders, (action) => {
+    switch (action.key) {
+      case 'add-message': {
+        console.log(action);
+        break;
+      }
     }
   });
 

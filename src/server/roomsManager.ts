@@ -1,6 +1,8 @@
 import { Rooms, Room, Player } from './fakedb/rooms';
 import { Room as SocketRoom, Server } from 'socket.io';
 import { v4 } from 'uuid';
+import { EmitDecoders } from '@app/shared/validators/messages';
+import { isLeft } from 'fp-ts/lib/Either';
 
 export interface IJoinRoomResult {
   new: boolean;
@@ -22,14 +24,20 @@ export class RoomsManager implements IRoomsManager {
     this.io = io;
 
     io.on('connection', (socket) => {
-      socket.on('join', (event: { id: string; nickname: string }) => {
-        socket.join(event.id);
+      socket.on('join', (event: any) => {
+        const deco = EmitDecoders.decode(event);
+        if (isLeft(deco)) {
+          throw new Error('What');
+        } else {
+          socket.join(event.id);
 
-        io.to(event.id).emit('room', {
-          key: 'add-message',
-          message: `${event.nickname} joined!`,
-          stuser: 'SERVER'
-        });
+          // get typed emit by returning wrapped emit where wrapper takes io?
+          io.to(event.id).emit('room', {
+            key: 'add-message',
+            message: `${event.nickname} joined!`,
+            stuser: 'SERVER'
+          });
+        }
       });
     });
   }
