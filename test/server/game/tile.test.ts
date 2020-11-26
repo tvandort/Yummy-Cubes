@@ -6,7 +6,7 @@ import {
   JokerTile,
   unplayedSet,
   TileFactory
-} from '@app/game/tile';
+} from '@app/server/game/tile';
 
 describe(generateTiles, () => {
   describe('generated bag', () => {

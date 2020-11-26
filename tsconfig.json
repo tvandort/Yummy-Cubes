@@ -31,6 +31,6 @@
 
     "sourceMap": true
   },
-  "include": ["src/**/*", "tsconfig.server.json"],
+  "include": ["src/**/*", "tsconfig.server.json", "stories"],
   "exclude": ["node_modules"]
 }

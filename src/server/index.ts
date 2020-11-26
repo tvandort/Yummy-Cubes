@@ -1,7 +1,15 @@
+// The first import here has to be a relative import as module aliasing
+// is not yet set up.
+import './moduleAliases';
+
+// Now we can use module aliasing if we want.
 import next from 'next';
 import socketio from 'socket.io';
 import { createServer } from 'http';
 import express from 'express';
+import cookieParser from 'cookie-parser';
+
+import createRouter from './routes';
 
 const port = process.env.PORT || 3000;
 const dev = process.env.NODE_ENV !== 'production';
@@ -23,6 +31,10 @@ const random = () => Math.random() * 1000;
 io.on('connection', (socket) => {
   console.log('someone connected');
   io.emit('message', { name: 'system', message: 'user joined' });
+
+  // socket.on('join', (asd: any) => {
+  //   socket.join(asd.id);
+  // });
 
   socket.on('message', (args) => {
     io.emit('message', args);
@@ -50,6 +62,13 @@ io.on('connection', (socket) => {
 });
 
 nextApp.prepare().then(() => {
+  // Parse application/json content and put it in the body as a JSON object.
+  app.use(express.json());
+
+  app.use(cookieParser());
+
+  app.use('/api', createRouter({ server: io }));
+
   app.all('*', (req, res) => {
     return nextHandler(req, res);
   });
@@ -58,5 +77,3 @@ nextApp.prepare().then(() => {
     console.log(`> Ready on http://localhost:${port}`);
   });
 });
-
-console.log('foo');

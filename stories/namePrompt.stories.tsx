@@ -1,4 +1,4 @@
-import NamePrompt from '../src/components/namePrompt';
+import NamePrompt from '@app/components/namePrompt';
 import { action } from '@storybook/addon-actions';
 export default {
   title: 'Name Prompt'

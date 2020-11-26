@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const placeholderNames = [
   'John',
@@ -17,10 +17,17 @@ const randomName = () => placeholderNames[randomInt(placeholderNames.length)];
 
 export default function NamePrompt({ onGo }: { onGo: (name: string) => void }) {
   const [name, setName] = useState('');
+  const [placeholder, setPlaceholder] = useState('');
+
+  useEffect(() => {
+    // Needed because otherwise the SRR renders two different values.
+    // NextJS isn't a fan of that.
+    setPlaceholder(randomName());
+  }, []);
 
   return (
     <form
-      className="flex flex-col text-center space-y-4"
+      className="flex flex-col text-center items-center space-y-4"
       onSubmit={(e) => {
         e.preventDefault();
         onGo(name);
@@ -29,11 +36,12 @@ export default function NamePrompt({ onGo }: { onGo: (name: string) => void }) {
       <label className="font-bold text-xl" htmlFor="nameInput">
         What's your name?
       </label>
-      <div>
+      <div className="flex">
         <input
           id="nameInput"
+          type="text"
           className="border px-3 py-2"
-          placeholder={`e.g. ${randomName()}`}
+          placeholder={`e.g. ${placeholder}`}
           onChange={({ target: { value } }) => {
             setName(value);
           }}
