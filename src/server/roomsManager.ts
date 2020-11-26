@@ -20,6 +20,18 @@ export class RoomsManager implements IRoomsManager {
   constructor({ rooms, io }: { rooms: Rooms; io: Server }) {
     this.rooms = rooms;
     this.io = io;
+
+    io.on('connection', (socket) => {
+      socket.on('join', (event: { id: string; nickname: string }) => {
+        socket.join(event.id);
+
+        io.to(event.id).emit('room', {
+          key: 'add-message',
+          message: `${event.nickname} joined!`,
+          stuser: 'SERVER'
+        });
+      });
+    });
   }
 
   joinRoom = ({ roomId, playerId }: { roomId: string; playerId: string }) => {

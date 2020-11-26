@@ -158,6 +158,7 @@ const Something = ({
     EmitEvents
   >('room', Meta, (roomState) => {
     if (roomState.key === 'add-message') {
+      console.log(roomState);
     }
   });
 

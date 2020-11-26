@@ -32,6 +32,10 @@ io.on('connection', (socket) => {
   console.log('someone connected');
   io.emit('message', { name: 'system', message: 'user joined' });
 
+  // socket.on('join', (asd: any) => {
+  //   socket.join(asd.id);
+  // });
+
   socket.on('message', (args) => {
     io.emit('message', args);
   });
