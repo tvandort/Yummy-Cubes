@@ -40,9 +40,11 @@ export class RoomsController {
         roomId,
         playerId: userIdentity
       });
-      const response = {
+      const response: NewRoomResponse = {
         roomId,
-        code: result.code
+        code: result.code,
+        nickname: result.nickname,
+        promptName: result.promptName
       };
       if (result.new) {
         res.status(201).json(response);

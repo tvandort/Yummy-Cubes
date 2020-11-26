@@ -6,9 +6,15 @@ export interface RoomLike {
   Code: string;
 }
 
+export interface Player {
+  userIdentifier: string;
+  nickname: string;
+  promptName: boolean;
+}
+
 export class Room implements RoomLike {
   private id: string;
-  private players: { userIdentifier: string }[];
+  private players: Player[];
   private code: string;
 
   constructor({
@@ -18,7 +24,7 @@ export class Room implements RoomLike {
   }: {
     code?: string;
     id: string;
-    players?: { userIdentifier: string }[];
+    players?: Player[];
   }) {
     this.id = id;
     this.players = players;

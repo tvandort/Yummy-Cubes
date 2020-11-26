@@ -7,6 +7,8 @@ export type NewRoomRequest = t.TypeOf<typeof newRoomRequestDecoder>;
 
 export const newRoomResponseDecoder = t.type({
   roomId: t.string,
-  code: t.string
+  code: t.string,
+  nickname: t.string,
+  promptName: t.boolean
 });
 export type NewRoomResponse = t.TypeOf<typeof newRoomResponseDecoder>;

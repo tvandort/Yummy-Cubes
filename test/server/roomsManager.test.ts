@@ -30,7 +30,9 @@ describe(RoomsManager, () => {
       const socketServer = {} as Server;
       const room = new Room({
         id: roomId,
-        players: [{ userIdentifier: player1 }]
+        players: [
+          { userIdentifier: player1, nickname: 'test', promptName: true }
+        ]
       });
       const rooms = new Rooms({ rooms: [room] });
       const manager = new RoomsManager({ rooms, io: socketServer });
@@ -78,7 +80,11 @@ describe(RoomsManager, () => {
       const socketServer = {} as Server;
       const room = new Room({
         id: roomId,
-        players: players.map((userIdentifier) => ({ userIdentifier }))
+        players: players.map((userIdentifier) => ({
+          userIdentifier,
+          nickname: userIdentifier,
+          promptName: true
+        }))
       });
       const rooms = new Rooms({ rooms: [room] });
       const manager = new RoomsManager({ rooms, io: socketServer });

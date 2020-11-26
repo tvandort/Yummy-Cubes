@@ -10,6 +10,7 @@ import { SocketIOProvider, useSocket } from 'use-socketio';
 import { Decoder } from 'io-ts/lib/Decoder';
 import { isLeft } from 'fp-ts/lib/Either';
 import * as t from 'io-ts/lib/Decoder';
+import NamePrompt from '@app/components/namePrompt';
 
 interface RoomProps {}
 
@@ -22,6 +23,7 @@ interface SuccessState {
   state: 'done';
   code: string;
   roomId: string;
+  promptName: boolean;
 }
 interface ErroredState {
   state: 'errored';
@@ -129,6 +131,7 @@ type EmitKeyJoin = 'join';
 interface JoinEvent extends Emittable<EmitKeyJoin> {
   code: string;
   id: string;
+  nickname: string;
 }
 
 type EmitKeySay = 'say';
@@ -140,7 +143,15 @@ type EmitKeys = EmitKeyJoin | EmitKeySay;
 
 type EmitEvents = JoinEvent | SayEvent;
 
-const Something = ({ code, id }: { code: string; id: string }) => {
+const Something = ({
+  code,
+  id,
+  promptName
+}: {
+  code: string;
+  id: string;
+  promptName: boolean;
+}) => {
   const { socket: roomSocket } = useSocketWithDecoder<
     CallbackEvents,
     EmitKeys,
@@ -150,17 +161,38 @@ const Something = ({ code, id }: { code: string; id: string }) => {
     }
   });
 
-  useEffect(() => {
-    roomSocket.emit({ key: 'join', code, id });
-  });
+  const [nameProvided, setNameProvided] = useState(false);
 
-  return <div></div>;
+  const askForName = promptName && !nameProvided;
+
+  return (
+    <>
+      {askForName && (
+        <NamePrompt
+          onGo={(nickname) => {
+            // dispatch naming event
+            setNameProvided(true);
+            roomSocket.emit({ key: 'join', code, id, nickname });
+          }}
+        />
+      )}
+      {!askForName && <div>not asking</div>}
+    </>
+  );
 };
 
-const Joined = ({ code, id }: { code: string; id: string }) => {
+const Joined = ({
+  code,
+  id,
+  promptName
+}: {
+  code: string;
+  id: string;
+  promptName: boolean;
+}) => {
   return (
     <SocketIOProvider url="/">
-      <Something code={code} id={id} />
+      <Something code={code} id={id} promptName={promptName} />
     </SocketIOProvider>
   );
 };
@@ -201,7 +233,11 @@ export default function Room({}: RoomProps) {
       {joinState.state === 'loading' && <div>Joining...</div>}
       {joinState.state === 'errored' && <div>{joinState.message}</div>}
       {joinState.state === 'done' && (
-        <Joined code={joinState.code} id={joinState.roomId} />
+        <Joined
+          code={joinState.code}
+          id={joinState.roomId}
+          promptName={joinState.promptName}
+        />
       )}
     </>
   );
